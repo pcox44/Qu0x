@@ -2,49 +2,64 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Qu0x</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Qu0x - Daily Dice Game</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <h1>Qu0x</h1>
-  <div class="rules">Use all five dice exactly once with the operations below to get as close as possible to the target. A perfect score is a <strong>Qu0x!</strong></div>
-  <div id="game-info">
-    <div id="game-date"></div>
-    <div class="dice-row" id="dice-container"></div>
-    <div id="target-container"></div>
+  <div id="game-number"></div>
+  <div id="date-display"></div>
+
+  <div id="dice-container" class="dice-row"></div>
+
+  <div id="target-container">Target: <span id="target-number"></span></div>
+
+  <div id="input-container">
+    <div id="expression"></div>
   </div>
 
-  <div id="expression-container"></div>
   <div id="buttons-container">
+    <button class="op" data-op="(">(</button>
+    <button class="op" data-op=")">)</button>
     <button class="op" data-op="+">+</button>
     <button class="op" data-op="-">−</button>
     <button class="op" data-op="*">×</button>
     <button class="op" data-op="/">÷</button>
     <button class="op" data-op="^">^</button>
     <button class="op" data-op="!">!</button>
-    <button id="clear">Clear</button>
-    <button id="backspace">⌫</button>
-    <button id="submit">Submit</button>
   </div>
 
-  <div id="result-container">
-    <div id="message-container"></div>
-    <div id="score"></div>
-    <div id="streak"></div>
+  <div>
+    <button id="backspace-btn">Backspace</button>
+    <button id="clear-btn">Clear</button>
+    <button id="submit-btn">Submit</button>
   </div>
 
-  <div id="archive-header">
-    <button id="prev-day">←</button>
-    <span id="archive-title">Game Archive</span>
-    <button id="next-day">→</button>
+  <div id="message-container"></div>
+  <div id="score"></div>
+  <div id="streak"></div>
+
+  <div>
+    <button id="prev-game-btn">Previous Game</button>
+    <button id="next-game-btn">Next Game</button>
   </div>
+
+  <a id="share-link" href="#" target="_blank" rel="noopener noreferrer">Share this game</a>
+
+  <h2>Game Archive (Last 5 Days)</h2>
   <table id="history">
-    <thead><tr><th>Date</th><th>Score</th></tr></thead>
-    <tbody></tbody>
+    <thead>
+      <tr>
+        <th>Game #</th>
+        <th>Date</th>
+        <th>Score</th>
+      </tr>
+    </thead>
+    <tbody id="history-body"></tbody>
   </table>
 
-  <div id="qu0x-popup" class="hidden">Qu0x!</div>
+  <div id="qu0x-popup">Qu0x!</div>
 
   <script src="script.js"></script>
 </body>
