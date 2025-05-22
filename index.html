@@ -1,55 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Qu0x!</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
   <h1>Qu0x!</h1>
   <div id="date-display"></div>
-  <div id="target-box">Target: <span id="target-number"></span></div>
-  <div id="dice-row"></div>
-
-  <div id="expression-container">
-    <div id="expression-box"></div>
-    <div id="expression-value"></div>
+  <div id="game-container">
+    <div id="target-box">
+      Target: <span id="target-number"></span>
+    </div>
+    <div id="dice-container"></div>
+    <div id="expression-box">
+      <div id="expression-display"></div>
+      <div id="expression-value"></div>
+    </div>
+    <div id="buttons">
+      <button onclick="appendSymbol('+')">+</button>
+      <button onclick="appendSymbol('-')">−</button>
+      <button onclick="appendSymbol('*')">*</button>
+      <button onclick="appendSymbol('/')">/</button>
+      <button onclick="appendSymbol('^')">^</button>
+      <button onclick="appendSymbol('!')">!</button>
+      <button onclick="appendSymbol('(')">(</button>
+      <button onclick="appendSymbol(')')">)</button>
+      <button onclick="backspace()">⌫</button>
+      <button onclick="clearExpression()">Clear</button>
+      <button onclick="submitExpression()">Submit</button>
+    </div>
+    <div id="result"></div>
+    <div id="qu0x-animation">Qu0x!</div>
+    <div id="nav-buttons">
+      <button onclick="prevGame()">Previous</button>
+      <button onclick="nextGame()">Next</button>
+    </div>
+    <div id="game-archive">
+      <h3>Last 5 Results</h3>
+      <ul id="archive-list"></ul>
+    </div>
   </div>
-
-  <div id="buttons">
-    <button class="op">(</button>
-    <button class="op">)</button>
-    <button class="op">+</button>
-    <button class="op">−</button>
-    <button class="op">×</button>
-    <button class="op">÷</button>
-    <button class="op">^</button>
-    <button class="op">!</button>
-    <button id="backspace">⌫</button>
-    <button id="clear">Clear</button>
-    <button id="submit">Submit</button>
-  </div>
-
-  <div id="message-container"></div>
-
-  <div id="qu0x-animation">Qu0x!</div>
-  <div id="total-qu0x"></div>
-
-  <div id="navigation">
-    <button id="prev-game">Previous</button>
-    <button id="next-game">Next</button>
-  </div>
-
-  <div id="history">
-    <h2>Game Archive (Last 5 Results)</h2>
-    <table>
-      <thead>
-        <tr><th>Game</th><th>Date</th><th>Score</th></tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
-
   <script src="script.js"></script>
 </body>
 </html>
