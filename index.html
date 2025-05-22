@@ -1,61 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
   <title>Qu0x</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <h1>Qu0x</h1>
-  <div id="game-info">
-    <div id="game-number">Game #1</div>
-    <div id="target-number">Target: <span id="target-value"></span></div>
-  </div>
-  <div id="dice-container"></div>
-  <input type="text" id="expression-input" readonly />
+  <div id="target-container">Target: <span id="target">?</span></div>
+  <div class="dice-row" id="dice-container"></div>
   <div id="buttons-container">
-    <div id="operators">
-      <button class="op-btn" data-op="+">+</button>
-      <button class="op-btn" data-op="-">−</button>
-      <button class="op-btn" data-op="*">×</button>
-      <button class="op-btn" data-op="/">÷</button>
-      <button class="op-btn" data-op="^">^</button>
-      <button class="op-btn" data-op="!">!</button>
-      <button id="btn-open-paren">(</button>
-      <button id="btn-close-paren">)</button>
-    </div>
-    <div id="controls">
-      <button id="btn-clear">Clear</button>
-      <button id="btn-backspace">Backspace</button>
-      <button id="btn-submit">Submit</button>
-    </div>
+    <!-- Operator buttons will go here -->
   </div>
-  <div id="message-container"></div>
-  <div id="score-container">
-    <div id="score-display">Score: —</div>
-    <div id="streak-display">Streak: 0</div>
+  <div id="expression-display"></div>
+  <div id="submit-container">
+    <button id="submit">Submit</button>
+    <button id="clear">Clear</button>
   </div>
-  <div id="history-container">
-    <h2>History</h2>
-    <table id="history-table">
-      <thead>
-        <tr>
-          <th>Game #</th>
-          <th>Expression</th>
-          <th>Score</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!-- History rows will be populated here -->
-      </tbody>
+  <div id="result-container"></div>
+  <div id="streak">Current Qu0x Streak: 0</div>
+  <div id="archive-container">
+    <h2>Game Archive</h2>
+    <table id="history">
+      <thead><tr><th>Game #</th><th>Date</th><th>Score</th></tr></thead>
+      <tbody></tbody>
     </table>
   </div>
-  <div id="navigation">
-    <button id="btn-prev">Previous</button>
-    <button id="btn-next">Next</button>
-  </div>
-  <div id="qu0x-popup">🎉 Qu0x! 🎉</div>
   <script src="script.js"></script>
 </body>
 </html>
