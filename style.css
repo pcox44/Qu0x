@@ -1,83 +1,109 @@
 body {
   font-family: 'Segoe UI', sans-serif;
   text-align: center;
-  background: #f4f4f4;
   padding: 20px;
+  background-color: #f9f9f9;
+  color: #333;
 }
 
 h1 {
   font-size: 2.5em;
+  margin-bottom: 0.2em;
 }
 
-.rules {
-  font-size: 1.1em;
-  margin-bottom: 15px;
+.instructions {
+  font-size: 1em;
+  margin-bottom: 1em;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-#game-number, #target-number {
-  font-size: 1.3em;
-  margin: 10px 0;
+#game-info {
+  margin: 10px;
+  font-weight: bold;
 }
 
-#dice-container {
+#target-container {
+  font-size: 1.4em;
+  margin: 10px;
+}
+
+.dice-row {
   display: flex;
   justify-content: center;
-  margin: 10px;
+  margin: 10px 0;
 }
 
 .die {
   font-size: 1.5em;
   font-weight: bold;
+  border-radius: 10px;
   width: 50px;
   height: 50px;
-  margin: 5px;
+  margin: 0 5px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
-  cursor: pointer;
+  color: white;
+  opacity: 1;
+  transition: opacity 0.3s ease;
 }
 
-.faded {
+.die.used {
   opacity: 0.3;
 }
 
-.die[data-value="1"] { background: red; color: white; }
-.die[data-value="2"] { background: white; color: black; border: 1px solid #aaa; }
-.die[data-value="3"] { background: blue; color: white; }
-.die[data-value="4"] { background: yellow; color: black; }
-.die[data-value="5"] { background: green; color: white; }
-.die[data-value="6"] { background: black; color: yellow; }
-
-#expression {
-  font-size: 1.4em;
+#expression-display {
+  font-size: 1.2em;
   margin: 10px;
   min-height: 30px;
 }
 
-button {
-  margin: 4px;
-  font-size: 1em;
+#buttons-container {
+  margin: 10px;
+}
+
+#buttons-container .op, #submit, #backspace, #clear {
+  font-size: 1.1em;
+  margin: 3px;
+  padding: 5px 12px;
+}
+
+#message-container {
+  font-size: 1.2em;
+  font-weight: bold;
+  margin: 10px;
+}
+
+#score, #streak {
+  font-size: 1.2em;
+  margin: 10px;
 }
 
 #history {
   margin: 20px auto;
-  width: 90%;
-  max-width: 500px;
   border-collapse: collapse;
+  width: 90%;
+  max-width: 600px;
 }
 
 #history th, #history td {
   border: 1px solid #ccc;
-  padding: 8px;
+  padding: 8px 12px;
 }
 
-#message {
-  font-size: 1.2em;
+#history th {
+  background-color: #eee;
+}
+
+#qu0x-animation {
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 3em;
+  color: #008000;
   font-weight: bold;
-  margin: 15px;
-}
-
-#streak {
-  font-size: 1.1em;
+  display: none;
 }
