@@ -1,205 +1,223 @@
-const today = new Date();
-const startDate = new Date("2025-05-15");
-const msPerDay = 86400000;
+const START_DATE = new Date("2025-05-15");
+let today = new Date();
+today.setHours(0, 0, 0, 0);
+let currentDate = new Date(today);
 
-let currentGameIndex = Math.floor((today - startDate) / msPerDay);
-if (currentGameIndex < 0) currentGameIndex = 0;
+function formatDate(date) {
+  return date.toISOString().split("T")[0];
+}
 
-function getSeededRandom(seed) {
+function getGameNumber(date) {
+  const diff = Math.floor((date - START_DATE) / (1000 * 60 * 60 * 24)) + 1;
+  return Math.max(1, diff);
+}
+
+function getDateFromGameNumber(gameNumber) {
+  const date = new Date(START_DATE);
+  date.setDate(date.getDate() + gameNumber - 1);
+  return date;
+}
+
+function seedRandom(seed) {
   let x = Math.sin(seed) * 10000;
-  return x - Math.floor(x);
+  return () => {
+    x = Math.sin(x) * 10000;
+    return x - Math.floor(x);
+  };
 }
 
-function getDiceForGame(index) {
-  const dice = [];
-  let used = {};
-  for (let i = 0; i < 5; i++) {
-    let val;
-    do {
-      val = Math.floor(getSeededRandom(index * 10 + i + 1) * 6) + 1;
-    } while (Object.keys(used).filter(x => x == val).length >= 5);
-    dice.push(val);
-    used[val] = (used[val] || 0) + 1;
+function getDiceValues(seed) {
+  const rand = seedRandom(seed);
+  const values = [];
+  while (values.length < 5) {
+    const val = Math.floor(rand() * 6) + 1;
+    values.push(val);
   }
-  return dice;
+  return values;
 }
 
-function getTarget(index) {
-  return Math.floor(getSeededRandom(index + 999) * 100) + 1;
+function getTarget(seed, dice) {
+  const rand = seedRandom(seed + 99);
+  return Math.floor(rand() * 100) + 1;
 }
 
-let dice, target, usedIndices = [], gameData = {};
+function renderGame(date) {
+  const dateStr = formatDate(date);
+  const gameNumber = getGameNumber(date);
+  const seed = gameNumber;
+  const diceValues = getDiceValues(seed);
+  const target = getTarget(seed, diceValues);
 
-function updateDateDisplay(index) {
-  const d = new Date(startDate.getTime() + index * msPerDay);
-  document.getElementById("today-date").innerText = `Date: ${d.toLocaleDateString()}`;
-  document.getElementById("game-number").innerText = `Game #${index + 1}`;
-}
+  document.getElementById("today-date").textContent = `Date: ${dateStr}`;
+  document.getElementById("game-number").textContent = `Game #${gameNumber}`;
+  document.getElementById("target-container").textContent = `Target: ${target}`;
 
-function renderDice() {
-  const container = document.getElementById("dice-container");
-  container.innerHTML = "";
-  dice.forEach((val, i) => {
-    const die = document.createElement("div");
-    die.className = `die d${val}`;
-    die.innerText = val;
-    if (usedIndices.includes(i)) die.classList.add("used");
-    die.onclick = () => {
-      if (!usedIndices.includes(i)) {
+  const diceContainer = document.getElementById("dice-container");
+  diceContainer.innerHTML = "";
+
+  diceValues.forEach((val, i) => {
+    const div = document.createElement("div");
+    div.textContent = val;
+    div.className = `die d${val}`;
+    div.dataset.value = val;
+    div.dataset.index = i;
+    div.addEventListener("click", () => {
+      if (!div.classList.contains("used")) {
         document.getElementById("expression").value += val;
-        usedIndices.push(i);
-        renderDice();
+        div.classList.add("used");
+        usedDice.push(i);
+        updateExpressionResult();
       }
-    };
-    container.appendChild(die);
+    });
+    diceContainer.appendChild(div);
   });
+
+  updateHistory();
+  loadGame(dateStr);
+  updateStreakDisplay();
 }
 
-function renderTarget() {
-  document.getElementById("target-container").innerText = `Target: ${target}`;
-}
+let usedDice = [];
 
-function updateGame(index) {
-  dice = getDiceForGame(index);
-  target = getTarget(index);
-  usedIndices = [];
+function clearExpression() {
   document.getElementById("expression").value = "";
-  document.getElementById("expression-result").innerText = "";
-  document.getElementById("message-container").innerText = "";
-  renderDice();
-  renderTarget();
-  updateDateDisplay(index);
-  updateStreak();
-  if (isQu0xLocked(index)) lockGame();
+  document.querySelectorAll(".die").forEach(die => die.classList.remove("used"));
+  usedDice = [];
+  updateExpressionResult();
 }
 
-function isQu0xLocked(index) {
-  const history = JSON.parse(localStorage.getItem("qu0x-history") || "{}");
-  return history[index]?.score === 0;
+function backspace() {
+  const exp = document.getElementById("expression").value;
+  if (exp.length > 0) {
+    const last = exp.slice(-1);
+    document.getElementById("expression").value = exp.slice(0, -1);
+
+    if (!isNaN(last)) {
+      const lastIndex = usedDice.pop();
+      const die = document.querySelector(`.die[data-index="${lastIndex}"]`);
+      if (die) die.classList.remove("used");
+    }
+    updateExpressionResult();
+  }
 }
 
-function lockGame() {
-  const exprInput = document.getElementById("expression");
-  exprInput.value = "Qu0x achieved!";
-  document.querySelectorAll("button").forEach(b => b.disabled = true);
-  document.getElementById("prev-day").disabled = false;
-  document.getElementById("next-day").disabled = false;
+function updateExpressionResult() {
+  const expr = document.getElementById("expression").value;
+  let result = "";
+  try {
+    result = math.evaluate(expr);
+    if (!isFinite(result)) result = "Invalid";
+  } catch {
+    result = "Invalid";
+  }
+  document.getElementById("expression-result").textContent = `= ${result}`;
 }
 
-function unlockGame() {
-  document.querySelectorAll("button").forEach(b => b.disabled = false);
-}
+function submitAnswer() {
+  const expr = document.getElementById("expression").value;
+  const dateStr = formatDate(currentDate);
+  const gameNumber = getGameNumber(currentDate);
+  const seed = gameNumber;
+  const diceValues = getDiceValues(seed);
+  const target = getTarget(seed, diceValues);
 
-document.getElementById("submit").onclick = () => {
-  let expr = document.getElementById("expression").value;
-  if (usedIndices.length !== 5) {
-    alert("Use all 5 dice exactly once!");
+  const usedNums = expr.match(/\d/g)?.map(Number) || [];
+
+  if (usedNums.length !== 5 || !usedNums.every(n => diceValues.includes(n))) {
+    document.getElementById("message-container").textContent = "You must use all 5 dice exactly once!";
     return;
   }
 
+  const count = {};
+  for (let d of diceValues) count[d] = (count[d] || 0) + 1;
+  for (let d of usedNums) {
+    if (!count[d]) {
+      document.getElementById("message-container").textContent = "Invalid use of dice.";
+      return;
+    }
+    count[d]--;
+  }
+
+  let result;
   try {
-    let safeExpr = expr.replace(/[^-()\d/*+.!^]/g, "");
-    if (/[!]{2,}/.test(safeExpr)) throw "Invalid factorial";
-    if (!/^[\d()+\-*/^!.]+$/.test(safeExpr)) throw "Invalid chars";
-    const val = math.evaluate(safeExpr);
-    const result = Math.round(val * 10000) / 10000;
-    document.getElementById("expression-result").innerText = `= ${result}`;
-    const score = Math.abs(result - target);
-
-    const history = JSON.parse(localStorage.getItem("qu0x-history") || "{}");
-    if (!history[currentGameIndex] || score < history[currentGameIndex].score) {
-      history[currentGameIndex] = { score };
-      localStorage.setItem("qu0x-history", JSON.stringify(history));
-    }
-
-    if (score === 0) {
-      document.getElementById("message-container").innerHTML = '<span id="qu0x-animation">Qu0x!</span>';
-      updateStreak(true);
-      lockGame();
-    } else {
-      document.getElementById("message-container").innerText = `Score: ${score}`;
-    }
-
-    updateHistory();
-  } catch (err) {
-    document.getElementById("message-container").innerText = "Invalid expression!";
+    result = math.evaluate(expr);
+    if (!isFinite(result)) throw Error();
+  } catch {
+    document.getElementById("message-container").textContent = "Invalid expression.";
+    return;
   }
-};
 
-document.getElementById("backspace").onclick = () => {
-  const expr = document.getElementById("expression").value;
-  const newExpr = expr.slice(0, -1);
-  document.getElementById("expression").value = newExpr;
-  usedIndices = [];
+  const score = Math.abs(result - target);
 
-  // Recalculate used dice
-  dice.forEach((val, i) => {
-    const re = new RegExp(val.toString(), 'g');
-    const match = newExpr.match(re);
-    if (match && match.length >= 1 && usedIndices.filter(x => dice[x] == val).length < match.length) {
-      usedIndices.push(i);
-    }
-  });
-  renderDice();
-};
-
-document.getElementById("clear").onclick = () => {
-  document.getElementById("expression").value = "";
-  usedIndices = [];
-  renderDice();
-};
-
-document.querySelectorAll(".op").forEach(btn => {
-  btn.onclick = () => {
-    document.getElementById("expression").value += btn.dataset.value;
-  };
-});
-
-document.getElementById("prev-day").onclick = () => {
-  if (currentGameIndex > 0) {
-    currentGameIndex--;
-    unlockGame();
-    updateGame(currentGameIndex);
+  let history = JSON.parse(localStorage.getItem("qu0xHistory") || "[]");
+  const exists = history.find(h => h.date === dateStr && h.score === 0);
+  if (exists) {
+    document.getElementById("message-container").textContent = "Already got a Qu0x today!";
+    return;
   }
-};
 
-document.getElementById("next-day").onclick = () => {
-  const maxIndex = Math.floor((new Date() - startDate) / msPerDay);
-  if (currentGameIndex < maxIndex) {
-    currentGameIndex++;
-    unlockGame();
-    updateGame(currentGameIndex);
-  }
-};
+  history = history.filter(h => h.date !== dateStr);
+  history.push({ date: dateStr, game: gameNumber, score });
+  localStorage.setItem("qu0xHistory", JSON.stringify(history));
 
-function updateStreak(added = false) {
-  let streak = 0;
-  const history = JSON.parse(localStorage.getItem("qu0x-history") || "{}");
-  const todayIndex = Math.floor((new Date() - startDate) / msPerDay);
-  for (let i = todayIndex; i >= 0; i--) {
-    if (history[i] && history[i].score === 0) {
-      streak++;
-    } else {
-      break;
-    }
+  if (score === 0) {
+    let streak = parseInt(localStorage.getItem("qu0xStreak") || "0");
+    streak += 1;
+    localStorage.setItem("qu0xStreak", streak.toString());
   }
-  document.getElementById("streak").innerText = `Current Qu0x Streak: ${streak}`;
+
+  updateHistory();
+  updateStreakDisplay();
+  document.getElementById("message-container").textContent = score === 0 ? "Qu0x! Perfect match!" : `Score: ${score}`;
 }
 
 function updateHistory() {
+  const history = JSON.parse(localStorage.getItem("qu0xHistory") || "[]")
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
+    .slice(0, 5);
   const body = document.getElementById("history-body");
   body.innerHTML = "";
-  const history = JSON.parse(localStorage.getItem("qu0x-history") || "{}");
-  const keys = Object.keys(history).sort((a, b) => b - a).slice(0, 5);
-  keys.forEach(k => {
-    const d = new Date(startDate.getTime() + Number(k) * msPerDay);
-    const tr = document.createElement("tr");
-    tr.innerHTML = `<td>${d.toLocaleDateString()}</td><td>${Number(k) + 1}</td><td>${history[k].score}</td>`;
-    body.appendChild(tr);
+  history.forEach(h => {
+    const row = `<tr><td>${h.date}</td><td>${h.game}</td><td>${h.score}</td></tr>`;
+    body.innerHTML += row;
   });
 }
 
+function updateStreakDisplay() {
+  const streak = localStorage.getItem("qu0xStreak") || "0";
+  document.getElementById("streak").textContent = `Current Qu0x Streak: ${streak}`;
+}
+
+function loadGame(dateStr) {
+  currentDate = new Date(dateStr);
+  currentDate.setHours(0, 0, 0, 0);
+  renderGame(currentDate);
+}
+
+document.querySelectorAll(".op").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.getElementById("expression").value += btn.dataset.value;
+    updateExpressionResult();
+  });
+});
+
+document.getElementById("backspace").addEventListener("click", backspace);
+document.getElementById("clear").addEventListener("click", clearExpression);
+document.getElementById("submit").addEventListener("click", submitAnswer);
+document.getElementById("prev-day").addEventListener("click", () => {
+  currentDate.setDate(currentDate.getDate() - 1);
+  if (currentDate < START_DATE) currentDate = new Date(START_DATE);
+  renderGame(currentDate);
+});
+document.getElementById("next-day").addEventListener("click", () => {
+  const next = new Date(currentDate);
+  next.setDate(next.getDate() + 1);
+  if (next <= today) {
+    currentDate = next;
+    renderGame(currentDate);
+  }
+});
+
 window.onload = () => {
-  updateGame(currentGameIndex);
-  updateHistory();
+  renderGame(today);
 };
