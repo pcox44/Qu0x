@@ -8,43 +8,43 @@
 </head>
 <body>
   <h1>Qu0x</h1>
-  <div class="rules">Use each dice once to get as close as possible to the target number. Click dice and operations to build an expression. Score is how far off you are. A perfect score is called a <strong>Qu0x</strong>! Only clickable input is allowed.</div>
-
-  <div id="target-container"></div>
-  <div class="dice-row" id="dice-container"></div>
-
-  <div id="buttons-container">
-    <button class="op">(</button>
-    <button class="op">)</button>
-    <button class="op">+</button>
-    <button class="op">−</button>
-    <button class="op">×</button>
-    <button class="op">÷</button>
-    <button class="op">^</button>
-    <button class="op">!</button>
-    <button id="backspace">←</button>
-    <button id="clear">Clear</button>
+  <div class="rules">Use all five dice exactly once with the operations below to get as close as possible to the target. A perfect score is a <strong>Qu0x!</strong></div>
+  <div id="game-info">
+    <div id="game-date"></div>
+    <div class="dice-row" id="dice-container"></div>
+    <div id="target-container"></div>
   </div>
 
   <div id="expression-container"></div>
-  <button id="submit">Submit</button>
-
-  <div id="result-container"></div>
-  <div id="message-container"></div>
-  <div id="score"></div>
-  <div id="streak"></div>
-  <div id="nav-buttons">
-    <button id="prev-day">◀ Prev</button>
-    <button id="next-day">Next ▶</button>
+  <div id="buttons-container">
+    <button class="op" data-op="+">+</button>
+    <button class="op" data-op="-">−</button>
+    <button class="op" data-op="*">×</button>
+    <button class="op" data-op="/">÷</button>
+    <button class="op" data-op="^">^</button>
+    <button class="op" data-op="!">!</button>
+    <button id="clear">Clear</button>
+    <button id="backspace">⌫</button>
+    <button id="submit">Submit</button>
   </div>
 
-  <h2>Game Archive</h2>
+  <div id="result-container">
+    <div id="message-container"></div>
+    <div id="score"></div>
+    <div id="streak"></div>
+  </div>
+
+  <div id="archive-header">
+    <button id="prev-day">←</button>
+    <span id="archive-title">Game Archive</span>
+    <button id="next-day">→</button>
+  </div>
   <table id="history">
-    <thead>
-      <tr><th>Game #</th><th>Date</th><th>Score</th><th>Expression</th></tr>
-    </thead>
-    <tbody id="history-body"></tbody>
+    <thead><tr><th>Date</th><th>Score</th></tr></thead>
+    <tbody></tbody>
   </table>
+
+  <div id="qu0x-popup" class="hidden">Qu0x!</div>
 
   <script src="script.js"></script>
 </body>
