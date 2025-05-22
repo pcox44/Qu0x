@@ -1,166 +1,89 @@
 body {
-  font-family: Arial, sans-serif;
-  background: #f4f4f4;
+  font-family: sans-serif;
   text-align: center;
-  margin: 0;
-  padding: 0;
+  background: #f9f9f9;
 }
 
-#container {
-  padding: 20px;
-  max-width: 600px;
-  margin: auto;
+#game-header {
+  margin: 10px 0;
+  font-weight: bold;
 }
 
-h1 {
-  font-size: 3em;
-  margin-bottom: 10px;
-}
-
-#game-info {
-  margin-bottom: 20px;
-}
-
-#game-date, #game-number {
-  font-size: 1.2em;
-  margin: 5px;
-}
-
-#target-container {
-  font-size: 2.5em;
-  background: #222;
-  color: white;
-  padding: 10px 20px;
-  border: 3px solid black;
-  border-radius: 10px;
-  display: inline-block;
-  margin: 20px 0;
+#target-box {
+  font-size: 2rem;
+  margin: 10px auto;
+  padding: 10px;
+  border: 2px solid black;
+  width: fit-content;
+  background: #fff;
 }
 
 #dice-container {
   display: flex;
   justify-content: center;
-  gap: 10px;
-  margin: 20px 0;
+  margin: 10px;
 }
 
 .die {
-  font-size: 2em;
-  padding: 15px 20px;
+  width: 50px;
+  height: 50px;
+  margin: 5px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   border: 2px solid black;
-  border-radius: 8px;
   cursor: pointer;
-  transition: opacity 0.3s;
-}
-
-.used {
-  opacity: 0.4;
-  pointer-events: none;
-}
-
-.die1 { background: red; color: white; }
-.die2 { background: white; color: black; }
-.die3 { background: blue; color: white; }
-.die4 { background: yellow; color: black; }
-.die5 { background: green; color: white; }
-.die6 { background: black; color: yellow; }
-
-#expression-box-container {
-  margin: 15px 0;
-}
-
-#expression {
-  width: 90%;
-  padding: 10px;
-  font-size: 1.4em;
-  border: 2px solid #ccc;
-  border-radius: 8px;
-  background: white;
-}
-
-#expression-result {
-  font-size: 1.2em;
-  margin-top: 5px;
 }
 
 #buttons {
-  margin: 10px 0;
+  margin: 10px;
 }
 
-.input-btn {
-  padding: 10px 14px;
-  font-size: 1.2em;
-  margin: 5px;
+.btn {
+  font-size: 1.25rem;
+  margin: 3px;
+  padding: 5px 10px;
 }
 
-#backspace, #clear {
-  padding: 10px 14px;
-  font-size: 1.2em;
-  margin: 5px;
+#expression-box {
+  margin: 10px;
+  padding: 10px;
+  font-size: 1.5rem;
+  width: 60%;
+  background: white;
+  border: 2px solid black;
 }
 
-#submit-section {
-  margin: 15px 0;
-}
-
-#submit {
-  padding: 12px 24px;
-  font-size: 1.4em;
-  margin-top: 10px;
-}
-
-#result-message {
-  font-size: 1.3em;
-  margin-top: 10px;
-}
-
-#nav-buttons {
-  margin: 20px 0;
-}
-
-#qu0x-counter {
-  font-size: 1.3em;
+#expression-output {
+  font-size: 1.25rem;
   margin-bottom: 10px;
 }
 
+#controls {
+  margin: 15px;
+}
+
 #archive {
-  text-align: left;
-  margin-top: 30px;
+  margin-top: 20px;
 }
 
-#archive h2 {
-  text-align: center;
-}
-
-#archive-list {
-  list-style-type: none;
-  padding: 0;
-}
-
-#archive-list li {
-  padding: 6px 10px;
-  border-bottom: 1px solid #ccc;
-}
-
-#qu0x-popup {
+.qu0x-popup {
   position: fixed;
   top: 40%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 4em;
-  color: gold;
-  background: black;
-  padding: 20px 40px;
-  border-radius: 20px;
-  display: none;
-  z-index: 1000;
-  animation: pop 3s ease-in-out forwards;
+  left: 40%;
+  background: limegreen;
+  color: white;
+  font-size: 2rem;
+  padding: 20px;
+  border: 5px solid green;
+  border-radius: 10px;
+  animation: fadeOut 3s forwards;
 }
 
-@keyframes pop {
-  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
-  20% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
-  50% { transform: translate(-50%, -50%) scale(1); }
-  80% { opacity: 1; }
-  100% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+@keyframes fadeOut {
+  0% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { opacity: 0; }
 }
