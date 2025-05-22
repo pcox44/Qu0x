@@ -4,44 +4,53 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Qu0x!</title>
-  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>Qu0x!</h1>
-  <div id="date-display"></div>
   <div id="game-container">
+    <h1>Qu0x!</h1>
+    <p id="date-display"></p>
+
     <div id="target-box">
       Target: <span id="target-number"></span>
     </div>
+
     <div id="dice-container"></div>
+
     <div id="expression-box">
       <div id="expression-display"></div>
       <div id="expression-value"></div>
     </div>
-    <div id="buttons">
-      <button onclick="appendSymbol('+')">+</button>
-      <button onclick="appendSymbol('-')">−</button>
-      <button onclick="appendSymbol('*')">*</button>
-      <button onclick="appendSymbol('/')">/</button>
-      <button onclick="appendSymbol('^')">^</button>
-      <button onclick="appendSymbol('!')">!</button>
-      <button onclick="appendSymbol('(')">(</button>
-      <button onclick="appendSymbol(')')">)</button>
-      <button onclick="backspace()">⌫</button>
-      <button onclick="clearExpression()">Clear</button>
-      <button onclick="submitExpression()">Submit</button>
+
+    <div id="button-grid">
+      <button class="op-button" data-value="+">+</button>
+      <button class="op-button" data-value="-">−</button>
+      <button class="op-button" data-value="*">×</button>
+      <button class="op-button" data-value="/">÷</button>
+      <button class="op-button" data-value="^">^</button>
+      <button class="op-button" data-value="!">!</button>
+      <button class="op-button" data-value="(">(</button>
+      <button class="op-button" data-value=")">)</button>
+      <button id="backspace">←</button>
+      <button id="clear">Clear</button>
+      <button id="submit">Submit</button>
     </div>
-    <div id="result"></div>
-    <div id="qu0x-animation">Qu0x!</div>
+
+    <div id="message-box"></div>
+
     <div id="nav-buttons">
-      <button onclick="prevGame()">Previous</button>
-      <button onclick="nextGame()">Next</button>
+      <button id="prev-day">Previous</button>
+      <button id="next-day">Next</button>
     </div>
-    <div id="game-archive">
+
+    <div id="history">
       <h3>Last 5 Results</h3>
-      <ul id="archive-list"></ul>
+      <ul id="history-list"></ul>
     </div>
+
+    <div id="qu0x-animation">Qu0x!</div>
   </div>
+
   <script src="script.js"></script>
 </body>
 </html>
