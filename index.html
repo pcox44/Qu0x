@@ -3,51 +3,39 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Qu0x</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.1/math.min.js"></script>
+  <title>Qu0x!</title>
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-  <h1>Qu0x</h1>
-  <div id="today-date"></div>
-  <div id="game-number"></div>
+  <h1>Qu0x!</h1>
+  <p id="dateDisplay"></p>
+  <p class="rules">Use all five dice exactly once to get as close as possible to the target number. Click to build your expression!</p>
+  <div id="dice-container" class="dice-row"></div>
   <div id="target-container"></div>
-
-  <div id="dice-container" class="dice-container"></div>
-
-  <div class="buttons">
-    <button class="op" data-value="+">+</button>
-    <button class="op" data-value="-">−</button>
-    <button class="op" data-value="*">×</button>
-    <button class="op" data-value="/">÷</button>
-    <button class="op" data-value="^">^</button>
-    <button class="op" data-value="!">!</button>
-    <button class="op" data-value="(">(</button>
-    <button class="op" data-value=")">)</button>
-    <button id="backspace">←</button>
-    <button id="clear">Clear</button>
+  <div id="input-container">
+    <div id="expression-box"></div>
+    <div id="buttons-container"></div>
+    <div>
+      <button onclick="backspace()">⌫</button>
+      <button onclick="clearInput()">Clear</button>
+      <button onclick="submitExpression()">Submit</button>
+    </div>
   </div>
-
-  <input id="expression" readonly placeholder="Enter expression" />
-  <div id="expression-result"></div>
-  <button id="submit">Submit</button>
-
+  <div id="result-container"></div>
   <div id="message-container"></div>
+  <div id="score"></div>
   <div id="streak"></div>
-
-  <div class="nav-buttons">
-    <button id="prev-day">← Previous</button>
-    <button id="next-day">Next →</button>
+  <div id="totalQu0x"></div>
+  <div>
+    <button onclick="previousGame()">Previous</button>
+    <button onclick="nextGame()">Next</button>
   </div>
-
-  <h2>Last 5 Games</h2>
-  <table>
-    <thead>
-      <tr><th>Date</th><th>Game #</th><th>Score</th></tr>
-    </thead>
-    <tbody id="history-body"></tbody>
+  <div id="animation" class="popup">Qu0x!</div>
+  <h2>Game Archive (Last 5 Results)</h2>
+  <table id="history">
+    <thead><tr><th>Day</th><th>Score</th></tr></thead>
+    <tbody></tbody>
   </table>
-
   <script src="script.js"></script>
 </body>
 </html>
