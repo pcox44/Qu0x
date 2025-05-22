@@ -1,58 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Qu0x!</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Qu0x</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>Qu0x!</h1>
-  <p class="rules">
-    Use each of the 5 dice exactly once with math operations to get as close as possible to the target number. No concatenation. Only clickable input allowed. A perfect match earns a "Qu0x!" and ends the day's game. New puzzle at local midnight.
-  </p>
-  
+  <h1>Qu0x</h1>
+  <p class="instructions">Use all five dice <strong>exactly once</strong> with math operations to get as close as possible to the target number. A perfect match is a <strong>Qu0x!</strong></p>
+
   <div id="game-info">
     <div id="game-number"></div>
     <div id="target-number"></div>
-    <div class="dice-row" id="dice-container"></div>
   </div>
 
-  <div id="expression"></div>
+  <div class="dice-row" id="dice-row"></div>
 
-  <div id="buttons-container">
-    <div id="number-buttons"></div>
-    <button class="op">(</button>
-    <button class="op">)</button>
-    <button class="op">+</button>
-    <button class="op">-</button>
-    <button class="op">*</button>
-    <button class="op">/</button>
-    <button class="op">^</button>
-    <button class="op">!</button>
-    <button id="backspace">⌫</button>
-    <button id="clear">C</button>
-    <button id="submit">Submit</button>
+  <div id="expression-container">
+    <div id="expression"></div>
+    <div id="buttons">
+      <button class="op" data-val="+">+</button>
+      <button class="op" data-val="-">−</button>
+      <button class="op" data-val="*">×</button>
+      <button class="op" data-val="/">÷</button>
+      <button class="op" data-val="^">^</button>
+      <button class="op" data-val="!">!</button>
+      <button class="op" data-val="(">(</button>
+      <button class="op" data-val=")">)</button>
+      <button id="backspace">←</button>
+      <button id="clear">Clear</button>
+      <button id="submit">Submit</button>
+    </div>
   </div>
 
-  <div id="result"></div>
   <div id="message"></div>
-  <div id="streak"></div>
+  <div id="score"></div>
+  <div id="streak">Current Qu0x Streak: 0</div>
 
-  <div id="nav-buttons">
-    <button id="prev-game">← Previous</button>
-    <button id="next-game">Next →</button>
+  <div id="archive">
+    <h2>Game Archive</h2>
+    <table id="history">
+      <thead>
+        <tr>
+          <th>Game #</th>
+          <th>Date</th>
+          <th>Score</th>
+        </tr>
+      </thead>
+      <tbody id="history-body"></tbody>
+    </table>
   </div>
 
-  <h2>Game Archive (Last 5)</h2>
-  <table id="history">
-    <thead>
-      <tr><th>Game #</th><th>Date</th><th>Score</th></tr>
-    </thead>
-    <tbody id="history-body"></tbody>
-  </table>
-
-  <!-- ✅ Load math.js for evaluating expressions -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.11.0/math.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
