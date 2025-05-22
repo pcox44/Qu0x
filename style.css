@@ -1,38 +1,46 @@
 body {
   font-family: Arial, sans-serif;
+  background-color: #f7f7f7;
   text-align: center;
-  background: #f0f0f0;
-  margin: 0;
   padding: 1em;
 }
 
 h1 {
-  font-size: 2em;
-  margin-bottom: 0.2em;
+  font-size: 2.5em;
+  margin-bottom: 0.3em;
 }
 
-#today-date, #game-number, #target-container {
+#today-date, #game-number {
+  font-size: 1.1em;
+  margin-bottom: 0.5em;
+}
+
+.target-box {
+  font-size: 2em;
   font-weight: bold;
   margin: 0.5em 0;
+  padding: 0.2em 1em;
+  border: 2px solid #333;
+  display: inline-block;
+  background: #fffacd;
 }
 
 .dice-row {
   display: flex;
   justify-content: center;
-  margin-bottom: 1em;
+  margin: 1em 0;
+  gap: 10px;
 }
 
 .die {
-  width: 50px;
-  height: 50px;
-  margin: 0.3em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 10px;
   font-size: 1.5em;
   font-weight: bold;
-  border-radius: 8px;
-  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
   user-select: none;
 }
@@ -42,22 +50,28 @@ h1 {
   pointer-events: none;
 }
 
-/* Horse race colors */
-.d1 { background: red; color: white; }
-.d2 { background: white; color: black; border: 2px solid black; }
-.d3 { background: blue; color: white; }
-.d4 { background: green; color: white; }
-.d5 { background: purple; color: white; }
-.d6 { background: black; color: yellow; }
+.d1 { background-color: #ff4d4d; color: white; }       /* red */
+.d2 { background-color: #ffffff; color: black; border: 2px solid #000; } /* white */
+.d3 { background-color: #4d79ff; color: white; }       /* blue */
+.d4 { background-color: #ffff33; color: black; border: 2px solid #000; } /* yellow */
+.d5 { background-color: #28a745; color: white; }       /* green */
+.d6 { background-color: #000000; color: #ffff00; }     /* black bg, yellow text */
 
 input#expression {
-  width: 60%;
-  font-size: 1.2em;
-  padding: 0.3em;
-  margin-bottom: 0.5em;
-  background: white;
+  width: 80%;
+  font-size: 1.3em;
+  padding: 0.4em;
+  margin: 0.5em 0;
+  background-color: white;
   border: 1px solid #ccc;
   color: black;
+}
+
+#expression-result {
+  font-size: 1.2em;
+  font-style: italic;
+  color: #333;
+  margin-bottom: 1em;
 }
 
 .buttons {
@@ -77,27 +91,25 @@ button {
 #message-container {
   margin-top: 1em;
   font-size: 1.2em;
-}
-
-#qu0x-animation {
-  font-size: 2em;
-  color: gold;
   font-weight: bold;
-  animation: pop 2s ease-out;
 }
 
-@keyframes pop {
-  0% { transform: scale(1); opacity: 0; }
-  50% { transform: scale(1.5); opacity: 1; }
-  100% { transform: scale(1); opacity: 0; }
+#streak {
+  margin: 1em 0;
+  font-weight: bold;
+}
+
+.nav-buttons {
+  margin-top: 1em;
 }
 
 table {
-  margin: 0 auto;
+  margin: 1em auto;
   border-collapse: collapse;
+  width: 80%;
 }
 
 th, td {
-  border: 1px solid gray;
+  border: 1px solid #aaa;
   padding: 0.5em;
 }
