@@ -1,65 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Qu0x</title>
-<link rel="stylesheet" href="styles.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Qu0x - Daily Dice Game</title>
+  <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
+  <h1>Qu0x - Daily Dice Game</h1>
+  <p class="instructions">
+    Use each dice number exactly once with operators to get as close as possible to the target number.<br/>
+    Use +, -, ×, ÷, ^, ! and parentheses. A perfect score (0 difference) is a Qu0x!<br/>
+    No typing — build your expression by clicking dice and buttons.<br/>
+    You can submit multiple times until you get a Qu0x for the day.
+  </p>
 
-<h1>Daily Dice Game</h1>
-
-<p class="instructions">
-Use each dice value exactly once to build an expression with +, -, *, /, ^, !, and parentheses.<br />
-Numbers must be separated by operators (no concatenation like 45 from 4 and 5). Goal: get as close as possible to the target number.<br />
-Click dice to add numbers, then click operators to build your expression.<br />
-Submit as many times as you like to improve your score!
-</p>
-
-<div id="gameInfo">
-  <div>Date: <span id="dateDiv"></span></div>
-  <div>Game #: <span id="gameNumSpan"></span></div>
-  <div>Target Number: <span id="targetNumSpan"></span></div>
-  <div>Current Score: <span id="scoreSpan">N/A</span></div>
-  <div>Current Streak: <span id="streakSpan">0</span></div>
-</div>
-
-<div id="diceRow"></div>
-
-<div id="exprControls">
-  <input type="text" id="exprInput" readonly />
-  <div id="buttonsRow">
-    <button class="opBtn" data-val="+">+</button>
-    <button class="opBtn" data-val="-">-</button>
-    <button class="opBtn" data-val="*">*</button>
-    <button class="opBtn" data-val="/">/</button>
-    <button class="opBtn" data-val="^">^</button>
-    <button class="opBtn" data-val="(">(</button>
-    <button class="opBtn" data-val=")">)</button>
-    <button class="opBtn" data-val="!">!</button>
-    <button id="backspaceBtn">←</button>
-    <button id="clearBtn">Clear</button>
+  <div id="game-info">
+    <div id="game-number"></div>
+    <div id="date-display"></div>
   </div>
-</div>
 
-<div id="controlsRow">
-  <button id="submitBtn">Submit</button>
-  <button id="resetBtn">Reset Expression</button>
-  <button id="prevGameBtn">&lt; Previous Game</button>
-  <button id="nextGameBtn">Next Game &gt;</button>
-</div>
+  <div id="dice-container" class="dice-row"></div>
 
-<div id="messageContainer"></div>
+  <div id="target-container"></div>
 
-<h2>Past Results (Last 5)</h2>
-<table id="historyTable">
-  <thead>
-    <tr><th>Game #</th><th>Date</th><th>Score</th></tr>
-  </thead>
-  <tbody id="historyBody"></tbody>
-</table>
+  <div id="input-container">
+    <div id="expression-display"></div>
+    <div id="buttons-container">
+      <button class="op-btn" data-value="+">+</button>
+      <button class="op-btn" data-value="-">−</button>
+      <button class="op-btn" data-value="*">×</button>
+      <button class="op-btn" data-value="/">÷</button>
+      <button class="op-btn" data-value="^">^</button>
+      <button class="op-btn" data-value="!">!</button>
+      <button class="op-btn" data-value="(">(</button>
+      <button class="op-btn" data-value=")">)</button>
+      <button id="backspace-btn">⌫</button>
+      <button id="clear-btn">Clear</button>
+    </div>
+  </div>
 
-<script src="script.js"></script>
+  <button id="submit-btn">Submit</button>
+
+  <div id="result-container"></div>
+
+  <div id="streak-container">Current Qu0x Streak: 0</div>
+
+  <div id="nav-buttons">
+    <button id="prev-game-btn">Previous Game</button>
+    <button id="next-game-btn">Next Game</button>
+  </div>
+
+  <h2>Game Archive (Last 5 Days)</h2>
+  <table id="history">
+    <thead>
+      <tr><th>Game #</th><th>Date</th><th>Your Score</th></tr>
+    </thead>
+    <tbody id="history-body"></tbody>
+  </table>
+
+  <script src="js/script.js"></script>
 </body>
 </html>
