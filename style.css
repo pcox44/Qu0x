@@ -1,103 +1,96 @@
 body {
   font-family: sans-serif;
   text-align: center;
-  background: #f8f8f8;
-  color: #333;
   padding: 20px;
+  background-color: #f9f9f9;
+  color: #333;
 }
 
 h1 {
   font-size: 2.5em;
-  margin-bottom: 0;
+  margin-bottom: 0.2em;
 }
 
-.instructions {
-  font-size: 1em;
-  margin: 10px auto;
+.rules {
   max-width: 600px;
+  margin: 0 auto 1em;
+  font-size: 1em;
 }
 
-#date-display {
-  font-weight: bold;
-  margin: 10px 0;
-}
-
-#target-container {
-  font-size: 1.5em;
-  margin: 10px;
+#date-container {
+  font-size: 1.2em;
+  margin-bottom: 10px;
 }
 
 .dice-row {
   display: flex;
   justify-content: center;
-  margin: 10px 0;
-}
-
-.die {
-  width: 50px;
-  height: 50px;
-  font-size: 1.5em;
-  font-weight: bold;
-  margin: 0 5px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: 2px solid #333;
-  border-radius: 8px;
-  cursor: pointer;
-  opacity: 1;
-  transition: opacity 0.3s;
-}
-
-.die.used {
-  opacity: 0.3;
-}
-
-.die[data-value="1"] { background: red; color: white; }
-.die[data-value="2"] { background: white; color: black; border: 2px solid black; }
-.die[data-value="3"] { background: blue; color: white; }
-.die[data-value="4"] { background: yellow; color: black; }
-.die[data-value="5"] { background: green; color: white; }
-.die[data-value="6"] { background: black; color: yellow; }
-
-#expression-container {
   margin: 15px 0;
 }
 
-#expression-display {
-  min-height: 30px;
-  font-size: 1.2em;
-  border: 1px solid #ccc;
-  padding: 5px;
-  margin-bottom: 10px;
-  background: #fff;
+.die {
+  font-size: 1.5em;
+  font-weight: bold;
+  border-radius: 10px;
+  width: 50px;
+  height: 50px;
+  margin: 0 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #333;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+  cursor: pointer;
+  transition: opacity 0.3s ease;
 }
 
-#buttons-container button {
-  margin: 5px;
-  padding: 8px 12px;
+.used {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.die-1 { background: red; color: white; }
+.die-2 { background: white; color: black; }
+.die-3 { background: blue; color: white; }
+.die-4 { background: yellow; color: black; }
+.die-5 { background: green; color: white; }
+.die-6 { background: black; color: yellow; }
+
+#target-container {
+  font-size: 1.5em;
+  margin-bottom: 15px;
+}
+
+#expression {
+  font-size: 1.3em;
+  margin-bottom: 10px;
+  min-height: 30px;
+}
+
+#buttons-container {
+  margin: 10px;
+}
+
+.op {
   font-size: 1em;
+  margin: 5px;
+  padding: 5px 10px;
+}
+
+#result-container {
+  font-size: 1.2em;
+  margin-top: 10px;
 }
 
 #message-container {
-  margin: 10px;
   font-weight: bold;
+  font-size: 1.3em;
+  margin: 10px;
 }
 
 #score, #streak {
-  margin: 10px;
   font-size: 1.2em;
-}
-
-#animation {
-  display: none;
-  font-size: 3em;
-  color: green;
-  margin-top: 20px;
-}
-
-#navigation {
-  margin-top: 20px;
+  margin: 10px;
 }
 
 #history {
@@ -115,3 +108,7 @@ h1 {
 #history th {
   background-color: #eee;
 }
+
+#game-nav {
+  margin-bottom: 10px;
+  }
