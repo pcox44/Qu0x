@@ -7,12 +7,20 @@
   <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
+  <div class="top-bar">
+    <div id="today-date"></div>
+  </div>
+
   <h1>Qu0x!</h1>
-  <div class="instructions">Use all five dice exactly once to create an expression as close to the target number as possible. A score of 0 is a <strong>Qu0x!</strong></div>
+  <div class="instructions">
+    Use all five dice exactly once to create an expression as close to the target number as possible.
+    A score of 0 is a <strong>Qu0x!</strong>
+  </div>
 
   <div id="game-info">
     <button id="prev-day">&lt; Prev</button>
-    <span id="game-number">Game #1</span>
+    <span id="game-number">Game #1</span> |
+    <span id="game-date">Date: --</span>
     <button id="next-day">Next &gt;</button>
   </div>
 
