@@ -7,57 +7,42 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div id="container">
-    <h1>Qu0x!</h1>
-    <div id="game-info">
-      <div id="game-date"></div>
-      <div id="game-number"></div>
-      <div id="target-container">
-        Target: <span id="target-number"></span>
-      </div>
-      <div id="dice-container"></div>
-    </div>
+  <h1>Qu0x!</h1>
+  <p>Use all 5 dice **exactly once** with math operations to match the target number. A perfect match is a "Qu0x!".</p>
 
-    <div id="expression-box-container">
-      <input type="text" id="expression" readonly />
-      <div id="expression-result"></div>
-    </div>
-
-    <div id="buttons">
-      <button class="input-btn" data-value="+">+</button>
-      <button class="input-btn" data-value="-">−</button>
-      <button class="input-btn" data-value="*">×</button>
-      <button class="input-btn" data-value="/">÷</button>
-      <button class="input-btn" data-value="^">^</button>
-      <button class="input-btn" data-value="!">!</button>
-      <button class="input-btn" data-value="(">(</button>
-      <button class="input-btn" data-value=")">)</button>
-      <button id="backspace">⌫</button>
-      <button id="clear">Clear</button>
-    </div>
-
-    <div id="submit-section">
-      <button id="submit">Submit</button>
-      <div id="result-message"></div>
-      <div id="expression-eval"></div>
-    </div>
-
-    <div id="nav-buttons">
-      <button id="prev-day">Previous</button>
-      <button id="next-day">Next</button>
-    </div>
-
-    <div id="qu0x-counter">
-      Total Qu0x: <span id="total-qu0x">0</span>
-    </div>
-
-    <div id="archive">
-      <h2>Last 5 Games</h2>
-      <ul id="archive-list"></ul>
-    </div>
+  <div id="game-header">
+    <span id="date-display"></span>
+    <span id="game-number"></span>
+    <span id="total-qu0x"></span>
   </div>
 
-  <div id="qu0x-popup">Qu0x!</div>
+  <div id="target-box"></div>
+
+  <div id="dice-container"></div>
+
+  <div id="buttons">
+    <button class="btn">+</button>
+    <button class="btn">−</button>
+    <button class="btn">*</button>
+    <button class="btn">/</button>
+    <button class="btn">^</button>
+    <button class="btn">!</button>
+    <button class="btn">(</button>
+    <button class="btn">)</button>
+  </div>
+
+  <input id="expression-box" type="text" readonly />
+  <div id="expression-output"></div>
+
+  <div id="controls">
+    <button id="submit">Submit</button>
+    <button id="clear">Clear</button>
+    <button id="backspace">Backspace</button>
+    <button id="prev">Previous</button>
+    <button id="next">Next</button>
+  </div>
+
+  <div id="archive"></div>
 
   <script src="script.js"></script>
 </body>
