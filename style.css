@@ -1,95 +1,92 @@
 body {
-  font-family: sans-serif;
-  padding: 1em;
-  background-color: #fefefe;
+  font-family: system-ui, sans-serif;
+  text-align: center;
+  margin: 0;
+  padding: 1rem;
+  background: #f0f0f0;
   color: #222;
-  max-width: 600px;
-  margin: auto;
 }
 
 h1 {
-  text-align: center;
-  color: #0077cc;
+  font-size: 2.5rem;
+  margin-bottom: 0.2rem;
 }
 
 .rules {
-  text-align: center;
-  font-size: 0.9em;
-  margin-bottom: 1em;
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-#game-header {
-  display: flex;
-  justify-content: space-between;
-  margin: 1em 0;
+#game {
+  font-size: 2rem;
+  margin-bottom: 1rem;
 }
 
-#dice-container button {
-  font-size: 1.4em;
-  margin: 0.25em;
-  width: 2.5em;
-  height: 2.5em;
-  border: none;
-  border-radius: 0.3em;
-  color: white;
+.die {
+  display: inline-block;
+  width: 3rem;
+  height: 3rem;
+  line-height: 3rem;
+  margin: 0.2rem;
   font-weight: bold;
-  background: linear-gradient(to bottom, #fcf8e3, #f5b041);
-  cursor: pointer;
-}
-
-#dice-container button.used {
-  background-color: black;
+  font-size: 2rem;
   color: white;
+  border-radius: 0.3rem;
+  background: linear-gradient(to bottom, #333, #000);
+  cursor: pointer;
+  font-family: 'Courier New', Courier, monospace;
 }
 
-#op-buttons button {
-  font-size: 1.2em;
-  margin: 0.2em;
-  padding: 0.4em 0.6em;
+.die.used {
+  opacity: 0.5;
+  cursor: default;
+}
+
+button {
+  font-size: 1.2rem;
+  margin: 0.2rem;
+  padding: 0.5rem 0.8rem;
+  border: none;
+  border-radius: 0.4rem;
+  background: #ddd;
   cursor: pointer;
 }
 
-#expression {
-  margin: 1em 0;
-  font-size: 1.2em;
-  border: 1px solid #ccc;
-  padding: 0.5em;
-  min-height: 2em;
-  background: #f9f9f9;
+button:hover {
+  background: #ccc;
 }
 
-#live-result {
-  font-size: 1em;
-  margin-bottom: 0.5em;
+input {
+  font-size: 1.5rem;
+  padding: 0.3rem;
+  width: 80%;
+  margin-top: 1rem;
 }
 
 #score {
-  font-size: 1.2em;
-  font-weight: bold;
-  margin-bottom: 0.5em;
+  font-size: 1.5rem;
+  margin: 1rem 0;
 }
 
-#streak {
-  font-size: 1em;
-  margin-bottom: 1em;
-}
-
-#archive-table {
-  width: 100%;
+#history {
+  margin: auto;
+  margin-top: 1rem;
   border-collapse: collapse;
 }
 
-#archive-table th, #archive-table td {
-  padding: 0.5em;
-  border-bottom: 1px solid #ccc;
-  text-align: center;
+#history th, #history td {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid #ccc;
 }
 
-#archive-table tr:nth-child(even) {
-  background-color: #f2f2f2;
+#streak {
+  font-weight: bold;
+  margin-bottom: 1rem;
 }
 
-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+.expression-area {
+  margin: 1rem 0;
 }
