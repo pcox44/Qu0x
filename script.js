@@ -1,159 +1,272 @@
-const START_DATE = new Date("2025-05-15T00:00:00");
-let currentDate = new Date();
-let gameOffset = Math.floor((currentDate - START_DATE) / (1000 * 60 * 60 * 24));
-let expression = "";
+const diceContainer = document.getElementById('dice');
+const targetContainer = document.getElementById('target');
+const expressionContainer = document.getElementById('expression');
+const resultContainer = document.getElementById('result');
+const messageContainer = document.getElementById('message');
+const gameNumberContainer = document.getElementById('game-number');
+const streakContainer = document.getElementById('streak');
+const historyTable = document.getElementById('history-body');
+const operators = ['+', '-', '×', '÷', '^', '!', '(', ')'];
+
+let expressionTokens = [];
 let usedDice = [];
-let gameData = {};
-let streak = 0;
+let gameEnded = false;
 
-const diceContainer = document.getElementById("dice-container");
-const targetNumberDiv = document.getElementById("target-number");
-const gameNumberDiv = document.getElementById("game-number");
-const expressionDiv = document.getElementById("expression");
-const messageDiv = document.getElementById("message");
-const resultDiv = document.getElementById("result");
-const historyBody = document.getElementById("history-body");
-const streakDiv = document.getElementById("streak");
-
-document.getElementById("submit").onclick = submitExpression;
-document.getElementById("clear").onclick = clearExpression;
-document.getElementById("backspace").onclick = () => {
-  expression = expression.trim().slice(0, -1);
-  expressionDiv.textContent = expression;
+const horseColors = {
+  1: { background: 'red', color: 'white' },
+  2: { background: 'white', color: 'black' },
+  3: { background: 'blue', color: 'white' },
+  4: { background: 'yellow', color: 'black' },
+  5: { background: 'green', color: 'white' },
+  6: { background: 'black', color: 'yellow' }
 };
 
-document.getElementById("prev-game").onclick = () => {
-  if (gameOffset > 0) {
-    gameOffset--;
-    initGame();
-  }
-};
-
-document.getElementById("next-game").onclick = () => {
-  const todayOffset = Math.floor((new Date() - START_DATE) / (1000 * 60 * 60 * 24));
-  if (gameOffset < todayOffset) {
-    gameOffset++;
-    initGame();
-  }
-};
-
-document.querySelectorAll(".op").forEach(button =>
-  button.onclick = () => {
-    expression += button.textContent;
-    expressionDiv.textContent = expression;
-  }
-);
-
-function rollDice(seed) {
-  const rng = mulberry32(seed);
-  const dice = [];
-  while (dice.length < 5) {
-    dice.push(Math.floor(rng() * 6) + 1);
-  }
-  return dice;
+// Game Logic
+function getTodayGameNumber() {
+  const start = new Date('2025-05-15T00:00:00');
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const diff = Math.floor((today - start) / (1000 * 60 * 60 * 24));
+  return diff >= 0 ? diff + 1 : 1;
 }
 
-function mulberry32(a) {
-  return function() {
-    var t = a += 0x6D2B79F5;
-    t = Math.imul(t ^ t >>> 15, t | 1);
-    t ^= t + Math.imul(t ^ t >>> 7, t | 61);
-    return ((t ^ t >>> 14) >>> 0) / 4294967296;
-  };
+function getGameDate(gameNum) {
+  const start = new Date('2025-05-15T00:00:00');
+  const date = new Date(start);
+  date.setDate(start.getDate() + gameNum - 1);
+  return date;
 }
 
-function generateTarget(dice) {
-  return 10 + Math.floor(Math.random() * 90);
+function seedRandom(seed) {
+  let x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
 }
 
-function initGame() {
-  const gameDate = new Date(START_DATE.getTime() + gameOffset * 86400000);
-  const dateStr = gameDate.toISOString().split("T")[0];
-  const gameNumber = gameOffset + 1;
+function seededShuffle(seed, array) {
+  let result = array.slice();
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(seedRandom(seed + i) * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
 
-  gameNumberDiv.textContent = `Game #${gameNumber} (${dateStr})`;
-  expression = "";
-  expressionDiv.textContent = "";
-  usedDice = [];
-  messageDiv.textContent = "";
-  resultDiv.textContent = "";
-
-  const seed = gameDate.getFullYear() * 10000 + (gameDate.getMonth() + 1) * 100 + gameDate.getDate();
-  const dice = rollDice(seed);
-  const target = Math.floor(mulberry32(seed)() * 100) + 1;
-
-  diceContainer.innerHTML = "";
-  dice.forEach((num, i) => {
-    const die = document.createElement("div");
-    die.className = "die";
-    die.dataset.value = num;
-    die.textContent = num;
-    die.onclick = () => {
-      if (!usedDice.includes(i)) {
-        expression += num;
-        usedDice.push(i);
-        die.classList.add("used");
-        expressionDiv.textContent = expression;
+function generateGameData(gameNumber) {
+  let seed = gameNumber;
+  while (true) {
+    const dice = [];
+    for (let i = 0; i < 5; i++) {
+      dice.push(1 + Math.floor(seedRandom(seed + i) * 6));
+    }
+    const maxTarget = 100;
+    for (let t = 0; t < 1000; t++) {
+      const target = 1 + Math.floor(seedRandom(seed + 100 + t) * maxTarget);
+      if (isSolvable(dice, target)) {
+        return { dice, target };
       }
-    };
+    }
+    seed++; // Try a new seed if unsolvable
+  }
+}
+
+// Expression Evaluation
+function evaluateExpression(tokens) {
+  try {
+    let expr = tokens.join('')
+      .replace(/×/g, '*')
+      .replace(/÷/g, '/')
+      .replace(/(\d+)!/g, (_, n) => {
+        if (n < 0 || n % 1 !== 0) throw 'Invalid factorial';
+        let f = 1;
+        for (let i = 1; i <= n; i++) f *= i;
+        return f;
+      });
+    let result = Function('"use strict";return (' + expr + ')')();
+    return Math.round(result);
+  } catch {
+    return null;
+  }
+}
+
+function isSolvable(dice, target) {
+  const ops = ['+', '-', '*', '/', '^'];
+  const perms = permuteDice(dice);
+  for (const p of perms) {
+    const opCombos = generateOpCombos(p.length - 1, ops);
+    for (const opset of opCombos) {
+      const expr = [];
+      for (let i = 0; i < p.length; i++) {
+        expr.push(p[i]);
+        if (i < opset.length) expr.push(opset[i]);
+      }
+      const res = evaluateExpression(expr.map(e => {
+        if (e === '*') return '×';
+        if (e === '/') return '÷';
+        return e;
+      }));
+      if (res === target) return true;
+    }
+  }
+  return false;
+}
+
+function permuteDice(arr) {
+  if (arr.length === 0) return [[]];
+  const result = [];
+  for (let i = 0; i < arr.length; i++) {
+    const rest = arr.slice(0, i).concat(arr.slice(i + 1));
+    for (const perm of permuteDice(rest)) {
+      result.push([arr[i]].concat(perm));
+    }
+  }
+  return result;
+}
+
+function generateOpCombos(length, ops) {
+  if (length === 0) return [[]];
+  const result = [];
+  const rest = generateOpCombos(length - 1, ops);
+  for (const op of ops) {
+    for (const r of rest) {
+      result.push([op, ...r]);
+    }
+  }
+  return result;
+}
+
+// Rendering
+function renderGame(gameNumber) {
+  const todayGame = getTodayGameNumber();
+  if (gameNumber > todayGame) {
+    alert("This game is not available yet.");
+    return;
+  }
+
+  gameEnded = false;
+  expressionTokens = [];
+  usedDice = [];
+  const gameData = generateGameData(gameNumber);
+  const { dice, target } = gameData;
+
+  gameNumberContainer.textContent = `Game #${gameNumber}`;
+  targetContainer.textContent = `Target: ${target}`;
+  diceContainer.innerHTML = '';
+  expressionContainer.textContent = '';
+  resultContainer.textContent = '';
+  messageContainer.textContent = '';
+
+  dice.forEach((value, i) => {
+    const die = document.createElement('div');
+    die.classList.add('die');
+    die.textContent = value;
+    die.style.backgroundColor = horseColors[value].background;
+    die.style.color = horseColors[value].color;
+    die.addEventListener('click', () => {
+      if (!die.classList.contains('used') && !gameEnded) {
+        expressionTokens.push(value.toString());
+        die.classList.add('used');
+        updateExpressionDisplay();
+      }
+    });
     diceContainer.appendChild(die);
   });
 
-  targetNumberDiv.textContent = `🎯 Target: ${target}`;
-  updateHistory();
   updateStreak();
+  updateHistory();
 }
 
-function updateHistory() {
-  historyBody.innerHTML = "";
-  for (let i = Math.max(0, gameOffset - 4); i <= gameOffset; i++) {
-    const d = new Date(START_DATE.getTime() + i * 86400000);
-    const dateStr = d.toISOString().split("T")[0];
-    const score = localStorage.getItem("score_" + dateStr) ?? "-";
-    const tr = document.createElement("tr");
-    tr.innerHTML = `<td>${i + 1}</td><td>${dateStr}</td><td>${score}</td>`;
-    historyBody.appendChild(tr);
-  }
+function updateExpressionDisplay() {
+  expressionContainer.textContent = expressionTokens.join(' ');
 }
 
 function updateStreak() {
-  let s = 0;
-  let d = new Date();
-  while (true) {
-    const dateStr = d.toISOString().split("T")[0];
-    if (localStorage.getItem("score_" + dateStr) === "0") {
-      s++;
-      d.setDate(d.getDate() - 1);
-    } else break;
+  const streak = Number(localStorage.getItem('qu0xStreak') || 0);
+  streakContainer.textContent = `Current Qu0x Streak: ${streak}`;
+}
+
+function updateHistory() {
+  const history = JSON.parse(localStorage.getItem('qu0xHistory') || '[]');
+  historyTable.innerHTML = '';
+  const last5 = history.slice(-5).reverse();
+  for (const h of last5) {
+    const tr = document.createElement('tr');
+    const d = new Date(h.date);
+    tr.innerHTML = `<td>${d.toDateString()}</td><td>${h.score}</td>`;
+    historyTable.appendChild(tr);
   }
-  streakDiv.textContent = `🔥 Current Qu0x Streak: ${s}`;
 }
 
-function clearExpression() {
-  expression = "";
-  usedDice = [];
-  expressionDiv.textContent = "";
-  document.querySelectorAll(".die").forEach(d => d.classList.remove("used"));
-}
-
-function submitExpression() {
-  try {
-    const result = math.evaluate(expression);
-    const gameDate = new Date(START_DATE.getTime() + gameOffset * 86400000);
-    const dateStr = gameDate.toISOString().split("T")[0];
-    const target = parseInt(targetNumberDiv.textContent.match(/\d+/)[0]);
-    const score = Math.abs(result - target);
-    resultDiv.textContent = `Result: ${result}`;
-    messageDiv.textContent = score === 0 ? "🎉 Qu0x!" : `Off by ${score}`;
-    localStorage.setItem("score_" + dateStr, score.toString());
-    if (score === 0) {
-      document.getElementById("submit").disabled = true;
+document.querySelectorAll('.op').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (!gameEnded) {
+      expressionTokens.push(btn.textContent);
+      updateExpressionDisplay();
     }
-    updateHistory();
-    updateStreak();
-  } catch {
-    resultDiv.textContent = "Invalid expression.";
-  }
-}
+  });
+});
 
-initGame();
+document.getElementById('backspace').addEventListener('click', () => {
+  if (expressionTokens.length > 0) {
+    const last = expressionTokens.pop();
+    if (!isNaN(last)) {
+      const dice = document.querySelectorAll('.die');
+      for (let die of dice) {
+        if (die.textContent == last && die.classList.contains('used')) {
+          die.classList.remove('used');
+          break;
+        }
+      }
+    }
+    updateExpressionDisplay();
+  }
+});
+
+document.getElementById('clear').addEventListener('click', () => {
+  expressionTokens = [];
+  document.querySelectorAll('.die').forEach(die => die.classList.remove('used'));
+  updateExpressionDisplay();
+});
+
+document.getElementById('submit').addEventListener('click', () => {
+  const gameNumber = Number(gameNumberContainer.textContent.split('#')[1]);
+  const { target } = generateGameData(gameNumber);
+  const result = evaluateExpression(expressionTokens);
+  resultContainer.textContent = `Your result: ${result}`;
+  if (result === target) {
+    messageContainer.textContent = 'Qu0x!';
+    messageContainer.style.fontSize = '2em';
+    messageContainer.style.color = 'green';
+    gameEnded = true;
+
+    let streak = Number(localStorage.getItem('qu0xStreak') || 0);
+    streak++;
+    localStorage.setItem('qu0xStreak', streak);
+    updateStreak();
+
+    const history = JSON.parse(localStorage.getItem('qu0xHistory') || '[]');
+    history.push({ date: new Date(), score: 0 });
+    localStorage.setItem('qu0xHistory', JSON.stringify(history));
+    updateHistory();
+  } else {
+    messageContainer.textContent = `Off by ${Math.abs(target - result)}`;
+    messageContainer.style.color = 'red';
+
+    const history = JSON.parse(localStorage.getItem('qu0xHistory') || '[]');
+    history.push({ date: new Date(), score: Math.abs(target - result) });
+    localStorage.setItem('qu0xHistory', JSON.stringify(history));
+    localStorage.setItem('qu0xStreak', 0); // reset streak
+    updateStreak();
+    updateHistory();
+  }
+});
+
+let currentGame = getTodayGameNumber();
+document.getElementById('prev').addEventListener('click', () => {
+  if (currentGame > 1) renderGame(--currentGame);
+});
+document.getElementById('next').addEventListener('click', () => {
+  if (currentGame < getTodayGameNumber()) renderGame(++currentGame);
+});
+
+// Initial Game
+renderGame(currentGame);
