@@ -1,192 +1,98 @@
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  padding: 20px;
-  max-width: 650px;
-  margin: auto;
-  background: #fff;
-  color: #222;
+  font-family: Arial, sans-serif;
   text-align: center;
-}
-
-h1 {
-  font-size: 2.5em;
-  margin-bottom: 0.1em;
-}
-
-p {
-  max-width: 500px;
-  margin: 0 auto 1em auto;
-  font-size: 1.1em;
-  color: #555;
+  padding: 20px;
 }
 
 #game-info {
-  margin-bottom: 10px;
-  font-size: 1.2em;
-  font-weight: 600;
+  margin-bottom: 20px;
 }
 
-#date-display {
-  margin-top: 2px;
-  font-size: 1em;
-  color: #666;
-}
-
-.dice-row {
+#dice-container {
   display: flex;
   justify-content: center;
-  margin: 15px 0;
-  gap: 10px;
+  margin-bottom: 20px;
 }
 
-.die {
+.dice {
   width: 60px;
   height: 60px;
-  border-radius: 12px;
-  color: white;
-  font-size: 2.4em;
+  margin: 0 10px;
+  font-size: 24px;
   font-weight: bold;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  user-select: none;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.15);
-  transition: opacity 0.3s ease;
-}
-
-.die.used {
-  opacity: 0.3;
-  cursor: default;
-}
-
-.die.red { background-color: #c1272d; }
-.die.white { background-color: #fff; color: #000; border: 2px solid #aaa; }
-.die.blue { background-color: #1c5bad; }
-.die.yellow { background-color: #f7d842; color: #000; }
-.die.green { background-color: #388a3c; }
-.die.black { background-color: #222; color: #f7d842; }
-
-#target-container {
-  font-size: 1.5em;
-  margin: 10px 0 15px;
-  font-weight: 700;
-}
-
-#input-container input {
-  font-size: 1.3em;
-  padding: 8px 12px;
-  width: 100%;
-  max-width: 460px;
-  text-align: center;
-  border: 2px solid #ccc;
+  color: white;
+  border: none;
   border-radius: 8px;
-  user-select: none;
-  background-color: #fefefe;
+  cursor: pointer;
+}
+
+.dice.used {
+  opacity: 0.5;
   cursor: default;
+}
+
+.dice.red { background-color: red; }
+.dice.blue { background-color: blue; }
+.dice.green { background-color: green; }
+.dice.yellow { background-color: yellow; color: black; }
+.dice.black { background-color: black; }
+.dice.white { background-color: white; color: black; }
+.dice.pink { background-color: pink; color: black; }
+.dice.purple { background-color: purple; }
+.dice.orange { background-color: orange; color: black; }
+.dice.brown { background-color: brown; }
+
+#expression-input {
+  width: 80%;
+  font-size: 24px;
+  margin-bottom: 20px;
+  padding: 10px;
 }
 
 #buttons-container {
-  margin: 15px 0 25px;
+  margin-bottom: 20px;
 }
 
-#buttons-container button, .op-btn {
-  font-size: 1.3em;
-  margin: 4px 5px;
-  padding: 8px 14px;
-  border-radius: 6px;
-  border: 1.5px solid #888;
-  background-color: #eee;
-  cursor: pointer;
-  user-select: none;
-  min-width: 45px;
-  transition: background-color 0.3s;
+#operators, #controls {
+  margin: 10px 0;
 }
 
-#buttons-container button:hover, .op-btn:hover {
-  background-color: #ddd;
+.op-btn, #btn-open-paren, #btn-close-paren, #btn-clear, #btn-backspace, #btn-submit {
+  font-size: 18px;
+  padding: 10px 15px;
+  margin: 5px;
 }
 
 #message-container {
-  font-size: 1.2em;
-  font-weight: 600;
-  margin: 15px 0;
-  min-height: 1.5em;
-  color: #1a4d1a;
-}
-
-#score-streak-container {
-  display: flex;
-  justify-content: center;
-  gap: 50px;
-  font-size: 1.2em;
   margin-bottom: 20px;
-  font-weight: 600;
-  color: #333;
+  font-weight: bold;
 }
 
-#nav-buttons {
-  margin: 20px 0;
+#score-container {
+  margin-bottom: 20px;
 }
 
-#nav-buttons button {
-  font-size: 1.1em;
-  padding: 8px 18px;
-  margin: 0 8px;
-  border-radius: 8px;
-  border: 1.8px solid #666;
-  background-color: #eee;
-  cursor: pointer;
+#history-container {
+  margin-bottom: 20px;
 }
 
-#nav-buttons button:hover {
-  background-color: #ddd;
-}
-
-#history {
-  border-collapse: collapse;
+#history-table {
   width: 100%;
-  max-width: 600px;
-  margin: auto;
+  border-collapse: collapse;
 }
 
-#history th, #history td {
-  border: 1px solid #bbb;
-  padding: 8px 12px;
-  font-size: 1.1em;
+#history-table th, #history-table td {
+  border: 1px solid #ccc;
+  padding: 8px;
 }
 
-#history th {
-  background-color: #f2f2f2;
+#navigation {
+  margin-bottom: 20px;
 }
 
 #qu0x-popup {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 4.8em;
-  font-weight: 900;
-  color: #f7d842;
-  background: rgba(0, 0, 0, 0.85);
-  padding: 40px 60px;
-  border-radius: 24px;
-  box-shadow: 0 0 30px 10px #f7d842;
-  opacity: 0;
-  pointer-events: none;
-  user-select: none;
-  transition: opacity 0.4s ease;
-  z-index: 9999;
-}
-
-#qu0x-popup.show {
-  opacity: 1;
-  pointer-events: auto;
-  animation: qu0x-pop 3s ease forwards;
-}
-
-@keyframes qu0x-pop {
-  0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
-  50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
-  100% { transform: translate(-50%, -50%) scale(1) opacity: 0; }
+  display: none;
+  font-size: 32px;
+  color: green;
+  margin-top: 20px;
 }
