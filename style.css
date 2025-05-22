@@ -1,80 +1,166 @@
 body {
-  font-family: sans-serif;
-  background: #f8f8f8;
-  color: #333;
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
   text-align: center;
+  margin: 0;
+  padding: 0;
+}
+
+#container {
   padding: 20px;
+  max-width: 600px;
+  margin: auto;
+}
+
+h1 {
+  font-size: 3em;
+  margin-bottom: 10px;
+}
+
+#game-info {
+  margin-bottom: 20px;
+}
+
+#game-date, #game-number {
+  font-size: 1.2em;
+  margin: 5px;
 }
 
 #target-container {
-  font-size: 2em;
-  margin: 10px 0;
+  font-size: 2.5em;
+  background: #222;
+  color: white;
+  padding: 10px 20px;
+  border: 3px solid black;
+  border-radius: 10px;
+  display: inline-block;
+  margin: 20px 0;
 }
 
 #dice-container {
   display: flex;
   justify-content: center;
-  margin: 10px 0;
+  gap: 10px;
+  margin: 20px 0;
 }
 
 .die {
-  width: 60px;
-  height: 60px;
-  font-size: 24px;
-  font-weight: bold;
+  font-size: 2em;
+  padding: 15px 20px;
   border: 2px solid black;
-  margin: 5px;
-  line-height: 60px;
-  border-radius: 10px;
-  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: opacity 0.3s;
 }
 
-.die.used {
+.used {
   opacity: 0.4;
+  pointer-events: none;
 }
 
-.die1 { background: red; }
+.die1 { background: red; color: white; }
 .die2 { background: white; color: black; }
-.die3 { background: blue; }
+.die3 { background: blue; color: white; }
 .die4 { background: yellow; color: black; }
 .die5 { background: green; color: white; }
 .die6 { background: black; color: yellow; }
 
-input#expression {
-  width: 80%;
-  font-size: 24px;
+#expression-box-container {
+  margin: 15px 0;
+}
+
+#expression {
+  width: 90%;
   padding: 10px;
-  margin: 10px 0;
-  border: 2px solid black;
+  font-size: 1.4em;
+  border: 2px solid #ccc;
+  border-radius: 8px;
   background: white;
 }
 
 #expression-result {
   font-size: 1.2em;
+  margin-top: 5px;
+}
+
+#buttons {
+  margin: 10px 0;
+}
+
+.input-btn {
+  padding: 10px 14px;
+  font-size: 1.2em;
   margin: 5px;
-  min-height: 1em;
 }
 
-#buttons button {
-  margin: 4px;
-  padding: 10px;
-  font-size: 18px;
+#backspace, #clear {
+  padding: 10px 14px;
+  font-size: 1.2em;
+  margin: 5px;
 }
 
-#qu0x-animation {
-  font-size: 3em;
-  color: orange;
-  display: none;
-  animation: pop 3s ease-in-out;
+#submit-section {
+  margin: 15px 0;
 }
 
-@keyframes pop {
-  0% { transform: scale(0); opacity: 0; }
-  30% { transform: scale(1.3); opacity: 1; }
-  100% { transform: scale(1); opacity: 0; }
+#submit {
+  padding: 12px 24px;
+  font-size: 1.4em;
+  margin-top: 10px;
+}
+
+#result-message {
+  font-size: 1.3em;
+  margin-top: 10px;
+}
+
+#nav-buttons {
+  margin: 20px 0;
+}
+
+#qu0x-counter {
+  font-size: 1.3em;
+  margin-bottom: 10px;
+}
+
+#archive {
+  text-align: left;
+  margin-top: 30px;
+}
+
+#archive h2 {
+  text-align: center;
 }
 
 #archive-list {
-  list-style: none;
+  list-style-type: none;
   padding: 0;
+}
+
+#archive-list li {
+  padding: 6px 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+#qu0x-popup {
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 4em;
+  color: gold;
+  background: black;
+  padding: 20px 40px;
+  border-radius: 20px;
+  display: none;
+  z-index: 1000;
+  animation: pop 3s ease-in-out forwards;
+}
+
+@keyframes pop {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+  20% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+  50% { transform: translate(-50%, -50%) scale(1); }
+  80% { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
 }
