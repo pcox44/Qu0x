@@ -1,100 +1,98 @@
 body {
-  font-family: sans-serif;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
   text-align: center;
-  padding: 20px;
   background-color: #f9f9f9;
   color: #333;
+  padding: 20px;
 }
 
 h1 {
-  font-size: 2.5em;
-  margin-bottom: 0.2em;
+  font-size: 3em;
 }
 
 .rules {
-  max-width: 600px;
-  margin: 0 auto 1em;
   font-size: 1em;
+  margin: 10px auto 20px;
+  max-width: 600px;
 }
 
-#date-container {
-  font-size: 1.2em;
+#today-date {
+  font-weight: bold;
   margin-bottom: 10px;
+}
+
+#game-number {
+  font-weight: bold;
+  font-size: 1.2em;
+  margin: 10px;
 }
 
 .dice-row {
   display: flex;
   justify-content: center;
-  margin: 15px 0;
+  gap: 10px;
+  margin: 20px 0;
 }
 
 .die {
-  font-size: 1.5em;
+  font-size: 2em;
   font-weight: bold;
+  border: 2px solid #333;
   border-radius: 10px;
   width: 50px;
   height: 50px;
-  margin: 0 5px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid #333;
-  box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
   cursor: pointer;
+  opacity: 1;
   transition: opacity 0.3s ease;
 }
 
-.used {
+.die.used {
   opacity: 0.3;
-  pointer-events: none;
 }
 
-.die-1 { background: red; color: white; }
-.die-2 { background: white; color: black; }
-.die-3 { background: blue; color: white; }
-.die-4 { background: yellow; color: black; }
-.die-5 { background: green; color: white; }
-.die-6 { background: black; color: yellow; }
+.die.d1 { background-color: red; color: white; }
+.die.d2 { background-color: white; color: black; border: 2px solid black; }
+.die.d3 { background-color: blue; color: white; }
+.die.d4 { background-color: yellow; color: black; }
+.die.d5 { background-color: green; color: white; }
+.die.d6 { background-color: black; color: yellow; }
 
 #target-container {
   font-size: 1.5em;
-  margin-bottom: 15px;
-}
-
-#expression {
-  font-size: 1.3em;
   margin-bottom: 10px;
-  min-height: 30px;
 }
 
-#buttons-container {
-  margin: 10px;
-}
-
-.op {
-  font-size: 1em;
-  margin: 5px;
-  padding: 5px 10px;
-}
-
-#result-container {
-  font-size: 1.2em;
-  margin-top: 10px;
-}
-
-#message-container {
-  font-weight: bold;
+#input-container input {
   font-size: 1.3em;
-  margin: 10px;
+  width: 320px;
+  padding: 5px;
+  background-color: white;
+  color: black;
+  text-align: center;
+  border: 2px solid #aaa;
+  border-radius: 5px;
 }
 
-#score, #streak {
-  font-size: 1.2em;
-  margin: 10px;
+#buttons-container button {
+  margin: 4px;
+  font-size: 1.1em;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+#expression-result,
+#message-container,
+#score,
+#streak {
+  margin-top: 15px;
+  font-weight: bold;
 }
 
 #history {
-  margin: 20px auto;
+  margin: 30px auto;
   border-collapse: collapse;
   width: 90%;
   max-width: 600px;
@@ -102,13 +100,22 @@ h1 {
 
 #history th, #history td {
   border: 1px solid #ccc;
-  padding: 8px 12px;
+  padding: 8px;
 }
 
 #history th {
   background-color: #eee;
 }
 
-#game-nav {
-  margin-bottom: 10px;
-  }
+#qu0x-animation {
+  font-size: 3em;
+  color: green;
+  animation: pop 3s ease-in-out;
+}
+
+@keyframes pop {
+  0% { transform: scale(0); opacity: 0; }
+  30% { transform: scale(1.2); opacity: 1; }
+  60% { transform: scale(0.9); }
+  100% { transform: scale(1); }
+}
