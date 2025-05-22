@@ -1,38 +1,29 @@
 body {
-  font-family: 'Segoe UI', sans-serif;
+  font-family: sans-serif;
   text-align: center;
-  padding: 20px;
-  background-color: #f9f9f9;
+  background: #f8f8f8;
   color: #333;
-}
-
-.top-bar {
-  text-align: right;
-  font-size: 0.9em;
-  color: #666;
-  margin-bottom: 5px;
+  padding: 20px;
 }
 
 h1 {
   font-size: 2.5em;
-  margin-bottom: 0.2em;
+  margin-bottom: 0;
 }
 
 .instructions {
   font-size: 1em;
-  margin-bottom: 1em;
+  margin: 10px auto;
   max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
 }
 
-#game-info {
-  margin: 10px;
+#date-display {
   font-weight: bold;
+  margin: 10px 0;
 }
 
 #target-container {
-  font-size: 1.4em;
+  font-size: 1.5em;
   margin: 10px;
 }
 
@@ -43,55 +34,70 @@ h1 {
 }
 
 .die {
+  width: 50px;
+  height: 50px;
   font-size: 1.5em;
   font-weight: bold;
-  border-radius: 10px;
-  width: 60px;
-  height: 60px;
   margin: 0 5px;
   display: flex;
-  align-items: center;
   justify-content: center;
-  opacity: 1;
+  align-items: center;
   border: 2px solid #333;
-  box-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+  border-radius: 8px;
+  cursor: pointer;
+  opacity: 1;
+  transition: opacity 0.3s;
 }
 
 .die.used {
   opacity: 0.3;
 }
 
+.die[data-value="1"] { background: red; color: white; }
+.die[data-value="2"] { background: white; color: black; border: 2px solid black; }
+.die[data-value="3"] { background: blue; color: white; }
+.die[data-value="4"] { background: yellow; color: black; }
+.die[data-value="5"] { background: green; color: white; }
+.die[data-value="6"] { background: black; color: yellow; }
+
+#expression-container {
+  margin: 15px 0;
+}
+
 #expression-display {
-  font-size: 1.2em;
-  margin: 10px;
   min-height: 30px;
+  font-size: 1.2em;
   border: 1px solid #ccc;
-  padding: 8px;
-  background-color: #fff;
-  max-width: 500px;
-  margin-left: auto;
-  margin-right: auto;
+  padding: 5px;
+  margin-bottom: 10px;
+  background: #fff;
 }
 
-#buttons-container {
-  margin: 10px;
-}
-
-#buttons-container .op, #submit, #backspace, #clear {
-  font-size: 1.1em;
-  margin: 3px;
-  padding: 5px 12px;
+#buttons-container button {
+  margin: 5px;
+  padding: 8px 12px;
+  font-size: 1em;
 }
 
 #message-container {
-  font-size: 1.2em;
-  font-weight: bold;
   margin: 10px;
+  font-weight: bold;
 }
 
 #score, #streak {
-  font-size: 1.2em;
   margin: 10px;
+  font-size: 1.2em;
+}
+
+#animation {
+  display: none;
+  font-size: 3em;
+  color: green;
+  margin-top: 20px;
+}
+
+#navigation {
+  margin-top: 20px;
 }
 
 #history {
@@ -108,15 +114,4 @@ h1 {
 
 #history th {
   background-color: #eee;
-}
-
-#qu0x-animation {
-  position: fixed;
-  top: 30%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 3em;
-  color: #008000;
-  font-weight: bold;
-  display: none;
 }
