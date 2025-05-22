@@ -1,109 +1,181 @@
-body {
-  font-family: sans-serif;
-  text-align: center;
-  padding: 20px;
+const START_DATE = new Date("2025-05-15");
+const MS_PER_DAY = 1000 * 60 * 60 * 24;
+let currentGameNumber = getGameNumberFromDate(new Date());
+let usedDice = [];
+let expression = "";
+let gameLocked = false;
+let history = JSON.parse(localStorage.getItem("qu0xHistory") || "[]");
+let totalQu0x = parseInt(localStorage.getItem("totalQu0x") || "0");
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("submit").addEventListener("click", submitExpression);
+  document.getElementById("backspace").addEventListener("click", backspace);
+  document.getElementById("clear").addEventListener("click", clearInput);
+  document.getElementById("prev-game").addEventListener("click", () => loadGame(currentGameNumber - 1));
+  document.getElementById("next-game").addEventListener("click", () => loadGame(currentGameNumber + 1));
+
+  document.querySelectorAll(".op").forEach(button =>
+    button.addEventListener("click", () => appendToExpression(button.textContent))
+  );
+
+  loadGame(currentGameNumber);
+  updateHistoryTable();
+  updateTotalQu0x();
+});
+
+function getGameNumberFromDate(date) {
+  return Math.floor((date - START_DATE) / MS_PER_DAY) + 1;
 }
 
-h1 {
-  font-size: 3em;
+function getDateFromGameNumber(gameNumber) {
+  return new Date(START_DATE.getTime() + (gameNumber - 1) * MS_PER_DAY);
 }
 
-#game-date {
-  font-weight: bold;
-  margin-bottom: 10px;
+function generateDice(gameNumber) {
+  const rng = mulberry32(gameNumber);
+  let dice = [];
+  for (let i = 0; i < 5; i++) {
+    dice.push(Math.floor(rng() * 6) + 1);
+  }
+  return dice;
 }
 
-#target-box {
-  font-size: 2em;
-  padding: 10px;
-  background-color: #ddd;
-  border: 2px solid #555;
-  display: inline-block;
-  margin: 10px 0;
+function generateTarget(gameNumber) {
+  const rng = mulberry32(gameNumber * 999);
+  return Math.floor(rng() * 100) + 1;
 }
 
-#dice-container {
-  display: flex;
-  justify-content: center;
-  margin: 20px 0;
+function loadGame(gameNumber) {
+  const todayGameNumber = getGameNumberFromDate(new Date());
+  if (gameNumber < 1 || gameNumber > todayGameNumber) return;
+
+  currentGameNumber = gameNumber;
+  usedDice = [];
+  expression = "";
+  gameLocked = localStorage.getItem(`qu0x-locked-${gameNumber}`) === "true";
+
+  const date = getDateFromGameNumber(gameNumber);
+  document.getElementById("date-display").textContent = `${date.toDateString()} — Game #${gameNumber}`;
+
+  const dice = generateDice(gameNumber);
+  const target = generateTarget(gameNumber);
+
+  renderDice(dice);
+  document.getElementById("target-number").textContent = target;
+  document.getElementById("expression-box").textContent = "";
+  document.getElementById("expression-value").textContent = "";
+  document.getElementById("message-container").textContent = "";
+
+  updateButtons();
 }
 
-.die {
-  width: 60px;
-  height: 60px;
-  margin: 0 5px;
-  font-size: 1.8em;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 2px solid black;
-  border-radius: 10px;
-  cursor: pointer;
-  opacity: 1;
-  transition: opacity 0.3s;
+function renderDice(dice) {
+  const diceRow = document.getElementById("dice-row");
+  diceRow.innerHTML = "";
+
+  dice.forEach((val, i) => {
+    const die = document.createElement("div");
+    die.textContent = val;
+    die.className = `die die-${val}`;
+    die.dataset.value = val;
+    die.dataset.index = i;
+    if (usedDice.includes(i)) die.classList.add("used");
+    die.addEventListener("click", () => {
+      if (!gameLocked && !usedDice.includes(i)) {
+        appendToExpression(val);
+        usedDice.push(i);
+        renderDice(dice);
+      }
+    });
+    diceRow.appendChild(die);
+  });
 }
 
-.die.used {
-  opacity: 0.3;
+function appendToExpression(char) {
+  if (gameLocked) return;
+
+  expression += char;
+  document.getElementById("expression-box").textContent = expression;
+
+  const valueBox = document.getElementById("expression-value");
+  try {
+    const val = evaluateExpression(expression);
+    if (val !== undefined && !isNaN(val)) {
+      valueBox.textContent = `= ${val.toFixed(2)}`;
+    } else {
+      valueBox.textContent = "";
+    }
+  } catch {
+    valueBox.textContent = "";
+  }
 }
 
-.die.d1 { background: red; color: white; }
-.die.d2 { background: white; color: black; }
-.die.d3 { background: blue; color: white; }
-.die.d4 { background: yellow; color: black; }
-.die.d5 { background: green; color: white; }
-.die.d6 { background: black; color: yellow; }
+function backspace() {
+  if (gameLocked || expression.length === 0) return;
 
-#expression-box {
-  font-size: 1.5em;
-  margin: 10px;
+  const lastChar = expression.slice(-1);
+  expression = expression.slice(0, -1);
+  document.getElementById("expression-box").textContent = expression;
+
+  if (!isNaN(lastChar)) {
+    const dice = generateDice(currentGameNumber);
+    const index = usedDice.findLast(i => dice[i] === parseInt(lastChar));
+    if (index !== undefined) usedDice.splice(usedDice.indexOf(index), 1);
+  }
+
+  renderDice(generateDice(currentGameNumber));
+  appendToExpression(""); // refresh value
 }
 
-#expression-display {
-  background: #fff;
-  padding: 10px;
-  min-height: 1.5em;
-  border: 2px solid #333;
-  display: inline-block;
-  margin-bottom: 5px;
+function clearInput() {
+  if (gameLocked) return;
+  expression = "";
+  usedDice = [];
+  document.getElementById("expression-box").textContent = "";
+  document.getElementById("expression-value").textContent = "";
+  renderDice(generateDice(currentGameNumber));
 }
 
-#expression-result {
-  font-size: 1em;
-  color: #666;
+function submitExpression() {
+  if (gameLocked) return;
+
+  const target = generateTarget(currentGameNumber);
+  try {
+    const val = evaluateExpression(expression);
+    const rounded = Math.round(val);
+    const score = Math.abs(rounded - target);
+
+    const gameKey = `qu0x-${currentGameNumber}`;
+    localStorage.setItem(gameKey, score);
+    history.push({ game: currentGameNumber, date: getDateFromGameNumber(currentGameNumber).toDateString(), score });
+    history = history.slice(-5);
+    localStorage.setItem("qu0xHistory", JSON.stringify(history));
+    updateHistoryTable();
+
+    if (score === 0) {
+      if (!localStorage.getItem(`qu0x-locked-${currentGameNumber}`)) {
+        totalQu0x += 1;
+        localStorage.setItem("totalQu0x", totalQu0x);
+      }
+      localStorage.setItem(`qu0x-locked-${currentGameNumber}`, "true");
+      showQu0xAnimation();
+      document.getElementById("message-container").textContent = "Qu0x! Perfect!";
+    } else {
+      document.getElementById("message-container").textContent = `Score: ${score}`;
+    }
+
+    gameLocked = true;
+    updateTotalQu0x();
+    updateButtons();
+  } catch (err) {
+    document.getElementById("message-container").textContent = "Invalid expression.";
+  }
 }
 
-#buttons button {
-  font-size: 1em;
-  margin: 3px;
-  padding: 10px 15px;
-}
-
-#message {
-  font-size: 1.2em;
-  font-weight: bold;
-  margin-top: 10px;
-}
-
-#qu0x-animation {
-  font-size: 3em;
-  color: #e60000;
-  font-weight: bold;
-  display: none;
-}
-
-#archive-container {
-  margin-top: 30px;
-}
-
-#archive {
-  margin: 0 auto;
-  border-collapse: collapse;
-  width: 60%;
-}
-
-#archive th, #archive td {
-  border: 1px solid #ccc;
-  padding: 8px;
-}
+function evaluateExpression(expr) {
+  const replaced = expr
+    .replace(/×/g, "*")
+    .replace(/÷/g, "/")
+    .replace(/−/g, "-")
+    .replace(/(\d+)!/g, (_, n
+  
