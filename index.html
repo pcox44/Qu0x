@@ -7,48 +7,55 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div id="game-container">
+  <div class="container">
     <h1>Qu0x!</h1>
-    <p id="date-display"></p>
-
-    <div id="target-box">
-      Target: <span id="target-number"></span>
+    <div id="game-info">
+      <div id="game-date"></div>
+      <div id="game-number"></div>
+      <div id="target-container">
+        Target: <span id="target-number"></span>
+      </div>
+      <div id="dice-container"></div>
     </div>
-
-    <div id="dice-container"></div>
 
     <div id="expression-box">
-      <div id="expression-display"></div>
-      <div id="expression-value"></div>
+      <input type="text" id="expression" disabled />
+      <div id="expression-result"></div>
     </div>
 
-    <div id="button-grid">
-      <button class="op-button" data-value="+">+</button>
-      <button class="op-button" data-value="-">−</button>
-      <button class="op-button" data-value="*">×</button>
-      <button class="op-button" data-value="/">÷</button>
-      <button class="op-button" data-value="^">^</button>
-      <button class="op-button" data-value="!">!</button>
-      <button class="op-button" data-value="(">(</button>
-      <button class="op-button" data-value=")">)</button>
-      <button id="backspace">←</button>
-      <button id="clear">Clear</button>
-      <button id="submit">Submit</button>
+    <div id="buttons">
+      <div id="dice-buttons"></div>
+      <div class="op-buttons">
+        <button onclick="appendOperator('+')">+</button>
+        <button onclick="appendOperator('-')">−</button>
+        <button onclick="appendOperator('*')">*</button>
+        <button onclick="appendOperator('/')">/</button>
+        <button onclick="appendOperator('^')">^</button>
+        <button onclick="appendOperator('!')">!</button>
+        <button onclick="appendOperator('(')">(</button>
+        <button onclick="appendOperator(')')">)</button>
+        <button onclick="backspace()">←</button>
+        <button onclick="clearExpression()">Clear</button>
+      </div>
+      <button id="submit" onclick="submitExpression()">Submit</button>
     </div>
 
-    <div id="message-box"></div>
-
-    <div id="nav-buttons">
-      <button id="prev-day">Previous</button>
-      <button id="next-day">Next</button>
-    </div>
-
-    <div id="history">
-      <h3>Last 5 Results</h3>
-      <ul id="history-list"></ul>
-    </div>
-
+    <div id="feedback"></div>
     <div id="qu0x-animation">Qu0x!</div>
+
+    <div id="navigation">
+      <button onclick="previousGame()">Previous</button>
+      <button onclick="nextGame()">Next</button>
+    </div>
+
+    <div id="qu0x-counts">
+      Total Qu0x: <span id="total-qu0x">0</span>
+    </div>
+
+    <div id="archive">
+      <h2>Last 5 Results</h2>
+      <ul id="archive-list"></ul>
+    </div>
   </div>
 
   <script src="script.js"></script>
