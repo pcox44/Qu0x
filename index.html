@@ -1,41 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
   <title>Qu0x!</title>
-  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <h1>Qu0x!</h1>
-  <p id="dateDisplay"></p>
-  <p class="rules">Use all five dice exactly once to get as close as possible to the target number. Click to build your expression!</p>
-  <div id="dice-container" class="dice-row"></div>
-  <div id="target-container"></div>
-  <div id="input-container">
-    <div id="expression-box"></div>
-    <div id="buttons-container"></div>
-    <div>
-      <button onclick="backspace()">⌫</button>
-      <button onclick="clearInput()">Clear</button>
-      <button onclick="submitExpression()">Submit</button>
-    </div>
+  <p class="instructions">Use all five dice exactly once with operations to get as close as possible to the target number.</p>
+  <div id="game-date"></div>
+  <div id="target-box">
+    Target: <span id="target-number"></span>
   </div>
-  <div id="result-container"></div>
-  <div id="message-container"></div>
-  <div id="score"></div>
-  <div id="streak"></div>
-  <div id="totalQu0x"></div>
-  <div>
-    <button onclick="previousGame()">Previous</button>
-    <button onclick="nextGame()">Next</button>
+  <div id="dice-container"></div>
+
+  <div id="expression-box">
+    <div id="expression-display"></div>
+    <div id="expression-result"></div>
   </div>
-  <div id="animation" class="popup">Qu0x!</div>
-  <h2>Game Archive (Last 5 Results)</h2>
-  <table id="history">
-    <thead><tr><th>Day</th><th>Score</th></tr></thead>
-    <tbody></tbody>
-  </table>
+
+  <div id="buttons">
+    <button class="op">(</button>
+    <button class="op">)</button>
+    <button class="op">+</button>
+    <button class="op">−</button>
+    <button class="op">×</button>
+    <button class="op">÷</button>
+    <button class="op">^</button>
+    <button class="op">!</button>
+    <button id="backspace">⌫</button>
+    <button id="clear">Clear</button>
+    <button id="submit">Submit</button>
+  </div>
+
+  <div id="message"></div>
+  <div id="qu0x-animation">Qu0x!</div>
+  <div id="total-qu0x"></div>
+
+  <div id="navigation">
+    <button id="prev">Previous</button>
+    <button id="next">Next</button>
+  </div>
+
+  <div id="archive-container">
+    <h3>Game Archive (Last 5)</h3>
+    <table id="archive">
+      <thead>
+        <tr><th>Date</th><th>Score</th></tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
   <script src="script.js"></script>
 </body>
 </html>
