@@ -1,62 +1,66 @@
 const diceContainer = document.getElementById('dice-container');
 const targetNumberSpan = document.getElementById('target-number');
 const expressionDiv = document.getElementById('expression');
-const messageContainer = document.getElementById('message-container');
-const scoreDisplay = document.getElementById('score');
-const streakDisplay = document.getElementById('streak');
+const messageContainer = document.getElementById('message');
+const scoreDisplay = document.getElementById('score-display');
+const streakDisplay = document.getElementById('streak-display');
 const shareLink = document.getElementById('share-link');
 const historyBody = document.getElementById('history-body');
 const qu0xPopup = document.getElementById('qu0x-popup');
-const prevGameBtn = document.getElementById('prev-game-btn');
-const nextGameBtn = document.getElementById('next-game-btn');
-const backspaceBtn = document.getElementById('backspace-btn');
-const clearBtn = document.getElementById('clear-btn');
-const submitBtn = document.getElementById('submit-btn');
 const gameNumberDiv = document.getElementById('game-number');
 const dateDisplayDiv = document.getElementById('date-display');
 
-const gameStartDate = '2023-05-15'; // Game #1
-const today = new Date();
-const todayStr = today.toISOString().slice(0,10);
+const prevGameBtn = document.getElementById('prev-game');
+const nextGameBtn = document.getElementById('next-game');
+const backspaceBtn = document.getElementById('backspace');
+const clearBtn = document.getElementById('clear');
+const submitBtn = document.getElementById('submit');
 
-let currentDate = todayStr;
-let currentStreak = 0;
-let archive = {};
-let inputLocked = false;
-
-let diceValues = [];
-let usedDice = [];
-let expression = '';
-let target = 0;
-
-// Map dice number to horse race colors
 const diceColorMap = {
   1: 'red',
   2: 'white',
   3: 'blue',
   4: 'yellow',
   5: 'green',
-  6: 'black',
+  6: 'black'
 };
 
+const gameStartDate = "2025-05-15"; // Updated start date
+const today = new Date();
+const todayStr = today.toISOString().slice(0, 10);
+
+let currentDate = todayStr >= gameStartDate ? todayStr : gameStartDate;
+let diceValues = [];
+let target = 0;
+let expression = '';
+let usedDice = [];
+let currentStreak = 0;
+let archive = {};
+
 function dateToNumber(dateStr) {
-  // number of days since gameStartDate (for game number)
+  // Number of days since gameStartDate
   const start = new Date(gameStartDate);
   const d = new Date(dateStr);
-  const diff = Math.floor((d - start) / (1000 * 60 * 60 * 24));
-  return diff + 1; // game 1 is May 15
+  const diffTime = d - start;
+  return Math.floor(diffTime / (1000*60*60*24)) + 1; // +1 for day 1 as 1
+}
+
+function numberToDate(num) {
+  const start = new Date(gameStartDate);
+  start.setDate(start.getDate() + num - 1);
+  return start.toISOString().slice(0, 10);
 }
 
 function getDateNDaysBefore(dateStr, n) {
   const d = new Date(dateStr);
   d.setDate(d.getDate() - n);
-  return d.toISOString().slice(0,10);
+  return d.toISOString().slice(0, 10);
 }
 
 function getDateNDaysAfter(dateStr, n) {
   const d = new Date(dateStr);
   d.setDate(d.getDate() + n);
-  return d.toISOString().slice(0,10);
+  return d.toISOString().slice(0, 10);
 }
 
 function saveArchive() {
@@ -64,8 +68,8 @@ function saveArchive() {
 }
 
 function loadArchive() {
-  const arch = localStorage.getItem('qu0x-archive');
-  if (arch) archive = JSON.parse(arch);
+  const stored = localStorage.getItem('qu0x-archive');
+  if (stored) archive = JSON.parse(stored);
   else archive = {};
 }
 
@@ -83,13 +87,11 @@ function resetInput() {
   expression = '';
   usedDice = [];
   expressionDiv.textContent = expression;
-  inputLocked = false;
   updateDiceOpacity();
   messageContainer.textContent = '';
 }
 
 function updateDiceOpacity() {
-  // Dice fade when used
   const diceEls = document.querySelectorAll('.die');
   diceEls.forEach((die, i) => {
     die.style.opacity = usedDice.includes(i) ? '0.3' : '1';
@@ -98,8 +100,6 @@ function updateDiceOpacity() {
 }
 
 function rollDice(seed) {
-  // Simple deterministic PRNG using seed to generate dice rolls
-  // Returns array of 5 dice numbers (1-6)
   let x = seed;
   const results = [];
   for (let i = 0; i < 5; i++) {
@@ -111,304 +111,284 @@ function rollDice(seed) {
 }
 
 function getSeedFromDate(dateStr) {
-  // Convert YYYY-MM-DD to number seed
-  return dateStr.split('-').join('');
+  return parseInt(dateStr.split('-').join(''), 10);
 }
 
-function generateTarget(seed, dice) {
-  // Target: 1 to 100, deterministic using seed and dice sum
-  // Use seed + sum to generate a number 1-100
-  const diceSum = dice.reduce((a,b) => a + b, 0);
-  let x = seed + diceSum;
-  x = (x * 12345 + 67890) % 100;
-  return x === 0 ? 100 : x;
+function generateTarget(dice) {
+  // Target between 5 and 100 for fun, deterministic on dice sum + some formula
+  let sum = dice.reduce((a,b)=>a+b,0);
+  let targetBase = (sum * 7 + 13) % 96 + 5; // between 5 and 100
+  return targetBase;
 }
 
-function createDiceElements() {
+function renderDice() {
   diceContainer.innerHTML = '';
-  diceValues.forEach((val, i) => {
+  diceValues.forEach((val,i) => {
     const die = document.createElement('div');
-    die.classList.add('die');
-    die.classList.add(diceColorMap[val]);
+    die.classList.add('die', diceColorMap[val]);
     die.textContent = val;
     die.dataset.index = i;
-    die.title = 'Click to use this die value';
-    die.style.opacity = usedDice.includes(i) ? '0.3' : '1';
-    die.style.pointerEvents = usedDice.includes(i) ? 'none' : 'auto';
-
-    die.onclick = () => {
-      if (inputLocked) return;
+    die.title = "Click to use this die";
+    die.addEventListener('click', () => {
       if (usedDice.includes(i)) return;
-      expression += val.toString();
-      expressionDiv.textContent = expression;
+      expression += val;
       usedDice.push(i);
-      die.style.opacity = '0.3';
-      die.style.pointerEvents = 'none';
-    };
-
+      expressionDiv.textContent = expression;
+      updateDiceOpacity();
+    });
     diceContainer.appendChild(die);
   });
 }
 
-function updateExpressionDisplay() {
-  expressionDiv.textContent = expression;
-}
-
-function addOperator(op) {
-  if (inputLocked) return;
-  // Disallow consecutive operators except for ( and )
-  if (expression === '' && (op === '+' || op === '-' || op === '*' || op === '/' || op === '^' || op === '!')) {
-    messageContainer.textContent = 'Cannot start expression with operator.';
-    return;
-  }
-  if (op === '!') {
-    // factorial can only follow a number or closing parenthesis
-    const lastChar = expression.slice(-1);
-    if (!lastChar || (!/\d/.test(lastChar) && lastChar !== ')')) {
-      messageContainer.textContent = 'Factorial must follow a number or closing parenthesis.';
-      return;
-    }
-  }
-  expression += op;
-  updateExpressionDisplay();
-  messageContainer.textContent = '';
-}
-
-function backspace() {
-  if (inputLocked) return;
-  if (expression.length === 0) return;
-
-  const lastChar = expression.slice(-1);
-  expression = expression.slice(0, -1);
-
-  // If last char was a dice value, free that die
-  if (/\d/.test(lastChar)) {
-    // Find dice index of lastChar that is used
-    // This is tricky since dice are identical numbers
-    // We'll remove the most recently used die of that value
-    for (let i = usedDice.length - 1; i >= 0; i--) {
-      const dieIndex = usedDice[i];
-      if (diceValues[dieIndex].toString() === lastChar) {
-        usedDice.splice(i, 1);
-        break;
-      }
-    }
-  }
-
-  updateExpressionDisplay();
-  updateDiceOpacity();
-  messageContainer.textContent = '';
-}
-
-function clearInput() {
-  if (inputLocked) return;
-  resetInput();
-}
-
-function factorial(n) {
-  if (n < 0) return NaN;
-  if (n > 20) return Infinity; // limit to prevent overflow
-  let res = 1;
-  for (let i = 2; i <= n; i++) {
-    res *= i;
-  }
-  return res;
+function updateGameInfo() {
+  const gameNum = dateToNumber(currentDate);
+  gameNumberDiv.textContent = `Game #${gameNum}`;
+  const dateObj = new Date(currentDate);
+  dateDisplayDiv.textContent = dateObj.toDateString();
 }
 
 function evaluateExpression(expr) {
-  // Custom evaluation supporting factorial and ^ (exponent)
-  // Disallow eval for security, parse manually with Function
-
-  // Replace ^ with ** for exponentiation
-  let safeExpr = expr.replace(/\^/g, '**');
-
-  // Replace factorial occurrences (number!) with factorial(number)
-  // Use regex to find numbers followed by !
-  // Support factorial after parentheses as well
-
-  safeExpr = safeExpr.replace(/(\d+)!/g, (_, num) => {
-    return `factorial(${num})`;
-  });
-
-  safeExpr = safeExpr.replace(/\(([^()]+)\)!/g, (_, inner) => {
-    return `factorial((${inner}))`;
-  });
-
-  // Evaluate safely
   try {
-    // eslint-disable-next-line no-new-func
-    const func = new Function('factorial', `return ${safeExpr};`);
-    const val = func(factorial);
+    // Replace ^ with **
+    let exp = expr.replace(/\^/g, '**');
+
+    // Factorial handling:
+    // Replace n! with factorial(n) using a regex and function
+    exp = exp.replace(/(\d+)!/g, (match, p1) => {
+      let num = parseInt(p1,10);
+      if(num < 0 || num > 20) throw "Factorial out of range";
+      return factorial(num);
+    });
+
+    // Evaluate safely:
+    // Only digits, + - * / ^ ( ) allowed now with factorial replaced
+    if (/[^0-9+\-*/(). ]/.test(exp)) throw "Invalid characters";
+
+    // Evaluate:
+    const val = Function('"use strict";return (' + exp + ')')();
+    if (typeof val !== "number" || isNaN(val) || !isFinite(val)) throw "Invalid calculation";
     return val;
-  } catch {
-    return NaN;
+  } catch (e) {
+    return null;
   }
 }
 
-function submitAnswer() {
-  if (inputLocked) return;
-  if (expression === '') {
-    messageContainer.textContent = 'Please enter an expression.';
-    return;
-  }
-  // Check if all dice used exactly once
-  if (usedDice.length !== diceValues.length) {
-    messageContainer.textContent = `Use all 5 dice exactly once. Used ${usedDice.length} of 5.`;
-    return;
-  }
-
-  const val = evaluateExpression(expression);
-  if (typeof val !== 'number' || isNaN(val) || !isFinite(val)) {
-    messageContainer.textContent = 'Invalid expression or result.';
-    return;
-  }
-
-  const diff = Math.abs(val - target);
-  const perfect = diff === 0;
-  let score = diff;
-
-  // Update streak
-  if (perfect) currentStreak++;
-  else currentStreak = 0;
-
-  // Save archive for current date
-  const gameNum = dateToNumber(currentDate);
-  archive[currentDate] = { score, expression, val };
-
-  saveArchive();
-  saveStreak();
-
-  messageContainer.textContent = perfect
-    ? `Perfect! Your answer equals the target ${target}.`
-    : `Your answer is ${val.toFixed(2)}, difference from target ${diff.toFixed(2)}.`;
-
-  scoreDisplay.textContent = `Score: ${score.toFixed(2)}`;
-  streakDisplay.textContent = `Current Streak: ${currentStreak}`;
-
-  inputLocked = true;
-
-  if (perfect) {
-    showQu0xPopup();
-  }
-
-  updateShareLink();
-  updateHistory();
+function factorial(n) {
+  if(n === 0 || n === 1) return 1;
+  let res = 1;
+  for(let i=2; i<=n; i++) res *= i;
+  return res;
 }
 
-function showQu0xPopup() {
+function computeScore(val) {
+  if(val === null) return null;
+  return Math.abs(target - val);
+}
+
+function showQu0xAnimation() {
   qu0xPopup.style.display = 'block';
   setTimeout(() => {
     qu0xPopup.style.display = 'none';
   }, 3000);
 }
 
-function updateShareLink() {
-  // Share link with date and expression
-  const baseUrl = location.origin + location.pathname;
-  const params = new URLSearchParams();
-  params.set('date', currentDate);
-  if (archive[currentDate]) params.set('expr', archive[currentDate].expression);
-  shareLink.href = `${baseUrl}?${params.toString()}`;
-  shareLink.textContent = 'Share this game';
+function updateHistoryTable() {
+  historyBody.innerHTML = '';
+  // Show last 5 games sorted descending by game #
+  const keys = Object.keys(archive).map(k => parseInt(k,10)).sort((a,b)=>b-a).slice(0,5);
+  keys.forEach(gameNum => {
+    const entry = archive[gameNum];
+    const row = document.createElement('tr');
+    const dateTd = document.createElement('td');
+    const gameTd = document.createElement('td');
+    const scoreTd = document.createElement('td');
+    gameTd.textContent = gameNum;
+    dateTd.textContent = numberToDate(gameNum);
+    scoreTd.textContent = entry.score;
+    row.appendChild(gameTd);
+    row.appendChild(dateTd);
+    row.appendChild(scoreTd);
+    historyBody.appendChild(row);
+  });
 }
 
-function updateHistory() {
-  // Show last 5 games including current
-  historyBody.innerHTML = '';
-  const dates = Object.keys(archive).sort((a,b) => new Date(b) - new Date(a));
-  const lastFive = dates.slice(0,5).sort((a,b) => new Date(a) - new Date(b));
-  lastFive.forEach(date => {
-    const data = archive[date];
-    const tr = document.createElement('tr');
-
-    const gameNum = dateToNumber(date);
-    const tdNum = document.createElement('td');
-    tdNum.textContent = gameNum;
-    const tdDate = document.createElement('td');
-    tdDate.textContent = date;
-    const tdScore = document.createElement('td');
-    tdScore.textContent = data.score.toFixed(2);
-
-    tr.appendChild(tdNum);
-    tr.appendChild(tdDate);
-    tr.appendChild(tdScore);
-    historyBody.appendChild(tr);
-  });
+function generateShareLink() {
+  const gameNum = dateToNumber(currentDate);
+  const url = new URL(window.location.href);
+  url.searchParams.set('game', gameNum);
+  shareLink.href = url.toString();
+  shareLink.textContent = 'Share this game';
 }
 
 function loadGame(dateStr) {
   currentDate = dateStr;
+  const gameNum = dateToNumber(currentDate);
 
-  // Prevent loading future dates
-  if (new Date(currentDate) > new Date(todayStr)) {
-    currentDate = todayStr;
-  }
+  const seed = getSeedFromDate(currentDate);
+  diceValues = rollDice(seed);
+  target = generateTarget(diceValues);
 
-  // Prevent dates before gameStartDate
-  if (new Date(currentDate) < new Date(gameStartDate)) {
-    currentDate = gameStartDate;
-  }
+  expression = '';
+  usedDice = [];
 
-  const seedNum = parseInt(getSeedFromDate(currentDate), 10);
-  diceValues = rollDice(seedNum);
-  target = generateTarget(seedNum, diceValues);
-
+  renderDice();
+  updateGameInfo();
   resetInput();
-  createDiceElements();
+
   targetNumberSpan.textContent = target;
 
-  // Show game number and date
-  const gameNum = dateToNumber(currentDate);
-  gameNumberDiv.textContent = `Game #${gameNum}`;
-  dateDisplayDiv.textContent = currentDate;
-
-  // Load archive answer if any
-  if (archive[currentDate]) {
-    const ans = archive[currentDate];
-    expression = ans.expression;
-    expressionDiv.textContent = expression;
-    inputLocked = true;
-    messageContainer.textContent = `You scored ${ans.score.toFixed(2)} on this game.`;
-    scoreDisplay.textContent = `Score: ${ans.score.toFixed(2)}`;
+  // Load score from archive if any
+  if(archive[gameNum]) {
+    scoreDisplay.textContent = `Best score: ${archive[gameNum].score}`;
   } else {
     scoreDisplay.textContent = '';
-    messageContainer.textContent = '';
-    inputLocked = false;
   }
 
-  updateShareLink();
-  updateHistory();
-  updateDiceOpacity();
+  messageContainer.textContent = '';
+  generateShareLink();
+  updateHistoryTable();
+  updateStreakDisplay();
 }
 
-function init() {
-  loadArchive();
-  loadStreak();
+function updateStreakDisplay() {
+  streakDisplay.textContent = `Current Streak: ${currentStreak}`;
+}
 
-  // Load date from URL param if exists
-  const params = new URLSearchParams(window.location.search);
-  const urlDate = params.get('date');
-  if (urlDate) currentDate = urlDate;
-
-  loadGame(currentDate);
-
-  // Event listeners for operator buttons
-  document.querySelectorAll('#buttons-container .op').forEach(btn => {
-    btn.onclick = () => addOperator(btn.dataset.op);
+// Button handlers
+document.querySelectorAll('.op').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const op = btn.dataset.op;
+    if (op === '!') {
+      // Only allow if last char is digit and that digit is 0-9 for factorial
+      if(expression.length === 0) return;
+      const lastChar = expression[expression.length-1];
+      if(/\d/.test(lastChar)) {
+        expression += '!';
+        expressionDiv.textContent = expression;
+      }
+    } else {
+      // Just add operator
+      expression += op;
+      expressionDiv.textContent = expression;
+    }
   });
+});
 
-  backspaceBtn.onclick = backspace;
-  clearBtn.onclick = clearInput;
-  submitBtn.onclick = submitAnswer;
+backspaceBtn.addEventListener('click', () => {
+  if(expression.length === 0) return;
 
-  prevGameBtn.onclick = () => {
-    const prevDate = getDateNDaysBefore(currentDate, 1);
-    loadGame(prevDate);
-  };
-  nextGameBtn.onclick = () => {
-    const nextDate = getDateNDaysAfter(currentDate, 1);
-    loadGame(nextDate);
-  };
+  // If last char was a digit and part of a dice, remove dice usage if needed
+  // We track usedDice by dice index, so undo last dice usage if last char is a dice number
+
+  // Find last used dice in expression:
+  // This is complex so let's just remove last char and if last char is a digit, remove last used dice in reverse order.
+
+  const lastChar = expression[expression.length-1];
+  expression = expression.slice(0,-1);
+  expressionDiv.textContent = expression;
+
+  if(/\d/.test(lastChar)) {
+    // Try to remove the last used dice if any
+    if(usedDice.length > 0) {
+      usedDice.pop();
+      updateDiceOpacity();
+    }
+  }
+});
+
+clearBtn.addEventListener('click', () => {
+  resetInput();
+});
+
+submitBtn.addEventListener('click', () => {
+  // Allow multiple attempts until perfect score
+  if(expression.length === 0) {
+    messageContainer.textContent = "Enter an expression first.";
+    return;
+  }
+  const val = evaluateExpression(expression);
+  if(val === null) {
+    messageContainer.textContent = "Invalid expression.";
+    return;
+  }
+  const score = computeScore(val);
+  if(score === null) {
+    messageContainer.textContent = "Error computing score.";
+    return;
+  }
+
+  const gameNum = dateToNumber(currentDate);
+
+  // Update archive if better score or first time
+  if(!archive[gameNum] || score < archive[gameNum].score) {
+    archive[gameNum] = {score: score, date: currentDate};
+    saveArchive();
+  }
+
+  scoreDisplay.textContent = `Score: ${score}`;
+  messageContainer.textContent = `Your expression = ${val}`;
+
+  if(score === 0) {
+    messageContainer.textContent = "Perfect! You got Qu0x! 🎉";
+    currentStreak++;
+    saveStreak();
+    updateStreakDisplay();
+    showQu0xAnimation();
+
+    // Lock input only on perfect answer
+    // Disable dice and operators
+    disableInput();
+
+  } else {
+    messageContainer.textContent += " Try again!";
+  }
+});
+
+function disableInput() {
+  // Disable dice and operator buttons to lock input after Qu0x
+  document.querySelectorAll('.die').forEach(d => d.style.pointerEvents = 'none');
+  document.querySelectorAll('.op').forEach(b => b.disabled = true);
+  backspaceBtn.disabled = true;
+  clearBtn.disabled = true;
+  submitBtn.disabled = true;
 }
 
-init();
+function enableInput() {
+  document.querySelectorAll('.die').forEach(d => d.style.pointerEvents = 'auto');
+  document.querySelectorAll('.op').forEach(b => b.disabled = false);
+  backspaceBtn.disabled = false;
+  clearBtn.disabled = false;
+  submitBtn.disabled = false;
+}
+
+// Prev/Next game buttons
+prevGameBtn.addEventListener('click', () => {
+  const prevDate = getDateNDaysBefore(currentDate, 1);
+  if(prevDate < gameStartDate) return;
+  enableInput();
+  loadGame(prevDate);
+});
+
+nextGameBtn.addEventListener('click', () => {
+  const nextDate = getDateNDaysAfter(currentDate, 1);
+  if(nextDate > todayStr) return;
+  enableInput();
+  loadGame(nextDate);
+});
+
+// On page load:
+loadArchive();
+loadStreak();
+
+const params = new URLSearchParams(window.location.search);
+const gameParam = params.get('game');
+if(gameParam) {
+  const dateFromParam = numberToDate(parseInt(gameParam,10));
+  if(dateFromParam >= gameStartDate && dateFromParam <= todayStr) {
+    loadGame(dateFromParam);
+  } else {
+    loadGame(currentDate);
+  }
+} else {
+  loadGame(currentDate);
+}
