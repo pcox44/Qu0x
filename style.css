@@ -1,104 +1,146 @@
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   text-align: center;
   padding: 20px;
-  background: #f8f8f8;
+  background-color: #f9f9f9;
+  color: #333;
 }
 
 h1 {
-  font-size: 3em;
+  font-size: 2.5em;
   margin-bottom: 0.2em;
 }
 
-.instructions {
-  margin-bottom: 1em;
-  font-size: 1.1em;
+.rules {
+  font-size: 1em;
+  max-width: 600px;
+  margin: 0 auto 1em;
+}
+
+#game-info {
+  margin-bottom: 10px;
+}
+
+#game-info button {
+  padding: 5px 10px;
+  font-size: 1em;
+  margin: 0 10px;
 }
 
 .dice-row {
   display: flex;
   justify-content: center;
-  margin: 15px 0;
+  margin: 10px 0;
 }
 
 .die {
-  width: 60px;
-  height: 60px;
   font-size: 2em;
   font-weight: bold;
-  color: white;
+  border: 2px solid #aaa;
   border-radius: 10px;
-  margin: 0 6px;
+  width: 50px;
+  height: 50px;
+  margin: 0 5px;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
   cursor: pointer;
-  transition: opacity 0.3s ease;
+  user-select: none;
+  transition: opacity 0.3s;
 }
 
-.used {
+.die.used {
   opacity: 0.3;
+  pointer-events: none;
 }
 
-.die1 { background-color: red; }
-.die2 { background-color: white; color: black; }
-.die3 { background-color: blue; }
-.die4 { background-color: yellow; color: black; }
-.die5 { background-color: green; }
-.die6 { background-color: black; }
+.die.red { background-color: #d22; color: white; }
+.die.white { background-color: white; color: black; border: 2px solid #aaa; }
+.die.blue { background-color: #22d; color: white; }
+.die.yellow { background-color: #dd2; color: black; }
+.die.green { background-color: #2a4; color: white; }
+.die.black { background-color: black; color: #ff0; }
 
-#expression {
+#target-container {
   font-size: 1.5em;
-  margin-bottom: 10px;
-  min-height: 1.5em;
+  margin: 10px;
+  font-weight: bold;
 }
 
-#buttons {
+#expression-display {
+  font-size: 1.5em;
+  min-height: 40px;
+  border: 2px solid #666;
+  border-radius: 5px;
+  width: 320px;
+  margin: 0 auto 10px;
+  padding: 5px 10px;
+  background-color: white;
+  user-select: none;
+  cursor: default;
+}
+
+#buttons-container {
+  margin: 10px auto 20px;
+  max-width: 380px;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 8px;
+  gap: 5px;
 }
 
-button {
-  padding: 10px 15px;
+#buttons-container button {
   font-size: 1.2em;
-  border-radius: 5px;
-  border: none;
+  padding: 8px 14px;
   cursor: pointer;
+  user-select: none;
+  border-radius: 5px;
+  border: 1px solid #666;
+  background-color: #eee;
+  transition: background-color 0.2s;
 }
 
-#backspace, #clear, #submit {
-  background-color: #ccc;
+#buttons-container button:hover:not(:disabled) {
+  background-color: #ddd;
 }
 
-#message {
+#buttons-container button:disabled {
+  background-color: #bbb;
+  cursor: default;
+}
+
+#result-container {
+  font-size: 1.2em;
+  margin: 10px;
+  min-height: 24px;
+}
+
+#message-container {
   font-size: 1.3em;
-  margin-top: 10px;
   font-weight: bold;
+  margin: 10px;
+  min-height: 28px;
+  color: green;
 }
 
 #score, #streak {
   font-size: 1.2em;
-  margin: 10px 0;
-}
-
-#archive {
-  margin-top: 30px;
+  margin: 10px;
 }
 
 #history {
-  width: 100%;
-  max-width: 500px;
-  margin: 0 auto;
+  margin: 20px auto;
   border-collapse: collapse;
+  width: 90%;
+  max-width: 600px;
 }
 
 #history th, #history td {
-  padding: 8px;
-  border: 1px solid #ddd;
+  border: 1px solid #ccc;
+  padding: 8px 12px;
 }
 
 #history th {
-  background: #eee;
+  background-color: #eee;
 }
