@@ -1,119 +1,132 @@
 body {
   font-family: Arial, sans-serif;
-  background-color: #f0f4f8;
+  background-color: #f9f9f9;
   color: #333;
-  margin: 20px;
   text-align: center;
+  margin: 20px;
 }
 
 h1 {
-  color: #1a73e8;
-  margin-bottom: 10px;
+  color: #004080;
+  margin-bottom: 5px;
 }
 
-#dice-container {
-  margin: 20px 0;
+p {
+  max-width: 600px;
+  margin: 10px auto 20px;
+  font-size: 16px;
 }
 
-.dice {
-  display: inline-block;
+.dice-row {
+  display: flex;
+  justify-content: center;
+  margin: 15px 0;
+  gap: 10px;
+}
+
+.die {
   width: 50px;
   height: 50px;
-  line-height: 50px;
-  margin: 5px;
+  border-radius: 10px;
   font-size: 24px;
   font-weight: bold;
-  color: white;
-  border-radius: 8px;
+  line-height: 50px;
   cursor: pointer;
   user-select: none;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
-  transition: transform 0.15s ease;
+  color: white;
+  transition: opacity 0.5s ease;
 }
 
-.dice.red { background-color: #e53e3e; }
-.dice.blue { background-color: #3182ce; }
-.dice.green { background-color: #38a169; }
-.dice.orange { background-color: #dd6b20; }
-.dice.purple { background-color: #805ad5; }
-
-.dice.used {
-  background-color: #aaa;
-  cursor: default;
-  text-decoration: line-through;
-  box-shadow: none;
-  transform: scale(0.9);
+.die.used {
+  opacity: 0.3;
+  pointer-events: none;
 }
 
-#expression-container {
-  font-size: 28px;
+/* Horse race colors */
+.die.red { background-color: #c41e3a; }
+.die.white {
+  background-color: white;
+  color: black;
+  border: 2px solid #bbb;
+}
+.die.blue { background-color: #0033a0; }
+.die.yellow { background-color: #ffd100; color: black; }
+.die.green { background-color: #008000; }
+.die.black { background-color: black; color: #ffde00; }
+
+#target-container {
+  font-size: 20px;
+  margin: 10px 0 20px;
   font-weight: bold;
-  border: 2px solid #1a73e8;
-  border-radius: 8px;
-  padding: 10px 20px;
-  min-height: 50px;
-  user-select: none;
-  margin-bottom: 20px;
-  background-color: #ffffff;
 }
 
-button {
+#input-container {
+  margin: 10px 0;
+  min-height: 40px;
+  font-size: 22px;
+  border: 1px solid #aaa;
+  padding: 8px;
+  width: 80%;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: white;
+  user-select: none;
+}
+
+#buttons-container {
+  margin: 10px auto 20px;
+  max-width: 400px;
+}
+
+#buttons-container button {
   font-size: 20px;
-  padding: 10px 15px;
-  margin: 5px;
-  border-radius: 6px;
-  border: 1px solid #1a73e8;
-  background-color: #1a73e8;
-  color: white;
+  padding: 8px 14px;
+  margin: 3px;
   cursor: pointer;
-  transition: background-color 0.25s ease;
-  user-select: none;
 }
 
-button:hover:not(:disabled) {
-  background-color: #155ab6;
-}
-
-button:disabled {
-  background-color: #bbb;
-  cursor: default;
-}
-
-.operator-btn {
-  width: 50px;
-}
-
-#result {
-  margin: 20px 0;
-  font-size: 20px;
-  font-weight: 600;
+#result-container, #message-container, #score, #streak {
+  font-size: 18px;
+  margin: 10px 0;
   min-height: 24px;
 }
 
-#history-table {
+#history {
   margin: 20px auto;
   border-collapse: collapse;
-  width: 80%;
-  max-width: 800px;
+  width: 90%;
+  max-width: 600px;
 }
 
-#history-table th,
-#history-table td {
-  border: 1px solid #ddd;
-  padding: 8px;
+#history th, #history td {
+  border: 1px solid #ccc;
+  padding: 8px 12px;
 }
 
-#history-table th {
-  background-color: #1a73e8;
-  color: white;
+#history th {
+  background-color: #eee;
 }
 
-#navigation-buttons {
-  margin-top: 15px;
+/* Qu0x popup */
+.qu0x-popup {
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 72px;
+  font-weight: bold;
+  color: #ffcc00;
+  text-shadow: 2px 2px 8px #663300;
+  background: rgba(0,0,0,0.8);
+  padding: 30px 60px;
+  border-radius: 15px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+  z-index: 1000;
 }
-
-@keyframes qu0x-pop {
-  0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
-  50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
-  100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+.qu0x-popup.show {
+  opacity: 1;
+  pointer-events: auto;
 }
