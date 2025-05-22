@@ -10,6 +10,9 @@ const historyBody = document.getElementById("history-body");
 const animation = document.getElementById("qu0x-animation");
 const todayDateSpan = document.getElementById("today-date");
 
+const START_DATE = new Date("2025-05-15");
+let currentOffset = Math.floor((new Date() - START_DATE) / (1000 * 60 * 60 * 24));
+
 const horseColors = {
   1: "red",
   2: "white",
@@ -19,27 +22,22 @@ const horseColors = {
   6: "black"
 };
 
-todayDateSpan.textContent = `Today: ${new Date().toISOString().slice(0, 10)}`;
-
-const START_DATE = new Date("2025-05-15");
-let currentOffset = Math.floor((new Date() - START_DATE) / (1000 * 60 * 60 * 24));
-
-function formatDate(date) {
-  return date.toISOString().slice(0, 10);
-}
-
 function getSeededRandom(seed) {
   let x = Math.sin(seed) * 10000;
   return x - Math.floor(x);
 }
 
+function formatDate(date) {
+  return date.toISOString().slice(0, 10);
+}
+
 function generateGame(dateStr) {
   const seed = parseInt(dateStr.replace(/-/g, ""));
-  let dice = [];
+  const dice = [];
   for (let i = 0; i < 5; i++) {
-    dice.push(Math.floor(getSeededRandom(seed + i) * 6) + 1);
+    dice.push(Math.floor(getSeededRandom(seed + i * 47) * 6) + 1);
   }
-  const target = Math.floor(getSeededRandom(seed + 100) * 100) + 1;
+  const target = Math.floor(getSeededRandom(seed + 999) * 100) + 1;
   return { dice, target };
 }
 
@@ -53,20 +51,21 @@ function loadGame(offset) {
 
   gameNumberSpan.textContent = `Game #${gameNum}`;
   gameDateSpan.textContent = `Date: ${dateStr}`;
+  todayDateSpan.textContent = `Today: ${formatDate(new Date())}`;
   targetNumberSpan.textContent = target;
   expressionDisplay.textContent = "";
   scoreSpan.textContent = "Score: --";
   messageContainer.textContent = "";
 
   diceRow.innerHTML = "";
-  dice.forEach((val, idx) => {
+  dice.forEach((val) => {
     const die = document.createElement("div");
     die.className = "die";
     die.dataset.value = val;
     die.textContent = val;
     die.style.backgroundColor = horseColors[val];
-    if (val === 6) die.style.color = "yellow";
-    if (val === 2) {
+    if ([1, 3, 5].includes(val)) die.style.color = "white";
+    if ([2].includes(val)) {
       die.style.backgroundColor = "white";
       die.style.color = "black";
     }
@@ -201,5 +200,4 @@ document.getElementById("next-day").addEventListener("click", () => {
   }
 });
 
-// Load today's game by default
 loadGame(currentOffset);
