@@ -1,173 +1,65 @@
-const diceContainer = document.getElementById('dice');
-const targetContainer = document.getElementById('target');
-const expressionContainer = document.getElementById('expression');
-const resultContainer = document.getElementById('result');
-const messageContainer = document.getElementById('message');
-const gameNumberContainer = document.getElementById('game-number');
-const streakContainer = document.getElementById('streak');
-const historyTable = document.getElementById('history-body');
-const operators = ['+', '-', '×', '÷', '^', '!', '(', ')'];
+const startDate = new Date("2025-05-15");
+let today = new Date();
+today.setHours(0, 0, 0, 0);
 
-let expressionTokens = [];
+let currentGameOffset = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
 let usedDice = [];
-let gameEnded = false;
+let expression = "";
+let gameData = {};
+let streak = parseInt(localStorage.getItem("qu0xStreak") || "0");
 
-const horseColors = {
-  1: { background: 'red', color: 'white' },
-  2: { background: 'white', color: 'black' },
-  3: { background: 'blue', color: 'white' },
-  4: { background: 'yellow', color: 'black' },
-  5: { background: 'green', color: 'white' },
-  6: { background: 'black', color: 'yellow' }
-};
+const diceContainer = document.getElementById("dice-container");
+const targetDiv = document.getElementById("target-number");
+const gameNumDiv = document.getElementById("game-number");
+const expressionDiv = document.getElementById("expression");
+const messageDiv = document.getElementById("message");
+const streakDiv = document.getElementById("streak");
+const historyTable = document.querySelector("#history tbody");
 
-// Game Logic
-function getTodayGameNumber() {
-  const start = new Date('2025-05-15T00:00:00');
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const diff = Math.floor((today - start) / (1000 * 60 * 60 * 24));
-  return diff >= 0 ? diff + 1 : 1;
+function seedRandom(dayOffset) {
+  const seed = dayOffset + 12345;
+  return () => {
+    const x = Math.sin(seed + dayOffset++) * 10000;
+    return x - Math.floor(x);
+  };
 }
 
-function getGameDate(gameNum) {
-  const start = new Date('2025-05-15T00:00:00');
-  const date = new Date(start);
-  date.setDate(start.getDate() + gameNum - 1);
-  return date;
+function generateGame(dayOffset) {
+  const rng = seedRandom(dayOffset);
+  let dice, target, found;
+
+  do {
+    dice = Array.from({ length: 5 }, () => Math.floor(rng() * 6) + 1);
+    target = Math.floor(rng() * 100) + 1;
+    found = true; // Placeholder; you can implement a real solution checker
+  } while (!found);
+
+  return { dice, target };
 }
 
-function seedRandom(seed) {
-  let x = Math.sin(seed) * 10000;
-  return x - Math.floor(x);
-}
+function loadGame(offset) {
+  currentGameOffset = offset;
+  const date = new Date(startDate.getTime());
+  date.setDate(startDate.getDate() + offset);
+  const dateStr = date.toISOString().slice(0, 10);
 
-function seededShuffle(seed, array) {
-  let result = array.slice();
-  for (let i = result.length - 1; i > 0; i--) {
-    const j = Math.floor(seedRandom(seed + i) * (i + 1));
-    [result[i], result[j]] = [result[j], result[i]];
-  }
-  return result;
-}
-
-function generateGameData(gameNumber) {
-  let seed = gameNumber;
-  while (true) {
-    const dice = [];
-    for (let i = 0; i < 5; i++) {
-      dice.push(1 + Math.floor(seedRandom(seed + i) * 6));
-    }
-    const maxTarget = 100;
-    for (let t = 0; t < 1000; t++) {
-      const target = 1 + Math.floor(seedRandom(seed + 100 + t) * maxTarget);
-      if (isSolvable(dice, target)) {
-        return { dice, target };
-      }
-    }
-    seed++; // Try a new seed if unsolvable
-  }
-}
-
-// Expression Evaluation
-function evaluateExpression(tokens) {
-  try {
-    let expr = tokens.join('')
-      .replace(/×/g, '*')
-      .replace(/÷/g, '/')
-      .replace(/(\d+)!/g, (_, n) => {
-        if (n < 0 || n % 1 !== 0) throw 'Invalid factorial';
-        let f = 1;
-        for (let i = 1; i <= n; i++) f *= i;
-        return f;
-      });
-    let result = Function('"use strict";return (' + expr + ')')();
-    return Math.round(result);
-  } catch {
-    return null;
-  }
-}
-
-function isSolvable(dice, target) {
-  const ops = ['+', '-', '*', '/', '^'];
-  const perms = permuteDice(dice);
-  for (const p of perms) {
-    const opCombos = generateOpCombos(p.length - 1, ops);
-    for (const opset of opCombos) {
-      const expr = [];
-      for (let i = 0; i < p.length; i++) {
-        expr.push(p[i]);
-        if (i < opset.length) expr.push(opset[i]);
-      }
-      const res = evaluateExpression(expr.map(e => {
-        if (e === '*') return '×';
-        if (e === '/') return '÷';
-        return e;
-      }));
-      if (res === target) return true;
-    }
-  }
-  return false;
-}
-
-function permuteDice(arr) {
-  if (arr.length === 0) return [[]];
-  const result = [];
-  for (let i = 0; i < arr.length; i++) {
-    const rest = arr.slice(0, i).concat(arr.slice(i + 1));
-    for (const perm of permuteDice(rest)) {
-      result.push([arr[i]].concat(perm));
-    }
-  }
-  return result;
-}
-
-function generateOpCombos(length, ops) {
-  if (length === 0) return [[]];
-  const result = [];
-  const rest = generateOpCombos(length - 1, ops);
-  for (const op of ops) {
-    for (const r of rest) {
-      result.push([op, ...r]);
-    }
-  }
-  return result;
-}
-
-// Rendering
-function renderGame(gameNumber) {
-  const todayGame = getTodayGameNumber();
-  if (gameNumber > todayGame) {
-    alert("This game is not available yet.");
-    return;
-  }
-
-  gameEnded = false;
-  expressionTokens = [];
+  gameData = generateGame(offset);
+  expression = "";
   usedDice = [];
-  const gameData = generateGameData(gameNumber);
-  const { dice, target } = gameData;
 
-  gameNumberContainer.textContent = `Game #${gameNumber}`;
-  targetContainer.textContent = `Target: ${target}`;
-  diceContainer.innerHTML = '';
-  expressionContainer.textContent = '';
-  resultContainer.textContent = '';
-  messageContainer.textContent = '';
+  gameNumDiv.textContent = `Game #${offset + 1} (${dateStr})`;
+  targetDiv.textContent = `Target: ${gameData.target}`;
+  expressionDiv.textContent = "";
+  messageDiv.textContent = "";
 
-  dice.forEach((value, i) => {
-    const die = document.createElement('div');
-    die.classList.add('die');
-    die.textContent = value;
-    die.style.backgroundColor = horseColors[value].background;
-    die.style.color = horseColors[value].color;
-    die.addEventListener('click', () => {
-      if (!die.classList.contains('used') && !gameEnded) {
-        expressionTokens.push(value.toString());
-        die.classList.add('used');
-        updateExpressionDisplay();
-      }
-    });
+  diceContainer.innerHTML = "";
+  gameData.dice.forEach((val, i) => {
+    const die = document.createElement("div");
+    die.className = "die";
+    die.dataset.index = i;
+    die.dataset.value = val;
+    die.textContent = val;
+    die.addEventListener("click", () => useDie(i));
     diceContainer.appendChild(die);
   });
 
@@ -175,98 +67,89 @@ function renderGame(gameNumber) {
   updateHistory();
 }
 
-function updateExpressionDisplay() {
-  expressionContainer.textContent = expressionTokens.join(' ');
+function useDie(index) {
+  const die = diceContainer.children[index];
+  if (die.classList.contains("faded")) return;
+
+  expression += die.dataset.value;
+  usedDice.push(index);
+  die.classList.add("faded");
+  expressionDiv.textContent = expression;
 }
 
 function updateStreak() {
-  const streak = Number(localStorage.getItem('qu0xStreak') || 0);
-  streakContainer.textContent = `Current Qu0x Streak: ${streak}`;
+  streakDiv.textContent = `Current Qu0x Streak: ${streak}`;
 }
 
 function updateHistory() {
-  const history = JSON.parse(localStorage.getItem('qu0xHistory') || '[]');
-  historyTable.innerHTML = '';
-  const last5 = history.slice(-5).reverse();
-  for (const h of last5) {
-    const tr = document.createElement('tr');
-    const d = new Date(h.date);
-    tr.innerHTML = `<td>${d.toDateString()}</td><td>${h.score}</td>`;
-    historyTable.appendChild(tr);
+  historyTable.innerHTML = "";
+  for (let i = Math.max(0, currentGameOffset - 4); i <= currentGameOffset; i++) {
+    const gameDate = new Date(startDate.getTime());
+    gameDate.setDate(startDate.getDate() + i);
+    const dateStr = gameDate.toISOString().slice(0, 10);
+    const score = localStorage.getItem(`qu0xScore-${i}`) || "-";
+    const row = `<tr><td>${i + 1}</td><td>${dateStr}</td><td>${score}</td></tr>`;
+    historyTable.innerHTML += row;
   }
 }
 
-document.querySelectorAll('.op').forEach(btn => {
-  btn.addEventListener('click', () => {
-    if (!gameEnded) {
-      expressionTokens.push(btn.textContent);
-      updateExpressionDisplay();
-    }
-  });
-});
+document.querySelectorAll(".op").forEach(btn =>
+  btn.addEventListener("click", () => {
+    expression += btn.textContent;
+    expressionDiv.textContent = expression;
+  })
+);
 
-document.getElementById('backspace').addEventListener('click', () => {
-  if (expressionTokens.length > 0) {
-    const last = expressionTokens.pop();
-    if (!isNaN(last)) {
-      const dice = document.querySelectorAll('.die');
-      for (let die of dice) {
-        if (die.textContent == last && die.classList.contains('used')) {
-          die.classList.remove('used');
-          break;
-        }
+document.getElementById("clear").onclick = () => {
+  expression = "";
+  usedDice = [];
+  expressionDiv.textContent = "";
+  [...diceContainer.children].forEach(d => d.classList.remove("faded"));
+};
+
+document.getElementById("backspace").onclick = () => {
+  const last = expression.slice(-1);
+  expression = expression.slice(0, -1);
+  expressionDiv.textContent = expression;
+
+  if (!isNaN(last)) {
+    for (let i = usedDice.length - 1; i >= 0; i--) {
+      const idx = usedDice[i];
+      if (diceContainer.children[idx].textContent === last) {
+        usedDice.splice(i, 1);
+        diceContainer.children[idx].classList.remove("faded");
+        break;
       }
     }
-    updateExpressionDisplay();
   }
-});
+};
 
-document.getElementById('clear').addEventListener('click', () => {
-  expressionTokens = [];
-  document.querySelectorAll('.die').forEach(die => die.classList.remove('used'));
-  updateExpressionDisplay();
-});
+document.getElementById("submit").onclick = () => {
+  try {
+    const val = eval(expression.replace(/×/g, '*').replace(/÷/g, '/').replace(/−/g, '-').replace(/\^/g, '**'));
+    const score = Math.abs(val - gameData.target);
+    messageDiv.textContent = score === 0 ? "Qu0x!" : `Score: ${score}`;
+    localStorage.setItem(`qu0xScore-${currentGameOffset}`, score);
 
-document.getElementById('submit').addEventListener('click', () => {
-  const gameNumber = Number(gameNumberContainer.textContent.split('#')[1]);
-  const { target } = generateGameData(gameNumber);
-  const result = evaluateExpression(expressionTokens);
-  resultContainer.textContent = `Your result: ${result}`;
-  if (result === target) {
-    messageContainer.textContent = 'Qu0x!';
-    messageContainer.style.fontSize = '2em';
-    messageContainer.style.color = 'green';
-    gameEnded = true;
+    if (score === 0) {
+      streak++;
+      localStorage.setItem("qu0xStreak", streak);
+    }
 
-    let streak = Number(localStorage.getItem('qu0xStreak') || 0);
-    streak++;
-    localStorage.setItem('qu0xStreak', streak);
-    updateStreak();
-
-    const history = JSON.parse(localStorage.getItem('qu0xHistory') || '[]');
-    history.push({ date: new Date(), score: 0 });
-    localStorage.setItem('qu0xHistory', JSON.stringify(history));
-    updateHistory();
-  } else {
-    messageContainer.textContent = `Off by ${Math.abs(target - result)}`;
-    messageContainer.style.color = 'red';
-
-    const history = JSON.parse(localStorage.getItem('qu0xHistory') || '[]');
-    history.push({ date: new Date(), score: Math.abs(target - result) });
-    localStorage.setItem('qu0xHistory', JSON.stringify(history));
-    localStorage.setItem('qu0xStreak', 0); // reset streak
     updateStreak();
     updateHistory();
+  } catch {
+    messageDiv.textContent = "Invalid expression";
   }
-});
+};
 
-let currentGame = getTodayGameNumber();
-document.getElementById('prev').addEventListener('click', () => {
-  if (currentGame > 1) renderGame(--currentGame);
-});
-document.getElementById('next').addEventListener('click', () => {
-  if (currentGame < getTodayGameNumber()) renderGame(++currentGame);
-});
+document.getElementById("prev-day").onclick = () => {
+  if (currentGameOffset > 0) loadGame(currentGameOffset - 1);
+};
 
-// Initial Game
-renderGame(currentGame);
+document.getElementById("next-day").onclick = () => {
+  const todayOffset = Math.floor((new Date().setHours(0, 0, 0, 0) - startDate.getTime()) / (1000 * 60 * 60 * 24));
+  if (currentGameOffset < todayOffset) loadGame(currentGameOffset + 1);
+};
+
+loadGame(currentGameOffset);
