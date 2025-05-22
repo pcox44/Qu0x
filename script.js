@@ -593,30 +593,4 @@ function submitExpression() {
   updateHistory();
 }
 
-// Save/load from localStorage with keys like `qu0x-game-{index}`
 
-// Streak handling stored in localStorage
-
-// Shareable link generation with URL params for dice, target, expression
-
-// On page load, parse URL params to load state if provided
-
-// Rendering dice buttons (colored), expression display (uneditable), operator buttons
-
-// Buttons: Backspace removes last char and unmarks dice if number
-
-// Clear resets expression and dice usage
-
-// Operator buttons disabled/enabled based on last character rules
-
-// Qu0x animation: a big centered popup "Qu0x!" fading after 3 seconds
-
-// Initialize daily game on page load (or from URL)
-
-// ...plus wiring all buttons and events.
-
-// ---
-
-
-// This sketch is a comprehensive outline and will require HTML elements with proper IDs/classes and CSS for styling dice colors and animations.  
-If you want, I can help you write the full HTML + CSS + JS bundle ready to run in a single file or multiple files. Would you like me to prepare that for you?
