@@ -8,47 +8,49 @@
 </head>
 <body>
   <h1>Qu0x</h1>
-  <p class="instructions">Use all five dice <strong>exactly once</strong> with math operations to get as close as possible to the target number. A perfect match is a <strong>Qu0x!</strong></p>
+  <div class="rules">Use all five dice exactly once with operations to hit the target number. Get a score of 0 to earn a Qu0x!</div>
 
   <div id="game-info">
     <div id="game-number"></div>
     <div id="target-number"></div>
+    <div id="dice-container"></div>
   </div>
-
-  <div class="dice-row" id="dice-row"></div>
 
   <div id="expression-container">
     <div id="expression"></div>
     <div id="buttons">
-      <button class="op" data-val="+">+</button>
-      <button class="op" data-val="-">−</button>
-      <button class="op" data-val="*">×</button>
-      <button class="op" data-val="/">÷</button>
-      <button class="op" data-val="^">^</button>
-      <button class="op" data-val="!">!</button>
-      <button class="op" data-val="(">(</button>
-      <button class="op" data-val=")">)</button>
-      <button id="backspace">←</button>
-      <button id="clear">Clear</button>
-      <button id="submit">Submit</button>
+      <div id="ops">
+        <button class="op">+</button>
+        <button class="op">−</button>
+        <button class="op">×</button>
+        <button class="op">÷</button>
+        <button class="op">^</button>
+        <button class="op">!</button>
+        <button class="op">(</button>
+        <button class="op">)</button>
+      </div>
+      <div id="controls">
+        <button id="backspace">Backspace</button>
+        <button id="clear">Clear</button>
+        <button id="submit">Submit</button>
+      </div>
     </div>
   </div>
 
   <div id="message"></div>
   <div id="score"></div>
-  <div id="streak">Current Qu0x Streak: 0</div>
+  <div id="streak"></div>
+
+  <div id="nav-buttons">
+    <button id="prev-day">← Previous</button>
+    <button id="next-day">Next →</button>
+  </div>
 
   <div id="archive">
-    <h2>Game Archive</h2>
+    <h2>Game Archive (Last 5)</h2>
     <table id="history">
-      <thead>
-        <tr>
-          <th>Game #</th>
-          <th>Date</th>
-          <th>Score</th>
-        </tr>
-      </thead>
-      <tbody id="history-body"></tbody>
+      <thead><tr><th>Game #</th><th>Date</th><th>Score</th></tr></thead>
+      <tbody></tbody>
     </table>
   </div>
 
