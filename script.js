@@ -7,38 +7,33 @@ const colors = {
   6: { background: 'black', color: 'yellow' },
 };
 
-let dice = [];
-let target = 0;
-let expression = '';
-let usedDice = [];
+let dice = [], target = 0, expression = '', usedDice = [];
 let gameNumber = 1;
 let todayGameNumber = calculateGameNumber(new Date());
 let totalQu0x = JSON.parse(localStorage.getItem('totalQu0x') || '0');
 let archive = JSON.parse(localStorage.getItem('archive') || '[]');
 
 function calculateGameNumber(date) {
-  const start = new Date('2025-05-15');
-  return Math.floor((date - start) / (1000 * 60 * 60 * 24)) + 1;
+  return Math.floor((date - new Date('2025-05-15')) / (1000 * 60 * 60 * 24)) + 1;
 }
 
 function getDateFromGameNumber(n) {
-  const start = new Date('2025-05-15');
-  start.setDate(start.getDate() + (n - 1));
-  return start.toISOString().split('T')[0];
+  let d = new Date('2025-05-15');
+  d.setDate(d.getDate() + (n - 1));
+  return d.toISOString().split('T')[0];
 }
 
 function seedRandom(seed) {
-  let x = Math.sin(seed) * 10000;
-  return x - Math.floor(x);
+  return Math.sin(seed) * 10000 - Math.floor(Math.sin(seed) * 10000);
 }
 
 function seededRandomDice(seed) {
-  let values = [];
+  let dice = [];
   for (let i = 0; i < 5; i++) {
-    seed = seedRandom(seed + i);
-    values.push(Math.floor(seed * 6) + 1);
+    seed += i;
+    dice.push(Math.floor(seedRandom(seed) * 6) + 1);
   }
-  return values;
+  return dice;
 }
 
 function seededTarget(seed) {
@@ -57,28 +52,28 @@ function loadGame(n) {
 }
 
 function updateDisplay() {
-  const diceContainer = document.getElementById('dice-container');
-  diceContainer.innerHTML = '';
-  dice.forEach((value, i) => {
+  const container = document.getElementById('dice-container');
+  container.innerHTML = '';
+  dice.forEach((val, i) => {
     const die = document.createElement('div');
     die.className = 'die';
-    die.innerText = value;
-    die.style.backgroundColor = colors[value].background;
-    die.style.color = colors[value].color;
-    if (usedDice.includes(i)) die.style.opacity = 0.3;
+    die.innerText = val;
+    die.style.backgroundColor = colors[val].background;
+    die.style.color = colors[val].color;
+    die.style.opacity = usedDice.includes(i) ? 0.3 : 1;
     die.onclick = () => {
       if (!usedDice.includes(i)) {
-        expression += value;
         usedDice.push(i);
+        expression += val;
         updateDisplay();
         updateExpressionDisplay();
       }
     };
-    diceContainer.appendChild(die);
+    container.appendChild(die);
   });
 
-  document.getElementById('expression-box').value = expression;
   document.getElementById('target-box').innerText = `Target: ${target}`;
+  document.getElementById('expression-box').value = expression;
   document.getElementById('game-number').innerText = `Game #${gameNumber}`;
   document.getElementById('date-display').innerText = getDateFromGameNumber(gameNumber);
   document.getElementById('total-qu0x').innerText = `Total Qu0x: ${totalQu0x}`;
@@ -93,21 +88,15 @@ function updateDisplay() {
 }
 
 function updateExpressionDisplay() {
-  const output = document.getElementById('expression-output');
   try {
-    if (expression.includes('!')) {
-      const replaced = expression.replace(/(\d+)!/g, (_, n) => {
-        if (n < 0 || n % 1 !== 0) throw 'Invalid factorial';
-        let f = 1;
-        for (let i = 1; i <= +n; i++) f *= i;
-        return f;
-      });
-      output.innerText = eval(replaced);
-    } else {
-      output.innerText = eval(expression);
-    }
+    const val = eval(expression.replace(/(\d+)!/g, (_, n) => {
+      let f = 1;
+      for (let i = 1; i <= +n; i++) f *= i;
+      return f;
+    }));
+    document.getElementById('expression-output').innerText = isNaN(val) ? '' : val;
   } catch {
-    output.innerText = '';
+    document.getElementById('expression-output').innerText = '';
   }
 }
 
@@ -136,50 +125,40 @@ function backspace() {
 }
 
 function submit() {
-  if (usedDice.length !== 5) {
-    alert('Use all 5 dice!');
-    return;
-  }
-
-  let val;
+  if (usedDice.length !== 5) return alert('Use all 5 dice exactly once!');
   try {
-    let tempExpr = expression.replace(/(\d+)!/g, (_, n) => {
-      if (n < 0 || n % 1 !== 0) throw 'Invalid factorial';
+    const result = eval(expression.replace(/(\d+)!/g, (_, n) => {
       let f = 1;
       for (let i = 1; i <= +n; i++) f *= i;
       return f;
-    });
-    val = eval(tempExpr);
+    }));
+    const score = Math.abs(target - result);
+    archive = archive.filter(e => e.game !== gameNumber);
+    archive.push({ game: gameNumber, score });
+    localStorage.setItem('archive', JSON.stringify(archive));
+    if (score === 0) {
+      totalQu0x++;
+      localStorage.setItem('totalQu0x', JSON.stringify(totalQu0x));
+      showQu0x();
+    }
+    updateDisplay();
   } catch {
     alert('Invalid expression');
-    return;
   }
-
-  const diff = Math.abs(target - val);
-  archive = archive.filter(entry => entry.game !== gameNumber);
-  archive.push({ game: gameNumber, score: diff });
-  localStorage.setItem('archive', JSON.stringify(archive));
-
-  if (diff === 0) {
-    totalQu0x++;
-    localStorage.setItem('totalQu0x', JSON.stringify(totalQu0x));
-    showQu0x();
-  }
-
-  updateDisplay();
 }
 
 function showQu0x() {
-  const q = document.createElement('div');
-  q.innerText = 'Qu0x!';
-  q.className = 'qu0x-popup';
-  document.body.appendChild(q);
-  setTimeout(() => q.remove(), 3000);
+  const el = document.createElement('div');
+  el.className = 'qu0x-popup';
+  el.innerText = 'Qu0x!';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 3000);
 }
 
 function nextGame() {
   if (gameNumber < todayGameNumber) loadGame(gameNumber + 1);
 }
+
 function prevGame() {
   if (gameNumber > 1) loadGame(gameNumber - 1);
 }
@@ -189,12 +168,11 @@ window.onload = () => {
   document.getElementById('submit').onclick = submit;
   document.getElementById('clear').onclick = clearExpression;
   document.getElementById('backspace').onclick = backspace;
-  document.getElementById('next').onclick = nextGame;
   document.getElementById('prev').onclick = prevGame;
-
+  document.getElementById('next').onclick = nextGame;
   document.querySelectorAll('.btn').forEach(btn => {
     btn.onclick = () => {
-      expression += btn.innerText;
+      expression += btn.innerText === '−' ? '-' : btn.innerText;
       updateExpressionDisplay();
       document.getElementById('expression-box').value = expression;
     };
