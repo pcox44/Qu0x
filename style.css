@@ -1,0 +1,119 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f4f8;
+  color: #333;
+  margin: 20px;
+  text-align: center;
+}
+
+h1 {
+  color: #1a73e8;
+  margin-bottom: 10px;
+}
+
+#dice-container {
+  margin: 20px 0;
+}
+
+.dice {
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+  margin: 5px;
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  user-select: none;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+  transition: transform 0.15s ease;
+}
+
+.dice.red { background-color: #e53e3e; }
+.dice.blue { background-color: #3182ce; }
+.dice.green { background-color: #38a169; }
+.dice.orange { background-color: #dd6b20; }
+.dice.purple { background-color: #805ad5; }
+
+.dice.used {
+  background-color: #aaa;
+  cursor: default;
+  text-decoration: line-through;
+  box-shadow: none;
+  transform: scale(0.9);
+}
+
+#expression-container {
+  font-size: 28px;
+  font-weight: bold;
+  border: 2px solid #1a73e8;
+  border-radius: 8px;
+  padding: 10px 20px;
+  min-height: 50px;
+  user-select: none;
+  margin-bottom: 20px;
+  background-color: #ffffff;
+}
+
+button {
+  font-size: 20px;
+  padding: 10px 15px;
+  margin: 5px;
+  border-radius: 6px;
+  border: 1px solid #1a73e8;
+  background-color: #1a73e8;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+  user-select: none;
+}
+
+button:hover:not(:disabled) {
+  background-color: #155ab6;
+}
+
+button:disabled {
+  background-color: #bbb;
+  cursor: default;
+}
+
+.operator-btn {
+  width: 50px;
+}
+
+#result {
+  margin: 20px 0;
+  font-size: 20px;
+  font-weight: 600;
+  min-height: 24px;
+}
+
+#history-table {
+  margin: 20px auto;
+  border-collapse: collapse;
+  width: 80%;
+  max-width: 800px;
+}
+
+#history-table th,
+#history-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#history-table th {
+  background-color: #1a73e8;
+  color: white;
+}
+
+#navigation-buttons {
+  margin-top: 15px;
+}
+
+@keyframes qu0x-pop {
+  0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+  50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
+}
