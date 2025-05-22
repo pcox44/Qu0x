@@ -2,49 +2,59 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Qu0x</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Daily Dice Game</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>🎲 Qu0x</h1>
+  <h1>🎲 Daily Dice Game</h1>
   <p class="rules">
-    Use all five dice exactly once with any mathematical operations to get as close as possible to the target number.
-    A perfect match is called a <strong>Qu0x!</strong> Parentheses and operators are unlimited.
-    A new puzzle is available each day starting at midnight <strong>local time</strong>.
-    Once you get a Qu0x, no more guesses are allowed for that day.
+    Use each die exactly once to get as close as possible to the target number (1–100). 
+    Use +, −, ×, ÷, and parentheses freely. Score is absolute difference from target. 
+    Try to find perfect solutions (score 0)!
   </p>
 
-  <div id="game">
-    <div id="dice-container" class="dice-row"></div>
-    <div id="target-container"><strong>Target:</strong> <span id="target-number"></span></div>
-    <div id="input-container">
-      <input type="text" id="expression" placeholder="Enter your expression..." />
-      <button id="submit">Submit</button>
-      <button id="clear">Clear</button>
-    </div>
-    <div id="buttons-container">
-      <button class="op">+</button>
-      <button class="op">-</button>
-      <button class="op">×</button>
-      <button class="op">÷</button>
-      <button class="op">(</button>
-      <button class="op">)</button>
-    </div>
-    <div id="result-container"></div>
-    <div id="message-container"></div>
+  <div id="navigation">
+    <button onclick="previousDay()">← Previous</button>
+    <span id="game-label"></span>
+    <button onclick="nextDay()">Next →</button>
   </div>
 
-  <div id="score"></div>
-  <div id="streak"></div>
+  <div id="target-container">🎯 Target: <span id="target"></span></div>
+  <div id="dice-container"></div>
+  <div id="expression"></div>
 
-  <h2>Last 10 Days</h2>
-  <table id="history">
+  <div id="buttons">
+    <div class="op-row">
+      <button onclick="addOp('+')">+</button>
+      <button onclick="addOp('-')">−</button>
+      <button onclick="addOp('*')">×</button>
+      <button onclick="addOp('/')">÷</button>
+      <button onclick="addOp('(')">(</button>
+      <button onclick="addOp(')')">)</button>
+    </div>
+    <div class="ctrl-row">
+      <button onclick="backspace()">⌫</button>
+      <button onclick="clearExpression()">Clear</button>
+      <button onclick="submitExpression()">Submit</button>
+    </div>
+  </div>
+
+  <div id="live-result"></div>
+  <div id="score-display"></div>
+  <div id="streak-display"></div>
+  <div id="perfect-count-display"></div>
+
+  <h2>Attempts</h2>
+  <table id="results-table">
     <thead>
-      <tr><th>Date</th><th>Target</th><th>Best Score</th></tr>
+      <tr><th>#</th><th>Expression</th><th>Result</th><th>Score</th></tr>
     </thead>
     <tbody></tbody>
   </table>
+
+  <h2>Game Archive</h2>
+  <div id="archive"></div>
 
   <script src="script.js"></script>
 </body>
