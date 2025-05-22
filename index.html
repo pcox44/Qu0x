@@ -1,68 +1,61 @@
 <!DOCTYPE html>
-<html lang="en"> 
+<html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Qu0x - Daily Dice Game</title>
-<link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Qu0x</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <h1>Qu0x</h1>
-  <p>Use each of the five dice exactly once with operations (+, -, ×, ÷, ^, !) and parentheses to get as close as possible to the target number. Score is the absolute difference. A score of 0 is a Qu0x!</p>
-
   <div id="game-info">
-    <div id="game-number">Game #<span id="game-num"></span></div>
-    <div id="date-display"></div>
+    <div id="game-number">Game #1</div>
+    <div id="target-number">Target: <span id="target-value"></span></div>
   </div>
-
-  <div id="dice-container" class="dice-row">
-    <!-- Dice buttons inserted by script -->
-  </div>
-
-  <div id="target-container">Target: <span id="target-number"></span></div>
-
-  <div id="input-container">
-    <input id="expression-input" type="text" readonly placeholder="Build your expression here" />
-  </div>
-
+  <div id="dice-container"></div>
+  <input type="text" id="expression-input" readonly />
   <div id="buttons-container">
-    <button id="btn-clear">Clear</button>
-    <button id="btn-backspace">Backspace</button>
-    <button class="op-btn" data-op="+">+</button>
-    <button class="op-btn" data-op="-">−</button>
-    <button class="op-btn" data-op="*">×</button>
-    <button class="op-btn" data-op="/">÷</button>
-    <button class="op-btn" data-op="^">^</button>
-    <button class="op-btn" data-op="!">!</button>
-    <button id="btn-open-paren">(</button>
-    <button id="btn-close-paren">)</button>
-    <button id="btn-submit">Submit</button>
+    <div id="operators">
+      <button class="op-btn" data-op="+">+</button>
+      <button class="op-btn" data-op="-">−</button>
+      <button class="op-btn" data-op="*">×</button>
+      <button class="op-btn" data-op="/">÷</button>
+      <button class="op-btn" data-op="^">^</button>
+      <button class="op-btn" data-op="!">!</button>
+      <button id="btn-open-paren">(</button>
+      <button id="btn-close-paren">)</button>
+    </div>
+    <div id="controls">
+      <button id="btn-clear">Clear</button>
+      <button id="btn-backspace">Backspace</button>
+      <button id="btn-submit">Submit</button>
+    </div>
   </div>
-
   <div id="message-container"></div>
-
-  <div id="score-streak-container">
-    <div>Score: <span id="score-display">N/A</span></div>
-    <div>Current Qu0x Streak: <span id="streak-display">0</span></div>
+  <div id="score-container">
+    <div id="score-display">Score: —</div>
+    <div id="streak-display">Streak: 0</div>
   </div>
-
-  <div id="nav-buttons">
-    <button id="btn-prev-game">Previous Game</button>
-    <button id="btn-next-game">Next Game</button>
+  <div id="history-container">
+    <h2>History</h2>
+    <table id="history-table">
+      <thead>
+        <tr>
+          <th>Game #</th>
+          <th>Expression</th>
+          <th>Score</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- History rows will be populated here -->
+      </tbody>
+    </table>
   </div>
-
-  <h2>Game Archive (Last 5 Days)</h2>
-  <table id="history">
-    <thead>
-      <tr><th>Game #</th><th>Date</th><th>Your Score</th><th>Result</th></tr>
-    </thead>
-    <tbody>
-      <!-- Filled by script -->
-    </tbody>
-  </table>
-
-  <div id="qu0x-popup" class="hidden">Qu0x!</div>
-
-<script src="script.js"></script>
+  <div id="navigation">
+    <button id="btn-prev">Previous</button>
+    <button id="btn-next">Next</button>
+  </div>
+  <div id="qu0x-popup">🎉 Qu0x! 🎉</div>
+  <script src="script.js"></script>
 </body>
 </html>
