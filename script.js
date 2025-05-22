@@ -7,6 +7,7 @@ const streakSpan = document.getElementById("streak");
 const gameNumberSpan = document.getElementById("game-number");
 const historyBody = document.getElementById("history-body");
 const animation = document.getElementById("qu0x-animation");
+const todayDateSpan = document.getElementById("today-date");
 
 let currentDate = new Date();
 let gameOffset = 0;
@@ -20,6 +21,12 @@ const horseColors = {
   6: "black"
 };
 
+function formatDate(date) {
+  return date.toISOString().slice(0, 10);
+}
+
+todayDateSpan.textContent = `Today: ${formatDate(new Date())}`;
+
 function getGameDate(offset = 0) {
   const start = new Date("2025-05-15");
   const today = new Date();
@@ -27,10 +34,6 @@ function getGameDate(offset = 0) {
   const gameDate = new Date(start);
   gameDate.setDate(start.getDate() + offset);
   return gameDate <= today ? gameDate : today;
-}
-
-function formatDate(date) {
-  return date.toISOString().slice(0, 10);
 }
 
 function gameNumberFromDate(dateStr) {
@@ -62,8 +65,7 @@ function generateGame(dateStr) {
 }
 
 function hasValidSolution(dice, target) {
-  // Basic check placeholder
-  return true;
+  return true; // always return true for now
 }
 
 function loadGame(offset) {
@@ -84,6 +86,10 @@ function loadGame(offset) {
     die.className = "die";
     die.style.backgroundColor = horseColors[num];
     if (num === 6) die.style.color = "yellow";
+    if (num === 2) {
+      die.style.color = "black";
+      die.style.backgroundColor = "white";
+    }
     die.dataset.value = num;
     die.dataset.index = index;
     die.addEventListener("click", () => addDieToExpression(die));
