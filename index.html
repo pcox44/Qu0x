@@ -8,7 +8,7 @@
 </head>
 <body>
   <h1>Qu0x!</h1>
-  <p>Use all 5 dice **exactly once** with math operations to match the target number. A perfect match is a "Qu0x!".</p>
+  <p>Use all 5 dice <strong>exactly once</strong> with math operations to match the target number. A perfect match is a "Qu0x!".</p>
 
   <div id="game-header">
     <span id="date-display"></span>
@@ -18,9 +18,9 @@
 
   <div id="target-box"></div>
 
-  <div id="dice-container"></div>
+  <div id="dice-buttons" class="button-row"></div>
 
-  <div id="buttons">
+  <div id="op-buttons" class="button-row">
     <button class="btn">+</button>
     <button class="btn">−</button>
     <button class="btn">*</button>
@@ -32,7 +32,10 @@
   </div>
 
   <input id="expression-box" type="text" readonly />
-  <div id="expression-output"></div>
+
+  <div id="expression-output-box">
+    <div id="expression-output"></div>
+  </div>
 
   <div id="controls">
     <button id="submit">Submit</button>
@@ -41,8 +44,6 @@
     <button id="prev">Previous</button>
     <button id="next">Next</button>
   </div>
-
-  <div id="archive"></div>
 
   <script src="script.js"></script>
 </body>
