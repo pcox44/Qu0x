@@ -2,55 +2,51 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Qu0x</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <h1>Qu0x</h1>
-  <p class="rules">
-    Use each dice number exactly once with any operations (+, -, *, /, parentheses) to get as close as possible to the target number.<br />
-    Score = difference from target. A score of 0 is a Qu0x! One submission per day after a Qu0x.<br />
-  </p>
-
-  <div id="game-info">
-    <div id="game-number"></div>
-    <div id="target-container"></div>
+  <div class="rules">
+    Use each of the 5 dice exactly once with any combination of math operations (+, −, ×, ÷, parentheses) to get as close as possible to the target number.<br>
+    A perfect score (0 difference) is called a <strong>Qu0x</strong>!<br>
+    Your <strong>Current Qu0x Streak</strong> only increases when you earn a Qu0x.
   </div>
 
+  <div id="game-controls">
+    <button id="prev-day">◀ Previous</button>
+    <span id="date-display"></span>
+    <button id="next-day">Next ▶</button>
+  </div>
+
+  <div id="target-container"></div>
   <div class="dice-row" id="dice-container"></div>
+
+  <div id="input-container">
+    <input type="text" id="expression" placeholder="Type your expression here" />
+    <button id="submit">Submit</button>
+  </div>
 
   <div id="buttons-container">
     <button class="op">(</button>
     <button class="op">)</button>
     <button class="op">+</button>
-    <button class="op">-</button>
-    <button class="op">*</button>
-    <button class="op">/</button>
-    <button id="backspace">⌫</button>
+    <button class="op">−</button>
+    <button class="op">×</button>
+    <button class="op">÷</button>
     <button id="clear">Clear</button>
   </div>
 
-  <div id="input-container">
-    <input type="text" id="expression" readonly autocomplete="off" />
-    <button id="submit-btn">Submit</button>
-  </div>
-
   <div id="result-container"></div>
+  <div id="message-container"></div>
   <div id="score"></div>
   <div id="streak"></div>
-  <div id="message-container"></div>
 
   <h2>Game Archive (Last 10 Days)</h2>
   <table id="history">
     <thead>
-      <tr>
-        <th>Date</th>
-        <th>Game #</th>
-        <th>Expression</th>
-        <th>Result</th>
-        <th>Score</th>
-      </tr>
+      <tr><th>Date</th><th>Game #</th><th>Score</th></tr>
     </thead>
     <tbody id="history-body"></tbody>
   </table>
