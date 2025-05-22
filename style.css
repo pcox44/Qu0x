@@ -18,16 +18,17 @@ body {
   background: #fff;
 }
 
-#dice-container {
+.button-row {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
   margin: 10px;
 }
 
 .die {
   width: 50px;
   height: 50px;
-  margin: 5px;
+  margin: 3px;
   font-size: 1.5rem;
   font-weight: bold;
   display: flex;
@@ -35,10 +36,6 @@ body {
   align-items: center;
   border: 2px solid black;
   cursor: pointer;
-}
-
-#buttons {
-  margin: 10px;
 }
 
 .btn {
@@ -51,22 +48,23 @@ body {
   margin: 10px;
   padding: 10px;
   font-size: 1.5rem;
-  width: 60%;
+  width: 80%;
   background: white;
   border: 2px solid black;
 }
 
-#expression-output {
-  font-size: 1.25rem;
-  margin-bottom: 10px;
+#expression-output-box {
+  font-size: 1.75rem;
+  margin: 10px auto;
+  padding: 10px;
+  border: 2px solid black;
+  background: #eee;
+  width: 200px;
+  font-weight: bold;
 }
 
 #controls {
   margin: 15px;
-}
-
-#archive {
-  margin-top: 20px;
 }
 
 .qu0x-popup {
