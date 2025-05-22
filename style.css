@@ -1,98 +1,22 @@
 body {
-  font-family: Arial, sans-serif;
+  font-family: sans-serif;
   text-align: center;
   padding: 20px;
 }
-
-#game-info {
-  margin-bottom: 20px;
-}
-
-#dice-container {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-
-.dice {
-  width: 60px;
-  height: 60px;
-  margin: 0 10px;
-  font-size: 24px;
-  font-weight: bold;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.dice.used {
-  opacity: 0.5;
-  cursor: default;
-}
-
-.dice.red { background-color: red; }
-.dice.blue { background-color: blue; }
-.dice.green { background-color: green; }
-.dice.yellow { background-color: yellow; color: black; }
-.dice.black { background-color: black; }
-.dice.white { background-color: white; color: black; }
-.dice.pink { background-color: pink; color: black; }
-.dice.purple { background-color: purple; }
-.dice.orange { background-color: orange; color: black; }
-.dice.brown { background-color: brown; }
-
-#expression-input {
-  width: 80%;
-  font-size: 24px;
-  margin-bottom: 20px;
-  padding: 10px;
-}
-
-#buttons-container {
-  margin-bottom: 20px;
-}
-
-#operators, #controls {
-  margin: 10px 0;
-}
-
-.op-btn, #btn-open-paren, #btn-close-paren, #btn-clear, #btn-backspace, #btn-submit {
-  font-size: 18px;
-  padding: 10px 15px;
+.die {
+  display: inline-block;
   margin: 5px;
-}
-
-#message-container {
-  margin-bottom: 20px;
+  font-size: 24px;
+  width: 50px;
+  height: 50px;
+  line-height: 50px;
+  border-radius: 10px;
+  color: white;
   font-weight: bold;
 }
-
-#score-container {
-  margin-bottom: 20px;
-}
-
-#history-container {
-  margin-bottom: 20px;
-}
-
-#history-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-#history-table th, #history-table td {
-  border: 1px solid #ccc;
-  padding: 8px;
-}
-
-#navigation {
-  margin-bottom: 20px;
-}
-
-#qu0x-popup {
-  display: none;
-  font-size: 32px;
-  color: green;
-  margin-top: 20px;
-}
+.die[data-value="1"] { background: red; }
+.die[data-value="2"] { background: white; color: black; }
+.die[data-value="3"] { background: blue; }
+.die[data-value="4"] { background: yellow; color: black; }
+.die[data-value="5"] { background: green; }
+.die[data-value="6"] { background: black; color: yellow; }
