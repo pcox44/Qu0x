@@ -3,7 +3,7 @@ const horseColors = {
   1: 'red',
   2: 'white',
   3: 'blue',
-  4: 'orange',
+  4: 'yellow',
   5: 'green',
   6: 'black'
 };
