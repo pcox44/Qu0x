@@ -3,40 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Qu0x - Daily Dice Game</title>
+  <title>Qu0x</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>🎲 Qu0x - Daily Dice Game</h1>
-  <p class="rules">
-    Use each of the 5 dice exactly once with any combination of operations (+, −, ×, ÷, parentheses) to get as close as possible to the target number.<br />
-    A score of 0 is called a <strong>Qu0x!</strong> You can try as many times as you want until you get a Qu0x, after which submissions for that day are closed.
-  </p>
+  <h1>🎲 Qu0x</h1>
+  <p class="rules">Use all five dice exactly once with any mathematical operations to get as close as possible to the target number. A perfect match is called a <strong>Qu0x!</strong> Parentheses and operators are unlimited. A new puzzle is available each day starting at midnight <strong>local time</strong>. Once you get a Qu0x, no more guesses are allowed for that day.</p>
 
-  <div id="game">
-    <div id="game-header">
-      <div id="date-display"></div>
-      <div id="target"></div>
-    </div>
-    <div id="dice-container"></div>
-    <div id="expression"></div>
-    <div id="buttons">
-      <div id="op-buttons"></div>
-      <button onclick="backspace()">&#x2190;</button>
-      <button onclick="clearExpression()">Clear</button>
-      <button onclick="submitExpression()">Submit</button>
-    </div>
-    <div id="live-result"></div>
-    <div id="score"></div>
-    <div id="streak"></div>
-  </div>
+  <div id="game"></div>
+  <div id="score"></div>
+  <div id="streak"></div>
 
   <h2>Last 10 Days</h2>
-  <table id="archive-table">
+  <table id="history">
     <thead>
       <tr><th>Date</th><th>Target</th><th>Best Score</th></tr>
     </thead>
-    <tbody id="archive-body"></tbody>
+    <tbody></tbody>
   </table>
 
   <script src="script.js"></script>
