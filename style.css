@@ -26,8 +26,6 @@ h1 {
 .die {
   font-size: 2em;
   font-weight: bold;
-  background: linear-gradient(45deg, #ffd700, #ffec8b);
-  border: 2px solid #aaa;
   border-radius: 10px;
   width: 50px;
   height: 50px;
@@ -36,11 +34,28 @@ h1 {
   align-items: center;
   justify-content: center;
   box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+  cursor: pointer;
+  user-select: none;
+  border: 2px solid #aaa;
 }
+
+/* Horse race colors for dice 1 to 6 */
+.die.d1 { background: #EF3E36; color: white; } /* Red */
+.die.d2 { background: #FED43B; color: black; } /* Yellow */
+.die.d3 { background: #0081C6; color: white; } /* Blue */
+.die.d4 { background: #00A651; color: white; } /* Green */
+.die.d5 { background: #662D91; color: white; } /* Purple */
+.die.d6 { background: #F58220; color: white; } /* Orange */
 
 #target-container {
   font-size: 1.5em;
   margin: 10px;
+  font-weight: bold;
+}
+
+#game-number {
+  font-size: 1.2em;
+  margin: 5px 0;
 }
 
 #input-container input {
@@ -63,6 +78,13 @@ h1 {
   font-size: 1.2em;
   margin: 3px;
   padding: 5px 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+#backspace, #clear {
+  cursor: pointer;
+  user-select: none;
 }
 
 #result-container {
@@ -91,6 +113,7 @@ h1 {
 #history th, #history td {
   border: 1px solid #ccc;
   padding: 8px 12px;
+  word-break: break-word;
 }
 
 #history th {
