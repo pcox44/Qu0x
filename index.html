@@ -2,30 +2,55 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Qu0x</title>
+  <title>Qu0x!</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Qu0x</h1>
-  <div id="target-container">Target: <span id="target">?</span></div>
-  <div class="dice-row" id="dice-container"></div>
+  <h1>Qu0x!</h1>
+  <p class="rules">
+    Use each of the 5 dice exactly once with math operations to get as close as possible to the target number. No concatenation. Only clickable input allowed. A perfect match earns a "Qu0x!" and ends the day's game. New puzzle at local midnight.
+  </p>
+  
+  <div id="game-info">
+    <div id="game-number"></div>
+    <div id="target-number"></div>
+    <div class="dice-row" id="dice-container"></div>
+  </div>
+
+  <div id="expression"></div>
+
   <div id="buttons-container">
-    <!-- Operator buttons will go here -->
-  </div>
-  <div id="expression-display"></div>
-  <div id="submit-container">
+    <div id="number-buttons"></div>
+    <button class="op">(</button>
+    <button class="op">)</button>
+    <button class="op">+</button>
+    <button class="op">-</button>
+    <button class="op">*</button>
+    <button class="op">/</button>
+    <button class="op">^</button>
+    <button class="op">!</button>
+    <button id="backspace">⌫</button>
+    <button id="clear">C</button>
     <button id="submit">Submit</button>
-    <button id="clear">Clear</button>
   </div>
-  <div id="result-container"></div>
-  <div id="streak">Current Qu0x Streak: 0</div>
-  <div id="archive-container">
-    <h2>Game Archive</h2>
-    <table id="history">
-      <thead><tr><th>Game #</th><th>Date</th><th>Score</th></tr></thead>
-      <tbody></tbody>
-    </table>
+
+  <div id="result"></div>
+  <div id="message"></div>
+  <div id="streak"></div>
+
+  <div id="nav-buttons">
+    <button id="prev-game">← Previous</button>
+    <button id="next-game">Next →</button>
   </div>
+
+  <h2>Game Archive (Last 5)</h2>
+  <table id="history">
+    <thead>
+      <tr><th>Game #</th><th>Date</th><th>Score</th></tr>
+    </thead>
+    <tbody id="history-body"></tbody>
+  </table>
+
   <script src="script.js"></script>
 </body>
 </html>
