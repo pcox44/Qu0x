@@ -1,157 +1,123 @@
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  text-align: center;
-  padding: 20px;
-  background-color: #f9f9f9;
-  color: #333;
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  max-width: 600px;
+  line-height: 1.4;
 }
 
 h1 {
-  font-size: 2.5em;
-  margin-bottom: 0.2em;
+  text-align: center;
 }
 
-.instructions {
-  font-size: 1em;
-  max-width: 600px;
-  margin: 0 auto 1em;
-}
-
-#game-info {
-  margin-bottom: 15px;
-  font-weight: bold;
-  font-size: 1.2em;
-}
-
-.dice-row {
+#diceRow {
+  margin: 15px 0;
   display: flex;
   justify-content: center;
-  margin: 10px 0;
+  gap: 10px;
 }
 
 .die {
-  font-size: 2em;
-  font-weight: bold;
-  border: 2px solid #aaa;
-  border-radius: 10px;
   width: 50px;
   height: 50px;
-  margin: 0 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
-  cursor: pointer;
-  user-select: none;
+  font-size: 24px;
+  line-height: 50px;
+  text-align: center;
+  border-radius: 8px;
   color: white;
-  transition: opacity 0.3s ease;
+  user-select: none;
+  cursor: pointer;
+  font-weight: bold;
+  box-shadow: 0 0 5px #666;
+  transition: opacity 0.3s;
 }
 
-.die.red {
-  background-color: #cc0000;
-}
-
-.die.white {
-  background-color: #ffffff;
-  color: black;
-  border: 2px solid #ccc;
-}
-
-.die.blue {
-  background-color: #0047ab;
-}
-
-.die.orange {
-  background-color: #ff6600;
-}
-
-.die.green {
-  background-color: #228b22;
-}
-
-.die.black {
-  background-color: #000000;
-  color: #ffd700;
-}
+.die.red { background-color: #D32F2F; }
+.die.white { background-color: #F5F5F5; color: black; border: 1px solid #999; }
+.die.blue { background-color: #1976D2; }
+.die.yellow { background-color: #FBC02D; color: black; }
+.die.green { background-color: #388E3C; }
+.die.black { background-color: #212121; }
 
 .die.used {
-  opacity: 0.3;
+  opacity: 0.4;
   cursor: default;
+  box-shadow: none;
 }
 
-#target-container {
-  font-size: 1.5em;
-  margin: 10px;
-  font-weight: bold;
-}
-
-#input-container input {
-  font-size: 1.4em;
-  padding: 5px;
-  width: 350px;
+#exprInput {
+  width: 100%;
+  font-size: 20px;
+  padding: 8px;
+  margin: 10px 0 15px 0;
   text-align: center;
   user-select: none;
 }
 
-#buttons-container {
-  margin: 10px;
+#buttons, #actionButtons, #navButtons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
 }
 
-#buttons-container button {
-  font-size: 1.2em;
-  margin: 3px;
-  padding: 5px 10px;
-  cursor: pointer;
-}
-
-#btn-backspace, #btn-clear {
-  background-color: #eee;
-  border: 1px solid #ccc;
-}
-
-#btn-submit {
-  font-size: 1.3em;
-  margin: 15px;
-  padding: 8px 20px;
-  cursor: pointer;
-}
-
-#message-container {
-  font-size: 1.4em;
-  font-weight: bold;
-  margin: 10px;
-  min-height: 30px;
-}
-
-#score-container {
-  font-size: 1.2em;
-  margin: 10px;
-  font-weight: bold;
-}
-
-#nav-buttons {
-  margin: 15px;
-}
-
-#nav-buttons button {
-  font-size: 1.1em;
-  margin: 0 10px;
-  padding: 6px 15px;
-  cursor: pointer;
-}
-
-#history {
-  margin: 20px auto;
-  border-collapse: collapse;
-  width: 90%;
-  max-width: 600px;
-}
-
-#history th, #history td {
-  border: 1px solid #ccc;
+button {
+  font-size: 16px;
   padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 5px;
+  border: 1px solid #333;
+  background-color: #eee;
+  transition: background-color 0.2s ease;
 }
 
-#history th {
-  background-color: #eee;
+button:hover:not(:disabled) {
+  background-color: #ddd;
+}
+
+button:disabled {
+  background-color: #bbb;
+  cursor: not-allowed;
+}
+
+#messageContainer {
+  text-align: center;
+  font-weight: bold;
+  margin: 10px 0;
+  min-height: 24px;
+  color: #b33;
+}
+
+#scoreboard {
+  text-align: center;
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+#historySection table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+#historySection th, #historySection td {
+  border: 1px solid #ccc;
+  padding: 6px;
+  text-align: center;
+}
+
+.qu0x {
+  position: fixed;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: gold;
+  color: black;
+  font-size: 36px;
+  font-weight: bold;
+  padding: 20px 40px;
+  border-radius: 12px;
+  box-shadow: 0 0 30px 10px gold;
+  z-index: 1000;
+  user-select: none;
 }
