@@ -1,152 +1,131 @@
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  text-align: center;
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+  margin: 0;
   padding: 20px;
-  background-color: #f9f9f9;
-  color: #333;
-}
-
-h1 {
-  font-size: 2.5em;
-  margin-bottom: 0.2em;
-}
-
-.dice-row {
   display: flex;
   justify-content: center;
+}
+
+#game-container {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 420px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+
+#dice-container {
   margin: 10px 0;
+  display: flex;
+  justify-content: space-between;
 }
 
 .die {
-  font-size: 2.2em;
-  font-weight: bold;
-  border: 2px solid #aaa;
-  border-radius: 10px;
   width: 50px;
   height: 50px;
-  margin: 0 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+  line-height: 50px;
+  font-size: 24px;
+  text-align: center;
+  border-radius: 6px;
   cursor: pointer;
   user-select: none;
-  transition: opacity 0.5s;
-}
-
-/* Horse race colors */
-.die.red {
-  background-color: #ff0000;
+  font-weight: bold;
   color: white;
+  box-shadow: 0 0 3px rgba(0,0,0,0.3);
 }
 
-.die.white {
-  background-color: #ffffff;
-  color: black;
-  border: 2px solid #999;
-}
-
-.die.blue {
-  background-color: #0000ff;
-  color: white;
-}
-
-.die.yellow {
-  background-color: #ffff00;
-  color: black;
-}
-
-.die.green {
-  background-color: #008000;
-  color: white;
-}
-
-.die.black {
-  background-color: #000000;
-  color: #ffd700; /* yellow text */
-}
+.red { background-color: #d9534f; }
+.white { background-color: #fff; color: #000; border: 1px solid #ccc; }
+.blue { background-color: #0275d8; }
+.yellow { background-color: #f0ad4e; }
+.green { background-color: #5cb85c; }
+.black { background-color: #292b2c; }
 
 #target-container {
-  font-size: 1.5em;
-  margin: 10px;
+  font-size: 20px;
+  margin: 10px 0;
 }
 
-#input-container #expression {
-  font-size: 1.5em;
-  min-height: 1.5em;
-  border: 2px solid #888;
-  border-radius: 8px;
-  margin: 10px auto;
-  max-width: 320px;
+#expression-container {
+  border: 1px solid #ccc;
+  height: 40px;
   padding: 5px 10px;
-  background: #fff;
+  font-size: 22px;
+  margin-bottom: 10px;
+  background: #eee;
   user-select: none;
 }
 
 #buttons-container {
-  margin: 10px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 10px;
 }
 
-#buttons-container .op {
-  font-size: 1.2em;
-  margin: 3px;
-  padding: 5px 10px;
+#buttons-container button {
+  flex: 1 1 50px;
+  height: 40px;
+  font-size: 20px;
   cursor: pointer;
 }
 
-#backspace-btn,
-#clear-btn,
-#submit-btn,
-#prev-game-btn,
-#next-game-btn {
-  font-size: 1.2em;
-  margin: 5px;
-  padding: 6px 14px;
-  cursor: pointer;
-}
-
-#message-container {
-  font-size: 1.2em;
+#message {
+  height: 24px;
+  color: #d9534f;
   font-weight: bold;
-  margin: 10px;
-  min-height: 1.5em;
+  margin-bottom: 10px;
 }
 
-#score, #streak {
-  font-size: 1.2em;
-  margin: 10px;
+#score-display, #streak-display {
+  margin-bottom: 10px;
+  font-weight: bold;
 }
 
-#history {
-  margin: 20px auto;
-  border-collapse: collapse;
-  width: 90%;
-  max-width: 600px;
+#share-link {
+  display: inline-block;
+  margin-bottom: 20px;
+  color: #0275d8;
+  text-decoration: none;
 }
 
-#history th, #history td {
-  border: 1px solid #ccc;
-  padding: 8px 12px;
-}
-
-#history th {
-  background-color: #eee;
+#share-link:hover {
+  text-decoration: underline;
 }
 
 #qu0x-popup {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 5em;
-  font-weight: bold;
-  color: #ff5722;
-  background: rgba(255, 255, 255, 0.95);
-  border: 5px solid #ff5722;
-  border-radius: 20px;
-  padding: 30px 50px;
   display: none;
-  z-index: 1000;
-  user-select: none;
-  pointer-events: none;
+  background: #5cb85c;
+  color: white;
+  font-weight: bold;
+  font-size: 24px;
+  text-align: center;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+#history-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#history-table th, #history-table td {
+  border: 1px solid #ddd;
+  padding: 6px 8px;
+  text-align: center;
+}
+
+#game-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+#game-info button {
+  font-size: 14px;
+  padding: 5px 10px;
+  cursor: pointer;
 }
