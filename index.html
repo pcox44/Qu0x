@@ -4,59 +4,52 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Qu0x</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.8.0/math.min.js"></script>
 </head>
 <body>
   <h1>Qu0x</h1>
-  <p id="today-date"></p>
-  <p class="rules">Use all five dice exactly once to get as close as possible to the target using math operations. A perfect match is called a <strong>Qu0x!</strong></p>
-
+  <div id="today-date"></div>
   <div id="game-number"></div>
-  <div class="dice-row" id="dice-container"></div>
   <div id="target-container"></div>
+  <div id="dice-container" class="dice-row"></div>
 
-  <div id="input-container">
-    <input type="text" id="expression" readonly />
-  </div>
-
-  <div id="buttons-container">
-    <div>
-      <button class="op" data-value="+">+</button>
-      <button class="op" data-value="-">−</button>
-      <button class="op" data-value="*">*</button>
-      <button class="op" data-value="/">/</button>
-      <button class="op" data-value="^">^</button>
-      <button class="op" data-value="!">!</button>
-    </div>
-    <div>
-      <button class="op" data-value="(">(</button>
-      <button class="op" data-value=")">)</button>
-    </div>
-    <div>
-      <button id="backspace">⌫</button>
-      <button id="clear">Clear</button>
-      <button id="submit">Submit</button>
-    </div>
-  </div>
-
+  <input id="expression" readonly placeholder="Enter your expression" />
   <div id="expression-result"></div>
+
+  <div class="buttons">
+    <button class="op" data-value="+">+</button>
+    <button class="op" data-value="-">−</button>
+    <button class="op" data-value="*">×</button>
+    <button class="op" data-value="/">÷</button>
+    <button class="op" data-value="^">^</button>
+    <button class="op" data-value="!">!</button>
+    <button class="op" data-value="(">(</button>
+    <button class="op" data-value=")">)</button>
+    <button id="backspace">←</button>
+    <button id="clear">Clear</button>
+    <button id="submit">Submit</button>
+  </div>
+
   <div id="message-container"></div>
-  <div id="score"></div>
   <div id="streak">Current Qu0x Streak: 0</div>
 
-  <div id="nav-buttons">
-    <button id="prev-day">◀ Previous</button>
-    <button id="next-day">Next ▶</button>
+  <div class="nav-buttons">
+    <button id="prev-day">Previous</button>
+    <button id="next-day">Next</button>
   </div>
 
-  <table id="history">
+  <h2>Last 5 Results</h2>
+  <table>
     <thead>
-      <tr><th>Date</th><th>Game #</th><th>Score</th></tr>
+      <tr>
+        <th>Date</th>
+        <th>Game #</th>
+        <th>Score</th>
+      </tr>
     </thead>
     <tbody id="history-body"></tbody>
   </table>
-
-  <div id="qu0x-animation" style="display:none;">Qu0x!</div>
 
   <script src="script.js"></script>
 </body>
