@@ -1,60 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Daily Dice Game</title>
-<link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Qu0x - Daily Dice Game</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div id="game-container">
-    <h1>Daily Dice Game</h1>
-    <div id="game-info">
-      <div id="game-number">Game #</div>
-      <div id="date-display"></div>
-    </div>
-    <div id="dice-container"></div>
-    <div id="target-container">
-      Target Number: <span id="target-number"></span>
-    </div>
-    <div id="expression-container">
-      <div id="expression" tabindex="0"></div>
-      <div id="buttons-row">
-        <button class="op" data-op="+">+</button>
-        <button class="op" data-op="-">-</button>
-        <button class="op" data-op="*">*</button>
-        <button class="op" data-op="/">/</button>
-        <button class="op" data-op="^">^</button>
-        <button class="op" data-op="!">!</button>
-        <button id="backspace">←</button>
-        <button id="clear">Clear</button>
-        <button id="submit">Submit</button>
-      </div>
-    </div>
-    <div id="message-container"></div>
-    <div id="score-display"></div>
-    <div id="streak-display"></div>
-    <div id="history-container">
-      <h2>Recent Games</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Game #</th>
-            <th>Date</th>
-            <th>Score</th>
-          </tr>
-        </thead>
-        <tbody id="history-body"></tbody>
-      </table>
-    </div>
-    <div id="nav-buttons">
-      <button id="prev-game">Previous Day</button>
-      <button id="next-game">Next Day</button>
-    </div>
+  <h1>Qu0x</h1>
+  <p class="instructions">
+    Use each of the five dice values exactly once to create a mathematical expression that gets as close as possible to the target number.
+    Use operators +, -, *, /, ^, factorial (!), and parentheses (). You cannot combine two dice digits to form multi-digit numbers (e.g., 4 and 5 cannot make 45).
+    Good luck!
+  </p>
+  <div id="game-info">
+    <div id="game-number">Game #<span id="game-num"></span></div>
+    <div id="date"></div>
   </div>
 
-  <div id="qu0x-popup">Qu0x! 🎉</div>
+  <div id="dice-row" class="dice-row"></div>
 
-<script src="script.js"></script>
+  <div id="target-container">Target: <span id="target-number"></span></div>
+
+  <div id="input-container">
+    <input type="text" id="expression-input" readonly />
+  </div>
+
+  <div id="buttons-container">
+    <button class="btn-num" data-val="(">(</button>
+    <button class="btn-num" data-val=")">)</button>
+    <button class="btn-op" data-val="+">+</button>
+    <button class="btn-op" data-val="-">-</button>
+    <button class="btn-op" data-val="*">*</button>
+    <button class="btn-op" data-val="/">/</button>
+    <button class="btn-op" data-val="^">^</button>
+    <button class="btn-op" data-val="!">!</button>
+    <button id="btn-backspace">⌫</button>
+    <button id="btn-clear">Clear</button>
+  </div>
+
+  <button id="btn-submit">Submit</button>
+
+  <div id="message-container"></div>
+
+  <div id="score-container">
+    Score: <span id="score">N/A</span> | Current Qu0x Streak: <span id="streak">0</span>
+  </div>
+
+  <div id="nav-buttons">
+    <button id="prev-game">Previous Game</button>
+    <button id="next-game">Next Game</button>
+  </div>
+
+  <h2>Game Archive (Last 5 Days)</h2>
+  <table id="history">
+    <thead>
+      <tr><th>Game #</th><th>Date</th><th>Your Score</th></tr>
+    </thead>
+    <tbody id="history-body"></tbody>
+  </table>
+
+  <script src="script.js"></script>
 </body>
 </html>
