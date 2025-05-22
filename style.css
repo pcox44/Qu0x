@@ -1,99 +1,104 @@
 body {
   font-family: Arial, sans-serif;
   text-align: center;
-  background-color: #f5f5f5;
   padding: 20px;
+  background: #f8f8f8;
 }
 
 h1 {
   font-size: 3em;
-  margin-bottom: 10px;
+  margin-bottom: 0.2em;
 }
 
-.rules {
-  font-size: 1em;
-  max-width: 600px;
-  margin: 0 auto 20px;
-}
-
-#game-number, #target-number, #streak {
-  font-size: 1.2em;
-  margin: 10px 0;
+.instructions {
+  margin-bottom: 1em;
+  font-size: 1.1em;
 }
 
 .dice-row {
   display: flex;
   justify-content: center;
-  margin: 20px 0;
+  margin: 15px 0;
 }
 
 .die {
-  font-size: 1.5em;
+  width: 60px;
+  height: 60px;
+  font-size: 2em;
   font-weight: bold;
-  border: 2px solid #000;
+  color: white;
   border-radius: 10px;
-  width: 50px;
-  height: 50px;
-  margin: 0 5px;
+  margin: 0 6px;
   display: flex;
-  align-items: center;
   justify-content: center;
-  color: black;
+  align-items: center;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
 }
 
 .used {
-  opacity: 0.4;
-  pointer-events: none;
+  opacity: 0.3;
 }
 
-.die[data-value="1"] { background-color: red; color: white; }
-.die[data-value="2"] { background-color: white; color: black; }
-.die[data-value="3"] { background-color: blue; color: white; }
-.die[data-value="4"] { background-color: gold; color: black; }
-.die[data-value="5"] { background-color: green; color: white; }
-.die[data-value="6"] { background-color: black; color: yellow; }
+.die1 { background-color: red; }
+.die2 { background-color: white; color: black; }
+.die3 { background-color: blue; }
+.die4 { background-color: yellow; color: black; }
+.die5 { background-color: green; }
+.die6 { background-color: black; }
 
 #expression {
   font-size: 1.5em;
   margin-bottom: 10px;
-  min-height: 30px;
+  min-height: 1.5em;
 }
 
-#buttons-container {
-  margin: 10px 0;
+#buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
 }
 
 button {
-  margin: 5px;
   padding: 10px 15px;
-  font-size: 1.1em;
+  font-size: 1.2em;
   border-radius: 5px;
+  border: none;
   cursor: pointer;
 }
 
-#result {
-  margin: 10px;
-  font-size: 1.2em;
+#backspace, #clear, #submit {
+  background-color: #ccc;
 }
 
 #message {
-  font-size: 1.5em;
-  color: green;
+  font-size: 1.3em;
+  margin-top: 10px;
   font-weight: bold;
 }
 
+#score, #streak {
+  font-size: 1.2em;
+  margin: 10px 0;
+}
+
+#archive {
+  margin-top: 30px;
+}
+
 #history {
-  margin: 20px auto;
-  width: 90%;
-  max-width: 600px;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
   border-collapse: collapse;
 }
 
 #history th, #history td {
-  border: 1px solid #ccc;
   padding: 8px;
+  border: 1px solid #ddd;
 }
 
-#nav-buttons {
-  margin: 10px;
+#history th {
+  background: #eee;
 }
