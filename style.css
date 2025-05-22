@@ -1,0 +1,95 @@
+body {
+  font-family: sans-serif;
+  padding: 1em;
+  background-color: #fefefe;
+  color: #222;
+  max-width: 600px;
+  margin: auto;
+}
+
+h1 {
+  text-align: center;
+  color: #0077cc;
+}
+
+.rules {
+  text-align: center;
+  font-size: 0.9em;
+  margin-bottom: 1em;
+}
+
+#game-header {
+  display: flex;
+  justify-content: space-between;
+  margin: 1em 0;
+}
+
+#dice-container button {
+  font-size: 1.4em;
+  margin: 0.25em;
+  width: 2.5em;
+  height: 2.5em;
+  border: none;
+  border-radius: 0.3em;
+  color: white;
+  font-weight: bold;
+  background: linear-gradient(to bottom, #fcf8e3, #f5b041);
+  cursor: pointer;
+}
+
+#dice-container button.used {
+  background-color: black;
+  color: white;
+}
+
+#op-buttons button {
+  font-size: 1.2em;
+  margin: 0.2em;
+  padding: 0.4em 0.6em;
+  cursor: pointer;
+}
+
+#expression {
+  margin: 1em 0;
+  font-size: 1.2em;
+  border: 1px solid #ccc;
+  padding: 0.5em;
+  min-height: 2em;
+  background: #f9f9f9;
+}
+
+#live-result {
+  font-size: 1em;
+  margin-bottom: 0.5em;
+}
+
+#score {
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+}
+
+#streak {
+  font-size: 1em;
+  margin-bottom: 1em;
+}
+
+#archive-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#archive-table th, #archive-table td {
+  padding: 0.5em;
+  border-bottom: 1px solid #ccc;
+  text-align: center;
+}
+
+#archive-table tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
