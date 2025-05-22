@@ -1,60 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Daily Dice Game</title>
-  <link rel="stylesheet" href="styles.css" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Daily Dice Game</title>
+<link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div id="game-container">
     <h1>Daily Dice Game</h1>
     <div id="game-info">
-      <div id="game-number"></div>
+      <div id="game-number">Game #</div>
       <div id="date-display"></div>
-      <button id="prev-game">Previous Day</button>
-      <button id="next-game">Next Day</button>
     </div>
-
     <div id="dice-container"></div>
     <div id="target-container">
       Target Number: <span id="target-number"></span>
     </div>
-
     <div id="expression-container">
-      <div id="expression" readonly></div>
+      <div id="expression" tabindex="0"></div>
+      <div id="buttons-row">
+        <button class="op" data-op="+">+</button>
+        <button class="op" data-op="-">-</button>
+        <button class="op" data-op="*">*</button>
+        <button class="op" data-op="/">/</button>
+        <button class="op" data-op="^">^</button>
+        <button class="op" data-op="!">!</button>
+        <button id="backspace">←</button>
+        <button id="clear">Clear</button>
+        <button id="submit">Submit</button>
+      </div>
     </div>
-
-    <div id="buttons-container">
-      <button class="op" data-op="+">+</button>
-      <button class="op" data-op="-">−</button>
-      <button class="op" data-op="*">×</button>
-      <button class="op" data-op="/">÷</button>
-      <button class="op" data-op="^">^</button>
-      <button class="op" data-op="!">!</button>
-      <button class="op" data-op="(">(</button>
-      <button class="op" data-op=")">)</button>
-      <button id="backspace">⌫</button>
-      <button id="clear">Clear</button>
-      <button id="submit">Submit</button>
-    </div>
-
-    <div id="message"></div>
+    <div id="message-container"></div>
     <div id="score-display"></div>
     <div id="streak-display"></div>
-    <a id="share-link" href="#" target="_blank" rel="noopener">Share this game</a>
-
-    <div id="qu0x-popup">Qu0x! Perfect score! 🎉</div>
-
-    <h2>Last 5 Games</h2>
-    <table id="history-table">
-      <thead>
-        <tr><th>Game #</th><th>Date</th><th>Score</th></tr>
-      </thead>
-      <tbody id="history-body"></tbody>
-    </table>
+    <div id="history-container">
+      <h2>Recent Games</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Game #</th>
+            <th>Date</th>
+            <th>Score</th>
+          </tr>
+        </thead>
+        <tbody id="history-body"></tbody>
+      </table>
+    </div>
+    <div id="nav-buttons">
+      <button id="prev-game">Previous Day</button>
+      <button id="next-game">Next Day</button>
+    </div>
   </div>
 
-  <script src="script.js"></script>
+  <div id="qu0x-popup">Qu0x! 🎉</div>
+
+<script src="script.js"></script>
 </body>
 </html>
