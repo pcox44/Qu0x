@@ -11,12 +11,6 @@ h1 {
   margin-bottom: 0.2em;
 }
 
-.rules {
-  font-size: 1em;
-  max-width: 600px;
-  margin: 0 auto 1em;
-}
-
 .dice-row {
   display: flex;
   justify-content: center;
@@ -24,7 +18,7 @@ h1 {
 }
 
 .die {
-  font-size: 2em;
+  font-size: 2.2em;
   font-weight: bold;
   border: 2px solid #aaa;
   border-radius: 10px;
@@ -35,11 +29,41 @@ h1 {
   align-items: center;
   justify-content: center;
   box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+  cursor: pointer;
+  user-select: none;
+  transition: opacity 0.5s;
+}
+
+/* Horse race colors */
+.die.red {
+  background-color: #ff0000;
   color: white;
 }
 
-.die.used {
-  opacity: 0.4;
+.die.white {
+  background-color: #ffffff;
+  color: black;
+  border: 2px solid #999;
+}
+
+.die.blue {
+  background-color: #0000ff;
+  color: white;
+}
+
+.die.yellow {
+  background-color: #ffff00;
+  color: black;
+}
+
+.die.green {
+  background-color: #008000;
+  color: white;
+}
+
+.die.black {
+  background-color: #000000;
+  color: #ffd700; /* yellow text */
 }
 
 #target-container {
@@ -47,33 +71,45 @@ h1 {
   margin: 10px;
 }
 
-#expression-container {
-  font-size: 1.2em;
-  margin: 10px;
+#input-container #expression {
+  font-size: 1.5em;
+  min-height: 1.5em;
+  border: 2px solid #888;
+  border-radius: 8px;
+  margin: 10px auto;
+  max-width: 320px;
+  padding: 5px 10px;
+  background: #fff;
+  user-select: none;
 }
 
 #buttons-container {
-  margin: 10px;
+  margin: 10px 0;
 }
 
-#buttons-container .op,
-#clear,
-#backspace,
-#submit {
+#buttons-container .op {
   font-size: 1.2em;
   margin: 3px;
   padding: 5px 10px;
+  cursor: pointer;
 }
 
-#result-container {
+#backspace-btn,
+#clear-btn,
+#submit-btn,
+#prev-game-btn,
+#next-game-btn {
   font-size: 1.2em;
-  margin: 10px;
+  margin: 5px;
+  padding: 6px 14px;
+  cursor: pointer;
 }
 
 #message-container {
   font-size: 1.2em;
   font-weight: bold;
   margin: 10px;
+  min-height: 1.5em;
 }
 
 #score, #streak {
@@ -97,35 +133,20 @@ h1 {
   background-color: #eee;
 }
 
-#archive-header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 1em;
-}
-
-#archive-header button {
-  margin: 0 10px;
-  font-size: 1.2em;
-}
-
 #qu0x-popup {
   position: fixed;
-  top: 40%;
+  top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 3em;
+  font-size: 5em;
   font-weight: bold;
-  color: #28a745;
-  background-color: #fff;
-  border: 3px solid #28a745;
-  padding: 20px 40px;
-  z-index: 1000;
+  color: #ff5722;
+  background: rgba(255, 255, 255, 0.95);
+  border: 5px solid #ff5722;
+  border-radius: 20px;
+  padding: 30px 50px;
   display: none;
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgba(0,0,0,0.2);
-}
-
-#qu0x-popup.show {
-  display: block;
+  z-index: 1000;
+  user-select: none;
+  pointer-events: none;
 }
