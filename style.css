@@ -1,93 +1,100 @@
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Segoe UI', sans-serif;
   text-align: center;
-  background: #f4f4f4;
+  background: #f5f5f5;
   padding: 20px;
 }
 
 h1 {
-  font-size: 2em;
+  font-size: 2.5em;
+  margin-bottom: 10px;
 }
 
-.dice-container {
+.rules {
+  max-width: 600px;
+  margin: auto;
+  font-size: 1em;
+}
+
+#dateDisplay {
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.dice-row {
   display: flex;
   justify-content: center;
-  margin: 20px 0;
+  margin-bottom: 10px;
 }
 
 .die {
-  width: 50px;
-  height: 50px;
-  line-height: 50px;
-  margin: 5px;
-  font-size: 24px;
+  width: 60px;
+  height: 60px;
+  font-size: 1.8em;
   font-weight: bold;
-  color: black;
-  border: 2px solid black;
-  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid black;
+  border-radius: 10px;
+  margin: 0 5px;
   cursor: pointer;
+  transition: opacity 0.3s;
 }
 
 .used {
   opacity: 0.3;
-  cursor: default;
 }
 
-.d1 { background: red; color: white; }
-.d2 { background: white; color: black; }
-.d3 { background: blue; color: white; }
-.d4 { background: yellow; color: black; }
-.d5 { background: green; color: white; }
-.d6 { background: black; color: yellow; }
-
-.buttons {
-  margin-top: 10px;
-}
-
-button {
-  margin: 5px;
-  padding: 10px;
-  font-size: 18px;
-}
-
-#expression {
-  margin-top: 15px;
-  font-size: 20px;
-  padding: 10px;
-  width: 300px;
-  border: 2px solid #000;
-  border-radius: 6px;
-  background: white;
-  color: black;
-}
-
-#expression-result {
-  font-size: 20px;
-  margin-top: 10px;
-}
+.die[data-val="1"] { background: red; color: white; }
+.die[data-val="2"] { background: white; color: black; }
+.die[data-val="3"] { background: blue; color: white; }
+.die[data-val="4"] { background: yellow; color: black; }
+.die[data-val="5"] { background: green; color: white; }
+.die[data-val="6"] { background: black; color: yellow; }
 
 #target-container {
-  font-size: 28px;
-  margin: 10px 0;
-  font-weight: bold;
+  font-size: 2em;
+  margin: 15px;
 }
 
-#message-container {
-  margin-top: 15px;
-  font-size: 20px;
+#expression-box {
+  border: 1px solid #ccc;
+  padding: 10px;
+  width: 300px;
+  margin: auto;
+  margin-bottom: 10px;
+  background: white;
+  font-size: 1.2em;
 }
 
-.nav-buttons {
-  margin: 20px 0;
+#buttons-container button {
+  margin: 4px;
+  padding: 10px 12px;
+  font-size: 1.1em;
 }
 
-table {
-  margin: 0 auto;
+.popup {
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: gold;
+  padding: 30px;
+  border: 5px solid black;
+  font-size: 2em;
+  display: none;
+  z-index: 1000;
+}
+
+#history {
+  margin: 20px auto;
   border-collapse: collapse;
-  width: 80%;
+  width: 90%;
+  max-width: 500px;
 }
 
-th, td {
-  border: 1px solid #000;
+#history th, #history td {
+  border: 1px solid #aaa;
   padding: 8px;
 }
