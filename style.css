@@ -1,187 +1,130 @@
-const operators = ['+', '-', '*', '/', '(', ')'];
-const localDate = new Date();
-const today = new Date(localDate.getFullYear(), localDate.getMonth(), localDate.getDate());
-const seed = today.getTime();
-const rand = mulberry32(seed);
-
-let dice, target, bestScore = null;
-let usedDice = [], streak = 0;
-let gameWon = false;
-
-function mulberry32(a) {
-  return function () {
-    var t = a += 0x6D2B79F5;
-    t = Math.imul(t ^ t >>> 15, t | 1);
-    t ^= t + Math.imul(t ^ t >>> 7, t | 61);
-    return ((t ^ t >>> 14) >>> 0) / 4294967296;
-  }
+body {
+  font-family: sans-serif;
+  padding: 20px;
+  background: #f9f9f9;
+  color: #333;
+  max-width: 800px;
+  margin: auto;
 }
 
-function getDailyPuzzle(seed) {
-  const rand = mulberry32(seed);
-  while (true) {
-    let d = Array.from({ length: 5 }, () => Math.floor(rand() * 9) + 1);
-    let t = Math.floor(rand() * 100) + 1;
-    if (hasSolution(d, t)) return { dice: d, target: t };
-  }
+h1 {
+  text-align: center;
 }
 
-function hasSolution(dice, target) {
-  const perms = permute(dice);
-  for (let p of perms) {
-    let exprs = generateExpressions(p);
-    for (let expr of exprs) {
-      try {
-        if (Math.abs(eval(expr) - target) < 1e-6) return true;
-      } catch (e) {}
-    }
-  }
-  return false;
+.rules {
+  background: #eef;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 20px;
 }
 
-function permute(arr) {
-  if (arr.length === 1) return [arr];
-  let result = [];
-  for (let i = 0; i < arr.length; i++) {
-    let rest = permute(arr.slice(0, i).concat(arr.slice(i + 1)));
-    for (let r of rest) result.push([arr[i]].concat(r));
-  }
-  return result;
+#target-container {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 10px 0;
+  text-align: center;
 }
 
-function generateExpressions(nums) {
-  if (nums.length === 1) return [nums[0].toString()];
-  let result = [];
-  for (let i = 1; i < nums.length; i++) {
-    let left = generateExpressions(nums.slice(0, i));
-    let right = generateExpressions(nums.slice(i));
-    for (let l of left) {
-      for (let r of right) {
-        for (let op of ['+', '-', '*', '/']) {
-          result.push(`(${l}${op}${r})`);
-        }
-      }
-    }
-  }
-  return result;
+#dice-container {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+  gap: 10px;
 }
 
-function setupGame() {
-  const { dice: d, target: t } = getDailyPuzzle(seed);
-  dice = d;
-  target = t;
-
-  document.getElementById('game').innerHTML =
-    `<div>Target: <strong>${target}</strong></div>` +
-    '<div>' + dice.map((n, i) => `<div class="die" data-index="${i}">${n}</div>`).join('') + '</div>' +
-    '<div class="expression-area">' +
-    operators.map(op => `<button onclick="addToExpression('${op}')">${op}</button>`).join('') +
-    '<br><input id="expression" placeholder="Enter expression..." />' +
-    '<div><button onclick="submitExpression()">Submit</button> <button onclick="clearExpression()">Clear</button></div>' +
-    '</div>';
-
-  document.querySelectorAll('.die').forEach(die =>
-    die.addEventListener('click', function () {
-      if (this.classList.contains('used') || gameWon) return;
-      usedDice.push(parseInt(this.textContent));
-      this.classList.add('used');
-      addToExpression(this.textContent);
-    })
-  );
-
-  updateHistory();
-  updateStreak();
+.die {
+  width: 60px;
+  height: 60px;
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+  line-height: 60px;
+  border-radius: 10px;
+  cursor: pointer;
+  user-select: none;
 }
 
-function addToExpression(val) {
-  if (gameWon) return;
-  document.getElementById('expression').value += val;
+.die.used {
+  opacity: 0.5;
 }
 
-function clearExpression() {
-  usedDice = [];
-  document.getElementById('expression').value = '';
-  document.querySelectorAll('.die').forEach(d => d.classList.remove('used'));
+.die-1 { background: red; color: white; }
+.die-2 { background: white; color: black; border: 2px solid black; }
+.die-3 { background: blue; color: white; }
+.die-4 { background: yellow; color: black; }
+.die-5 { background: green; color: white; }
+.die-6 { background: black; color: yellow; }
+
+#expression {
+  font-size: 20px;
+  min-height: 30px;
+  margin: 10px;
+  text-align: center;
+  user-select: text;
 }
 
-function submitExpression() {
-  if (gameWon) return;
-
-  const expr = document.getElementById('expression').value;
-  const digitsUsed = expr.match(/\d+/g)?.map(Number) || [];
-  const sorted = [...usedDice].sort().join(',');
-  const expected = [...dice].sort().join(',');
-
-  if (sorted !== expected) {
-    document.getElementById('score').textContent = 'You must use all dice exactly once!';
-    return;
-  }
-
-  try {
-    const result = eval(expr);
-    const score = Math.abs(result - target);
-    bestScore = bestScore === null ? score : Math.min(score, bestScore);
-    saveResult(score);
-    updateHistory();
-
-    if (score === 0) {
-      document.getElementById('score').textContent = `🎉 Qu0x! (${expr} = ${target})`;
-      gameWon = true;
-    } else {
-      document.getElementById('score').textContent = `Result: ${result} (Off by ${score})`;
-    }
-  } catch (e) {
-    document.getElementById('score').textContent = 'Invalid expression.';
-  }
+#buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-function saveResult(score) {
-  const key = 'qu0x-history';
-  let history = JSON.parse(localStorage.getItem(key) || '{}');
-  const dateStr = today.toISOString().split('T')[0];
-  if (!history[dateStr]) history[dateStr] = [];
-  history[dateStr].push(score);
-  localStorage.setItem(key, JSON.stringify(history));
-
-  if (score === 0) {
-    localStorage.setItem('qu0x-won-' + dateStr, 'true');
-    updateStreak();
-  }
+.op-row, .ctrl-row {
+  margin: 5px;
 }
 
-function updateHistory() {
-  const key = 'qu0x-history';
-  let history = JSON.parse(localStorage.getItem(key) || '{}');
-  const tbody = document.querySelector('#history tbody');
-  tbody.innerHTML = '';
-
-  const dates = Object.keys(history).sort().slice(-10);
-  for (let date of dates) {
-    const scores = history[date];
-    const best = Math.min(...scores);
-    const row = `<tr><td>${date}</td><td>${target}</td><td>${best}</td></tr>`;
-    tbody.innerHTML += row;
-  }
+button {
+  font-size: 20px;
+  padding: 10px 15px;
+  margin: 2px;
+  border-radius: 5px;
+  cursor: pointer;
+  user-select: none;
 }
 
-function updateStreak() {
-  let history = JSON.parse(localStorage.getItem('qu0x-history') || '{}');
-  let dates = Object.keys(history).sort();
-  let streakCount = 0;
-
-  for (let i = dates.length - 1; i >= 0; i--) {
-    let d = new Date(dates[i]);
-    d.setHours(0,0,0,0);
-    const key = 'qu0x-won-' + dates[i];
-    if (localStorage.getItem(key) === 'true') {
-      streakCount++;
-    } else {
-      break;
-    }
-  }
-
-  streak = streakCount;
-  document.getElementById('streak').textContent = `Current Streak: ${streak}`;
+#live-result, #score-display, #streak-display, #perfect-count-display {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 18px;
+  font-weight: bold;
 }
 
-setupGame();
+#results-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+#results-table th, #results-table td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: center;
+}
+
+#archive {
+  margin-top: 20px;
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  padding: 5px;
+  background: #fff;
+}
+
+.archive-entry {
+  padding: 6px;
+  margin: 5px 0;
+  border: 1px solid #aaa;
+  border-radius: 5px;
+}
+
+.archive-entry.perfect {
+  background: #d4edda;
+  border-color: #28a745;
+}
+
+#navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
