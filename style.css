@@ -1,100 +1,109 @@
 body {
-  font-family: 'Segoe UI', sans-serif;
+  font-family: sans-serif;
   text-align: center;
-  background: #f5f5f5;
   padding: 20px;
 }
 
 h1 {
-  font-size: 2.5em;
+  font-size: 3em;
+}
+
+#game-date {
+  font-weight: bold;
   margin-bottom: 10px;
 }
 
-.rules {
-  max-width: 600px;
-  margin: auto;
-  font-size: 1em;
+#target-box {
+  font-size: 2em;
+  padding: 10px;
+  background-color: #ddd;
+  border: 2px solid #555;
+  display: inline-block;
+  margin: 10px 0;
 }
 
-#dateDisplay {
-  font-weight: bold;
-  margin-bottom: 15px;
-}
-
-.dice-row {
+#dice-container {
   display: flex;
   justify-content: center;
-  margin-bottom: 10px;
+  margin: 20px 0;
 }
 
 .die {
   width: 60px;
   height: 60px;
+  margin: 0 5px;
   font-size: 1.8em;
   font-weight: bold;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 3px solid black;
+  border: 2px solid black;
   border-radius: 10px;
-  margin: 0 5px;
   cursor: pointer;
+  opacity: 1;
   transition: opacity 0.3s;
 }
 
-.used {
+.die.used {
   opacity: 0.3;
 }
 
-.die[data-val="1"] { background: red; color: white; }
-.die[data-val="2"] { background: white; color: black; }
-.die[data-val="3"] { background: blue; color: white; }
-.die[data-val="4"] { background: yellow; color: black; }
-.die[data-val="5"] { background: green; color: white; }
-.die[data-val="6"] { background: black; color: yellow; }
-
-#target-container {
-  font-size: 2em;
-  margin: 15px;
-}
+.die.d1 { background: red; color: white; }
+.die.d2 { background: white; color: black; }
+.die.d3 { background: blue; color: white; }
+.die.d4 { background: yellow; color: black; }
+.die.d5 { background: green; color: white; }
+.die.d6 { background: black; color: yellow; }
 
 #expression-box {
-  border: 1px solid #ccc;
+  font-size: 1.5em;
+  margin: 10px;
+}
+
+#expression-display {
+  background: #fff;
   padding: 10px;
-  width: 300px;
-  margin: auto;
-  margin-bottom: 10px;
-  background: white;
+  min-height: 1.5em;
+  border: 2px solid #333;
+  display: inline-block;
+  margin-bottom: 5px;
+}
+
+#expression-result {
+  font-size: 1em;
+  color: #666;
+}
+
+#buttons button {
+  font-size: 1em;
+  margin: 3px;
+  padding: 10px 15px;
+}
+
+#message {
   font-size: 1.2em;
+  font-weight: bold;
+  margin-top: 10px;
 }
 
-#buttons-container button {
-  margin: 4px;
-  padding: 10px 12px;
-  font-size: 1.1em;
-}
-
-.popup {
-  position: fixed;
-  top: 40%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background: gold;
-  padding: 30px;
-  border: 5px solid black;
-  font-size: 2em;
+#qu0x-animation {
+  font-size: 3em;
+  color: #e60000;
+  font-weight: bold;
   display: none;
-  z-index: 1000;
 }
 
-#history {
-  margin: 20px auto;
+#archive-container {
+  margin-top: 30px;
+}
+
+#archive {
+  margin: 0 auto;
   border-collapse: collapse;
-  width: 90%;
-  max-width: 500px;
+  width: 60%;
 }
 
-#history th, #history td {
-  border: 1px solid #aaa;
+#archive th, #archive td {
+  border: 1px solid #ccc;
   padding: 8px;
 }
