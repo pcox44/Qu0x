@@ -1,4 +1,3 @@
-// Constants
 const startDate = new Date("2025-05-15T00:00:00");
 let currentDate = new Date();
 currentDate.setHours(0, 0, 0, 0);
@@ -18,7 +17,8 @@ const nextButton = document.getElementById("next-day");
 const dateDisplay = document.getElementById("date-display");
 const historyBody = document.getElementById("history-body");
 
-const operations = { "×": "*", "÷": "/", "−": "-" };
+let currentDice = [];
+let usedDice = [];
 
 function seedRandom(date) {
   let seed = date.getFullYear() * 10000 + (date.getMonth() + 1) * 100 + date.getDate();
@@ -29,24 +29,10 @@ function seedRandom(date) {
 }
 
 function generateDice(date) {
-  let rand = seedRandom(date);
-  let dice;
-  let target;
-  let tries = 0;
-
-  do {
-    dice = Array.from({ length: 5 }, () => Math.floor(rand() * 6) + 1);
-    target = Math.floor(rand() * 100) + 1;
-    tries++;
-  } while (!hasSolution(dice, target) && tries < 100);
-
+  const rand = seedRandom(date);
+  const dice = Array.from({ length: 5 }, () => Math.floor(rand() * 6) + 1);
+  const target = Math.floor(rand() * 100) + 1;
   return { dice, target };
-}
-
-function hasSolution(dice, target) {
-  // Very basic solution check (placeholder)
-  // In a full implementation, try permutations and check math
-  return true;
 }
 
 function formatDate(date) {
@@ -58,23 +44,33 @@ function gameNumber(date) {
 }
 
 function renderGame(date) {
-  const todayStr = formatDate(today);
-  const dateStr = formatDate(date);
   const { dice, target } = generateDice(date);
+  currentDice = [...dice];
+  usedDice = Array(5).fill(false);
 
   diceContainer.innerHTML = "";
-  dice.forEach(die => {
+  dice.forEach((die, i) => {
     const div = document.createElement("div");
     div.className = `die die-${die}`;
     div.textContent = die;
+    div.addEventListener("click", () => {
+      if (!usedDice[i]) {
+        expressionInput.value += die;
+        div.classList.add("used");
+        usedDice[i] = true;
+      }
+    });
     diceContainer.appendChild(div);
   });
 
   targetContainer.textContent = `🎯 Target: ${target}`;
-  dateDisplay.textContent = `Game #${gameNumber(date)} (${dateStr})`;
+  dateDisplay.textContent = `Game #${gameNumber(date)} (${formatDate(date)})`;
+  expressionInput.value = "";
+  resultContainer.textContent = "";
+  messageContainer.textContent = "";
+  scoreContainer.textContent = "";
 
   updateButtons();
-  loadHistory();
   renderArchive();
 }
 
@@ -84,56 +80,38 @@ function updateButtons() {
 }
 
 function evaluateExpression() {
+  const { target } = generateDice(currentDate);
   let expr = expressionInput.value;
-  const dateKey = formatDate(currentDate);
-  const { target, dice } = generateDice(currentDate);
+
+  const usedNums = expr.match(/\d/g)?.map(Number) || [];
+  const sortedUsed = [...usedNums].sort().join("");
+  const sortedDice = [...currentDice].sort().join("");
+
+  if (usedNums.length !== 5 || sortedUsed !== sortedDice) {
+    messageContainer.textContent = "Use each die exactly once.";
+    return;
+  }
 
   try {
-    let used = dice.map(() => false);
-    let values = expr.match(/\d+/g)?.map(Number) || [];
-
-    for (let val of values) {
-      const idx = dice.indexOf(val);
-      if (idx !== -1 && !used[idx]) {
-        used[idx] = true;
-      } else {
-        messageContainer.textContent = "Each die must be used exactly once.";
-        return;
-      }
-    }
-
-    if (used.some(u => !u)) {
-      messageContainer.textContent = "Use all dice once.";
-      return;
-    }
-
-    for (let op in operations) {
-      expr = expr.replaceAll(op, operations[op]);
-    }
-
+    expr = expr.replace(/×/g, "*").replace(/÷/g, "/").replace(/−/g, "-");
     const result = eval(expr);
-    const score = Math.abs(result - target);
+    const score = Math.round(Math.abs(result - target));
 
     resultContainer.textContent = `Result: ${result}`;
-    scoreContainer.textContent = `Score: ${Math.round(score)}`;
-
-    saveHistory(dateKey, Math.round(score));
+    scoreContainer.textContent = `Score: ${score}`;
     messageContainer.textContent = score === 0 ? "🎉 Qu0x!" : "";
 
-    if (score === 0) {
-      incrementStreak();
-    }
-
+    saveHistory(formatDate(currentDate), score);
     renderArchive();
   } catch {
     messageContainer.textContent = "Invalid expression.";
   }
 }
 
-function saveHistory(dateKey, score) {
+function saveHistory(key, score) {
   const history = JSON.parse(localStorage.getItem("history") || "{}");
-  if (!history[dateKey]) history[dateKey] = [];
-  if (!history[dateKey].includes(score)) history[dateKey].push(score);
+  if (!history[key]) history[key] = [];
+  if (!history[key].includes(score)) history[key].push(score);
   localStorage.setItem("history", JSON.stringify(history));
 }
 
@@ -172,26 +150,21 @@ function getStreak() {
   return streak;
 }
 
-function incrementStreak() {
-  renderArchive(); // streak will auto-update from history
-}
-
 submitButton.addEventListener("click", evaluateExpression);
 document.querySelectorAll(".op").forEach(btn => {
   btn.addEventListener("click", () => {
     expressionInput.value += btn.textContent;
   });
 });
-
 document.getElementById("clear").addEventListener("click", () => {
   expressionInput.value = "";
+  [...diceContainer.children].forEach(div => div.classList.remove("used"));
+  usedDice = Array(5).fill(false);
 });
-
 prevButton.addEventListener("click", () => {
   currentDate.setDate(currentDate.getDate() - 1);
   renderGame(currentDate);
 });
-
 nextButton.addEventListener("click", () => {
   if (currentDate < today) {
     currentDate.setDate(currentDate.getDate() + 1);
@@ -199,5 +172,5 @@ nextButton.addEventListener("click", () => {
   }
 });
 
-// Load initial game
+// Initial load
 renderGame(currentDate);
