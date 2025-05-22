@@ -3,63 +3,57 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Qu0x - Daily Dice Game</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Daily Dice Game</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <h1>Qu0x</h1>
-  <div id="game-number"></div>
-  <div id="date-display"></div>
+  <div id="game-container">
+    <h1>Daily Dice Game</h1>
+    <div id="game-info">
+      <div id="game-number"></div>
+      <div id="date-display"></div>
+      <button id="prev-game">Previous Day</button>
+      <button id="next-game">Next Day</button>
+    </div>
 
-  <div id="dice-container" class="dice-row"></div>
+    <div id="dice-container"></div>
+    <div id="target-container">
+      Target Number: <span id="target-number"></span>
+    </div>
 
-  <div id="target-container">Target: <span id="target-number"></span></div>
+    <div id="expression-container">
+      <div id="expression" readonly></div>
+    </div>
 
-  <div id="input-container">
-    <div id="expression"></div>
+    <div id="buttons-container">
+      <button class="op" data-op="+">+</button>
+      <button class="op" data-op="-">−</button>
+      <button class="op" data-op="*">×</button>
+      <button class="op" data-op="/">÷</button>
+      <button class="op" data-op="^">^</button>
+      <button class="op" data-op="!">!</button>
+      <button class="op" data-op="(">(</button>
+      <button class="op" data-op=")">)</button>
+      <button id="backspace">⌫</button>
+      <button id="clear">Clear</button>
+      <button id="submit">Submit</button>
+    </div>
+
+    <div id="message"></div>
+    <div id="score-display"></div>
+    <div id="streak-display"></div>
+    <a id="share-link" href="#" target="_blank" rel="noopener">Share this game</a>
+
+    <div id="qu0x-popup">Qu0x! Perfect score! 🎉</div>
+
+    <h2>Last 5 Games</h2>
+    <table id="history-table">
+      <thead>
+        <tr><th>Game #</th><th>Date</th><th>Score</th></tr>
+      </thead>
+      <tbody id="history-body"></tbody>
+    </table>
   </div>
-
-  <div id="buttons-container">
-    <button class="op" data-op="(">(</button>
-    <button class="op" data-op=")">)</button>
-    <button class="op" data-op="+">+</button>
-    <button class="op" data-op="-">−</button>
-    <button class="op" data-op="*">×</button>
-    <button class="op" data-op="/">÷</button>
-    <button class="op" data-op="^">^</button>
-    <button class="op" data-op="!">!</button>
-  </div>
-
-  <div>
-    <button id="backspace-btn">Backspace</button>
-    <button id="clear-btn">Clear</button>
-    <button id="submit-btn">Submit</button>
-  </div>
-
-  <div id="message-container"></div>
-  <div id="score"></div>
-  <div id="streak"></div>
-
-  <div>
-    <button id="prev-game-btn">Previous Game</button>
-    <button id="next-game-btn">Next Game</button>
-  </div>
-
-  <a id="share-link" href="#" target="_blank" rel="noopener noreferrer">Share this game</a>
-
-  <h2>Game Archive (Last 5 Days)</h2>
-  <table id="history">
-    <thead>
-      <tr>
-        <th>Game #</th>
-        <th>Date</th>
-        <th>Score</th>
-      </tr>
-    </thead>
-    <tbody id="history-body"></tbody>
-  </table>
-
-  <div id="qu0x-popup">Qu0x!</div>
 
   <script src="script.js"></script>
 </body>
