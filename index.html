@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="container">
+  <div id="container">
     <h1>Qu0x!</h1>
     <div id="game-info">
       <div id="game-date"></div>
@@ -18,45 +18,46 @@
       <div id="dice-container"></div>
     </div>
 
-    <div id="expression-box">
-      <input type="text" id="expression" disabled />
+    <div id="expression-box-container">
+      <input type="text" id="expression" readonly />
       <div id="expression-result"></div>
     </div>
 
     <div id="buttons">
-      <div id="dice-buttons"></div>
-      <div class="op-buttons">
-        <button onclick="appendOperator('+')">+</button>
-        <button onclick="appendOperator('-')">−</button>
-        <button onclick="appendOperator('*')">*</button>
-        <button onclick="appendOperator('/')">/</button>
-        <button onclick="appendOperator('^')">^</button>
-        <button onclick="appendOperator('!')">!</button>
-        <button onclick="appendOperator('(')">(</button>
-        <button onclick="appendOperator(')')">)</button>
-        <button onclick="backspace()">←</button>
-        <button onclick="clearExpression()">Clear</button>
-      </div>
-      <button id="submit" onclick="submitExpression()">Submit</button>
+      <button class="input-btn" data-value="+">+</button>
+      <button class="input-btn" data-value="-">−</button>
+      <button class="input-btn" data-value="*">×</button>
+      <button class="input-btn" data-value="/">÷</button>
+      <button class="input-btn" data-value="^">^</button>
+      <button class="input-btn" data-value="!">!</button>
+      <button class="input-btn" data-value="(">(</button>
+      <button class="input-btn" data-value=")">)</button>
+      <button id="backspace">⌫</button>
+      <button id="clear">Clear</button>
     </div>
 
-    <div id="feedback"></div>
-    <div id="qu0x-animation">Qu0x!</div>
-
-    <div id="navigation">
-      <button onclick="previousGame()">Previous</button>
-      <button onclick="nextGame()">Next</button>
+    <div id="submit-section">
+      <button id="submit">Submit</button>
+      <div id="result-message"></div>
+      <div id="expression-eval"></div>
     </div>
 
-    <div id="qu0x-counts">
+    <div id="nav-buttons">
+      <button id="prev-day">Previous</button>
+      <button id="next-day">Next</button>
+    </div>
+
+    <div id="qu0x-counter">
       Total Qu0x: <span id="total-qu0x">0</span>
     </div>
 
     <div id="archive">
-      <h2>Last 5 Results</h2>
+      <h2>Last 5 Games</h2>
       <ul id="archive-list"></ul>
     </div>
   </div>
+
+  <div id="qu0x-popup">Qu0x!</div>
 
   <script src="script.js"></script>
 </body>
