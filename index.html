@@ -1,39 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
   <title>Qu0x!</title>
-  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="top-bar">
-    <div id="today-date"></div>
-  </div>
-
   <h1>Qu0x!</h1>
-  <div class="instructions">
-    Use all five dice exactly once to create an expression as close to the target number as possible.
-    A score of 0 is a <strong>Qu0x!</strong>
-  </div>
-
-  <div id="game-info">
-    <button id="prev-day">&lt; Prev</button>
-    <span id="game-number">Game #1</span> |
-    <span id="game-date">Date: --</span>
-    <button id="next-day">Next &gt;</button>
-  </div>
-
-  <div id="target-container">Target: <span id="target-number">--</span></div>
+  <p class="instructions">Use all five dice exactly once with any operations to get as close as possible to the target number.</p>
+  <div id="date-display"></div>
+  <div id="target-container">Target: <span id="target-number"></span></div>
   <div class="dice-row" id="dice-row"></div>
-
-  <div id="input-container">
+  <div id="expression-container">
     <div id="expression-display"></div>
     <div id="buttons-container">
       <button class="op">(</button>
       <button class="op">)</button>
       <button class="op">+</button>
-      <button class="op">−</button>
+      <button class="op">-</button>
       <button class="op">×</button>
       <button class="op">÷</button>
       <button class="op">^</button>
@@ -43,20 +27,21 @@
       <button id="submit">Submit</button>
     </div>
   </div>
-
   <div id="message-container"></div>
-  <div id="score">Score: --</div>
+  <div id="score"></div>
   <div id="streak">Current Qu0x Streak: 0</div>
-
+  <div id="navigation">
+    <button id="prev">← Previous</button>
+    <button id="next">Next →</button>
+  </div>
+  <h2>Game Archive</h2>
   <table id="history">
     <thead>
-      <tr><th>Date</th><th>Game</th><th>Your Score</th></tr>
+      <tr><th>Date</th><th>Score</th></tr>
     </thead>
     <tbody id="history-body"></tbody>
   </table>
-
-  <div id="qu0x-animation">Qu0x!</div>
-
+  <div id="animation">Qu0x!</div>
   <script src="script.js"></script>
 </body>
 </html>
