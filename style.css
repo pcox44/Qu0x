@@ -2,24 +2,18 @@ body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   text-align: center;
   padding: 20px;
-  background-color: #f9f9f9;
+  background-color: #fff;
   color: #333;
 }
 
 h1 {
   font-size: 2.5em;
-  margin-bottom: 0.2em;
 }
 
 .rules {
   font-size: 1em;
   max-width: 600px;
   margin: 0 auto 1em;
-}
-
-#game-controls {
-  margin: 10px;
-  font-size: 1.2em;
 }
 
 .dice-row {
@@ -29,9 +23,8 @@ h1 {
 }
 
 .die {
-  font-size: 2em;
+  font-size: 1.5em;
   font-weight: bold;
-  border: 2px solid #aaa;
   border-radius: 10px;
   width: 50px;
   height: 50px;
@@ -40,71 +33,83 @@ h1 {
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  color: #fff;
   box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
   transition: opacity 0.3s ease;
 }
 
 .die.used {
   opacity: 0.3;
-  pointer-events: none;
 }
 
-.die-1 { background-color: red; color: white; }
-.die-2 { background-color: white; color: black; }
-.die-3 { background-color: blue; color: white; }
-.die-4 { background-color: yellow; color: black; }
-.die-5 { background-color: green; color: white; }
-.die-6 { background-color: black; color: yellow; }
-
-#target-container {
-  font-size: 1.5em;
-  margin: 10px;
-}
-
-#input-container input {
-  font-size: 1.2em;
-  padding: 5px;
-  width: 300px;
-  background: #fff;
-}
-
-#input-container button {
-  font-size: 1.2em;
-  margin-left: 10px;
-  padding: 5px 15px;
-}
+.die[data-value="1"] { background-color: red; }
+.die[data-value="2"] { background-color: white; color: black; }
+.die[data-value="3"] { background-color: blue; }
+.die[data-value="4"] { background-color: yellow; color: black; }
+.die[data-value="5"] { background-color: green; }
+.die[data-value="6"] { background-color: black; color: yellow; }
 
 #buttons-container {
   margin: 10px;
 }
 
-#buttons-container .op {
-  font-size: 1.2em;
+#buttons-container .op,
+#backspace,
+#clear {
+  font-size: 1em;
   margin: 3px;
-  padding: 5px 10px;
+  padding: 6px 10px;
+  cursor: pointer;
 }
 
-#result-container, #message-container, #score, #streak {
-  font-size: 1.2em;
+#expression-container {
+  font-size: 1.5em;
   margin: 10px;
+  min-height: 30px;
 }
 
-#message-container {
-  font-weight: bold;
+#result-container,
+#score,
+#message-container,
+#streak {
+  margin: 10px;
+  font-size: 1.2em;
+}
+
+#nav-buttons {
+  margin-top: 20px;
 }
 
 #history {
   margin: 20px auto;
   border-collapse: collapse;
   width: 90%;
-  max-width: 600px;
+  max-width: 700px;
 }
 
 #history th, #history td {
   border: 1px solid #ccc;
-  padding: 8px 12px;
+  padding: 8px;
 }
 
 #history th {
-  background-color: #eee;
+  background-color: #f0f0f0;
+}
+
+@keyframes qu0x-pop {
+  0% { transform: scale(1); opacity: 0; }
+  50% { transform: scale(1.5); opacity: 1; }
+  100% { transform: scale(1); opacity: 0; }
+}
+
+#qu0x-animation {
+  position: fixed;
+  top: 40%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 3em;
+  color: gold;
+  font-weight: bold;
+  animation: qu0x-pop 3s ease forwards;
+  z-index: 1000;
 }
