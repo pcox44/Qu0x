@@ -1,379 +1,539 @@
-// Qu0x Game Script
+"use strict";
 
-const diceContainer = document.getElementById('dice-container');
-const targetNumberSpan = document.getElementById('target-number');
-const expressionDisplay = document.getElementById('expression-display');
-const messageContainer = document.getElementById('message');
-const resultContainer = document.getElementById('result-container');
-const scoreDisplay = document.getElementById('score-display');
-const historyBody = document.getElementById('history-body');
-const streakDisplay = document.getElementById('streak-display');
-const qu0xPopup = document.getElementById('qu0x-popup');
-
-const backspaceButton = document.getElementById('btn-backspace');
-const clearButton = document.getElementById('btn-clear');
-const prevGameButton = document.getElementById('prev-game');
-const nextGameButton = document.getElementById('next-game');
-
-const operatorButtons = document.querySelectorAll('.op-btn');
-
-const MAX_HISTORY = 5;
+// CONSTANTS
 const START_DATE = new Date(2025, 4, 15); // May 15, 2025 (month 0-indexed)
+const MS_PER_DAY = 86400000;
+const MAX_ARCHIVE_DAYS = 5;
+
+// Horse race colors for dice 1-6
+const DICE_COLORS = {
+  1: "red",
+  2: "white",
+  3: "blue",
+  4: "yellow",
+  5: "green",
+  6: "black",
+};
+
+const OPERATORS = ["+", "-", "*", "/", "^", "!"];
 
 let currentGameNum = 1;
 let diceValues = [];
-let usedDice = new Set();
-let expression = '';
 let targetNumber = 0;
+let expression = "";
+let usedDiceIndices = new Set();
+let currentScore = null;
 let currentStreak = 0;
-let perfectScoreToday = false;
+let submissionLocked = false;
 
-const horseColors = {
-  1: 'red',
-  2: 'white',
-  3: 'blue',
-  4: 'red',
-  5: 'white',
-  6: 'blue',
-};
+const gameNumSpan = document.getElementById("game-num");
+const dateDisplay = document.getElementById("date-display");
+const diceContainer = document.getElementById("dice-container");
+const targetSpan = document.getElementById("target-number");
+const exprInput = document.getElementById("expression-input");
+const messageContainer = document.getElementById("message-container");
+const scoreDisplay = document.getElementById("score-display");
+const streakDisplay = document.getElementById("streak-display");
+const historyTbody = document.querySelector("#history tbody");
+const btnClear = document.getElementById("btn-clear");
+const btnBackspace = document.getElementById("btn-backspace");
+const btnSubmit = document.getElementById("btn-submit");
+const btnPrev = document.getElementById("btn-prev-game");
+const btnNext = document.getElementById("btn-next-game");
+const btnOpenParen = document.getElementById("btn-open-paren");
+const btnCloseParen = document.getElementById("btn-close-paren");
+const opButtons = document.querySelectorAll(".op-btn");
+const qu0xPopup = document.getElementById("qu0x-popup");
 
-function seededRandom(seed) {
-  return function () {
-    seed = (seed * 9301 + 49297) % 233280;
-    return seed / 233280;
-  };
+// Utilities
+function getDateFromGameNum(gameNum) {
+  return new Date(START_DATE.getTime() + (gameNum - 1) * MS_PER_DAY);
+}
+function formatDate(d) {
+  return d.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
 }
 
+// Generate deterministic dice values & target for a game number
 function generateGameData(gameNum) {
-  const rand = seededRandom(gameNum * 1234567);
-
-  const dice = [];
-  while (dice.length < 5) {
-    dice.push(Math.floor(rand() * 6) + 1);
+  // Simple seeded pseudo-random using sine, stable per gameNum
+  function pseudoRandom(seed) {
+    return Math.abs(Math.sin(seed) * 10000) % 1;
   }
-
-  const target = Math.floor(rand() * 100) + 1;
-
+  // Dice values 1-6 (5 dice)
+  let dice = [];
+  let usedDiceVals = new Set();
+  let seedBase = gameNum * 13.37;
+  while (dice.length < 5) {
+    let val = 1 + Math.floor(pseudoRandom(seedBase + dice.length) * 6);
+    if (!usedDiceVals.has(val)) {
+      usedDiceVals.add(val);
+      dice.push(val);
+    }
+  }
+  // Target between 20 and 99 (inclusive)
+  let target = 20 + Math.floor(pseudoRandom(seedBase + 10) * 80);
   return { dice, target };
 }
 
-function renderDice() {
-  diceContainer.innerHTML = '';
+// LocalStorage keys & helpers
+function lsKey(gameNum) {
+  return `qu0x_game_${gameNum}`;
+}
+function lsStreakKey() {
+  return "qu0x_streak";
+}
+
+function saveGameResult(gameNum, score, expr) {
+  let data = { score, expr, timestamp: Date.now() };
+  localStorage.setItem(lsKey(gameNum), JSON.stringify(data));
+}
+function getGameResult(gameNum) {
+  let raw = localStorage.getItem(lsKey(gameNum));
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
+function saveStreak(streak) {
+  localStorage.setItem(lsStreakKey(), String(streak));
+}
+function getStreak() {
+  let s = localStorage.getItem(lsStreakKey());
+  return s ? parseInt(s, 10) : 0;
+}
+
+// UI Updates
+function updateGameInfo() {
+  gameNumSpan.textContent = currentGameNum;
+  let d = getDateFromGameNum(currentGameNum);
+  dateDisplay.textContent = formatDate(d);
+}
+function updateDiceButtons() {
+  diceContainer.innerHTML = "";
   diceValues.forEach((val, i) => {
-    const die = document.createElement('div');
-    die.className = 'die ' + horseColors[val];
+    let die = document.createElement("div");
+    die.classList.add("die", DICE_COLORS[val]);
+    if (usedDiceIndices.has(i)) die.classList.add("used");
     die.textContent = val;
-    if (usedDice.has(i)) {
-      die.classList.add('used');
-    }
     die.dataset.index = i;
-    die.addEventListener('click', () => {
-      if (!usedDice.has(i)) {
-        appendDice(i);
-      }
-    });
+    if (!submissionLocked && !usedDiceIndices.has(i)) {
+      die.style.cursor = "pointer";
+      die.addEventListener("click", onDiceClick);
+    } else {
+      die.style.cursor = "default";
+    }
     diceContainer.appendChild(die);
   });
 }
-
-function appendDice(index) {
-  const val = diceValues[index];
-  // Prevent appending dice if already used
-  if (usedDice.has(index)) return;
-
-  // Prevent concatenation of digits without operator (i.e. no "23")
-  if (expression.length > 0) {
-    const lastChar = expression[expression.length - 1];
-    if (isDigit(lastChar)) {
-      showMessage('Cannot concatenate dice numbers. Use an operator.');
-      return;
-    }
+function updateTarget() {
+  targetSpan.textContent = targetNumber;
+}
+function updateExpressionInput() {
+  exprInput.value = expression;
+}
+function updateScoreDisplay() {
+  if (currentScore === null) {
+    scoreDisplay.textContent = "N/A";
+  } else {
+    scoreDisplay.textContent = currentScore;
   }
-
-  expression += val;
-  usedDice.add(index);
-  updateExpression();
-  renderDice();
-  evaluateExpression();
+}
+function updateStreakDisplay() {
+  streakDisplay.textContent = currentStreak;
 }
 
-function isDigit(ch) {
-  return /\d/.test(ch);
+function updateHistoryTable() {
+  historyTbody.innerHTML = "";
+  // Show last MAX_ARCHIVE_DAYS games up to currentGameNum
+  for (let n = currentGameNum; n > currentGameNum - MAX_ARCHIVE_DAYS && n > 0; n--) {
+    let result = getGameResult(n);
+    let tr = document.createElement("tr");
+    let d = getDateFromGameNum(n);
+    let dateStr = formatDate(d);
+
+    let scoreCell = document.createElement("td");
+    let resultCell = document.createElement("td");
+    if (result) {
+      scoreCell.textContent = result.score;
+      resultCell.textContent = result.score === 0 ? "Qu0x!" : "Played";
+    } else {
+      scoreCell.textContent = "-";
+      resultCell.textContent = n < currentGameNum ? "Missed" : "Not played";
+    }
+
+    tr.appendChild(createCell(n));
+    tr.appendChild(createCell(dateStr));
+    tr.appendChild(scoreCell);
+    tr.appendChild(resultCell);
+
+    historyTbody.appendChild(tr);
+  }
+}
+function createCell(text) {
+  let td = document.createElement("td");
+  td.textContent = text;
+  return td;
 }
 
-function appendOperator(op) {
-  if (expression.length === 0 && (op !== '(')) {
-    showMessage('Expression cannot start with this operator.');
+// Expression parsing & validation helpers
+// To prevent concatenation, rules:
+// - Cannot place two numbers consecutively without operator in between
+// - Factorial applies only after a number or closing paren
+// - Exponentiation applies after number or closing paren
+// We'll just validate on input construction here
+
+// State machine flags
+function canAddNumber() {
+  if (expression.length === 0) return true;
+  let last = expression.slice(-1);
+  if (last === ")" || OPERATORS.includes(last) || last === "(") {
+    return true;
+  }
+  return false; // prevent number after number (concat)
+}
+function canAddOperator() {
+  if (expression.length === 0) return false;
+  let last = expression.slice(-1);
+  if (OPERATORS.includes(last) || last === "(") return false;
+  return true;
+}
+function canAddFactorial() {
+  if (expression.length === 0) return false;
+  let last = expression.slice(-1);
+  if (last.match(/[0-9)]/)) return true;
+  return false;
+}
+function canAddOpenParen() {
+  if (expression.length === 0) return true;
+  let last = expression.slice(-1);
+  if (OPERATORS.includes(last) || last === "(") return true;
+  return false;
+}
+function canAddCloseParen() {
+  if (expression.length === 0) return false;
+  // count open and close parens
+  let openCount = (expression.match(/\(/g) || []).length;
+  let closeCount = (expression.match(/\)/g) || []).length;
+  if (openCount <= closeCount) return false;
+  let last = expression.slice(-1);
+  if (OPERATORS.includes(last) || last === "(") return false;
+  return true;
+}
+
+// Dice click handler
+function onDiceClick(e) {
+  if (submissionLocked) return;
+  const idx = parseInt(e.currentTarget.dataset.index);
+  if (usedDiceIndices.has(idx)) return;
+
+  // Must have operator or expression empty before adding number
+  if (!canAddNumber()) {
+    showMessage("You must add an operator before selecting another number.");
     return;
   }
-  const lastChar = expression[expression.length - 1];
-  // Prevent two operators in a row, except closing bracket
-  if ('+-*/^!'.includes(lastChar) && op !== '(' && op !== ')') {
-    showMessage('Cannot have two operators in a row.');
-    return;
-  }
-  // Special rules for factorial
-  if (op === '!') {
-    // factorial must follow a number or closing bracket
-    if (!(isDigit(lastChar) || lastChar === ')')) {
-      showMessage('Factorial must follow a number or closing parenthesis.');
+
+  expression += diceValues[idx];
+  usedDiceIndices.add(idx);
+  updateExpressionInput();
+  updateDiceButtons();
+  clearMessage();
+}
+
+// Operator button handler
+function onOperatorClick(e) {
+  if (submissionLocked) return;
+  const op = e.currentTarget.dataset.op;
+
+  if (op === "!") {
+    if (!canAddFactorial()) {
+      showMessage("Factorial can only be added after a number or closing parenthesis.");
       return;
     }
-  }
-  // Special rules for exponent
-  if (op === '^') {
-    // exponent must follow a number or closing bracket
-    if (!(isDigit(lastChar) || lastChar === ')')) {
-      showMessage('Exponent must follow a number or closing parenthesis.');
-      return;
-    }
-  }
-  // Prevent starting expression with a closing parenthesis
-  if (op === ')' && expression.length === 0) {
-    showMessage('Cannot start expression with closing parenthesis.');
+    expression += "!";
+    updateExpressionInput();
+    clearMessage();
     return;
   }
+
+  if (op === "^") {
+    if (!canAddOperator()) {
+      showMessage("Exponentiation can only be added after a number or closing parenthesis.");
+      return;
+    }
+    expression += "^";
+    updateExpressionInput();
+    clearMessage();
+    return;
+  }
+
+  // + - * /
+  if (!canAddOperator()) {
+    showMessage("Operator cannot follow another operator or open parenthesis.");
+    return;
+  }
+
   expression += op;
-  updateExpression();
-  evaluateExpression();
+  updateExpressionInput();
+  clearMessage();
 }
 
-function backspace() {
+// Parentheses buttons
+function onOpenParenClick() {
+  if (submissionLocked) return;
+  if (!canAddOpenParen()) {
+    showMessage("Cannot add '(' here.");
+    return;
+  }
+  expression += "(";
+  updateExpressionInput();
+  clearMessage();
+}
+function onCloseParenClick() {
+  if (submissionLocked) return;
+  if (!canAddCloseParen()) {
+    showMessage("Cannot add ')' here.");
+    return;
+  }
+  expression += ")";
+  updateExpressionInput();
+  clearMessage();
+}
+
+// Clear and Backspace handlers
+function onClear() {
+  if (submissionLocked) return;
+  expression = "";
+  usedDiceIndices.clear();
+  updateExpressionInput();
+  updateDiceButtons();
+  clearMessage();
+}
+function onBackspace() {
+  if (submissionLocked) return;
   if (expression.length === 0) return;
 
-  // If last char was a digit, free that dice
-  const lastChar = expression[expression.length - 1];
+  let lastChar = expression.slice(-1);
+  expression = expression.slice(0, -1);
 
-  if (isDigit(lastChar)) {
-    // Find the last digit in expression and free the dice accordingly
-    // But since digits are only appended as dice values, free the last used dice matching that value
+  // If lastChar was a digit, find which dice it corresponded to and remove from usedDiceIndices
+  // Since dice can repeat digits, remove the last matching dice index used in order
+  if (lastChar.match(/[1-6]/)) {
+    // Find last used dice index with that value in expression order
+    let idxToRemove = null;
+    // We'll track dice usage in expression order (we need to store usage in array for exact ordering, 
+    // but currently we only have usedDiceIndices as a Set - so we must store usage order to handle this correctly)
+    // We'll maintain a separate array usageOrder to store dice indices as they get added.
 
-    // Find which dice index to free:
-    // We stored dice indices in usedDice, but we don't know order
-    // So we must track the order of used dice to backspace properly
-    // Instead, keep usedDice as Set and expression as string only
-    // Workaround: we can rebuild usedDice from expression on backspace
-
-    // So remove last char, then rebuild usedDice from expression
-    expression = expression.slice(0, -1);
-    rebuildUsedDiceFromExpression();
-  } else {
-    // Just remove operator or paren or factorial
-    expression = expression.slice(0, -1);
-  }
-  updateExpression();
-  renderDice();
-  evaluateExpression();
-}
-
-function rebuildUsedDiceFromExpression() {
-  usedDice.clear();
-  // For each digit in expression, mark the corresponding dice as used (in order)
-  // Since dice values can be repeated, we have to mark dice used in order of appearance
-  let expr = expression;
-  // count how many dice of each value are used
-  let counts = {};
-  for (let ch of expr) {
-    if (isDigit(ch)) {
-      counts[ch] = (counts[ch] || 0) + 1;
-    }
-  }
-
-  // For each dice, mark as used if value appears and count not yet reached
-  let usedCount = {};
-  diceValues.forEach((val, i) => {
-    let sVal = val.toString();
-    if (counts[sVal]) {
-      usedCount[sVal] = (usedCount[sVal] || 0);
-      if (usedCount[sVal] < counts[sVal]) {
-        usedDice.add(i);
-        usedCount[sVal]++;
+    if (usageOrder.length > 0) {
+      for (let i = usageOrder.length - 1; i >= 0; i--) {
+        let idx = usageOrder[i];
+        if (diceValues[idx] == lastChar) {
+          idxToRemove = idx;
+          usageOrder.splice(i, 1);
+          break;
+        }
       }
     }
-  });
-}
-
-function clearExpression() {
-  expression = '';
-  usedDice.clear();
-  updateExpression();
-  renderDice();
-  evaluateExpression();
-  clearMessage();
-  clearResult();
-}
-
-function updateExpression() {
-  expressionDisplay.textContent = expression || '...';
+    if (idxToRemove !== null) {
+      usedDiceIndices.delete(idxToRemove);
+    }
+  }
+  updateExpressionInput();
+  updateDiceButtons();
   clearMessage();
 }
 
+// Submission handler
+function onSubmit() {
+  if (submissionLocked) return;
+  // Validate expression:
+  if (expression.length === 0) {
+    showMessage("Expression is empty.");
+    return;
+  }
+  // Must use all dice
+  if (usedDiceIndices.size !== diceValues.length) {
+    showMessage(`You must use all ${diceValues.length} dice values exactly once.`);
+    return;
+  }
+  // Expression must be valid JS math expression after replacing ^ with ** and factorial evaluated
+  // Evaluate expression carefully
+  try {
+    // Replace ^ with **
+    let exprEval = expression.replace(/\^/g, "**");
+    // Evaluate factorials:
+    exprEval = exprEval.replace(/(\d+)!/g, (match, n) => {
+      n = parseInt(n);
+      if (n > 10) throw "Factorial too large";
+      return factorial(n);
+    });
+    let val = eval(exprEval);
+    if (typeof val !== "number" || isNaN(val) || !isFinite(val)) {
+      throw "Invalid calculation";
+    }
+    currentScore = Math.abs(val - targetNumber);
+  } catch (err) {
+    showMessage("Invalid expression or calculation error.");
+    return;
+  }
+  submissionLocked = true;
+  saveGameResult(currentGameNum, currentScore, expression);
+  if (currentScore === 0) {
+    showMessage("Perfect! You got Qu0x!");
+    showQu0xAnimation();
+    currentStreak++;
+    saveStreak(currentStreak);
+  } else {
+    showMessage(`Your score: ${currentScore}`);
+    if (currentStreak > 0) {
+      currentStreak = 0;
+      saveStreak(currentStreak);
+    }
+  }
+  updateScoreDisplay();
+  updateStreakDisplay();
+  updateHistoryTable();
+  disableInput();
+}
+
+// Factorial helper
+function factorial(n) {
+  if (n < 0) throw "Negative factorial";
+  if (n === 0 || n === 1) return 1;
+  let res = 1;
+  for (let i = 2; i <= n; i++) res *= i;
+  return res;
+}
+
+// Disable input after submission
+function disableInput() {
+  submissionLocked = true;
+  // Disable dice and operators visually
+  updateDiceButtons();
+  opButtons.forEach(btn => btn.disabled = true);
+  btnOpenParen.disabled = true;
+  btnCloseParen.disabled = true;
+  btnClear.disabled = true;
+  btnBackspace.disabled = true;
+  btnSubmit.disabled = true;
+}
+
+// Enable input for new game
+function enableInput() {
+  submissionLocked = false;
+  opButtons.forEach(btn => btn.disabled = false);
+  btnOpenParen.disabled = false;
+  btnCloseParen.disabled = false;
+  btnClear.disabled = false;
+  btnBackspace.disabled = false;
+  btnSubmit.disabled = false;
+}
+
+// Show message
 function showMessage(msg) {
   messageContainer.textContent = msg;
 }
-
+// Clear message
 function clearMessage() {
-  messageContainer.textContent = '';
+  messageContainer.textContent = "";
 }
 
-function clearResult() {
-  resultContainer.textContent = '';
-  scoreDisplay.textContent = '';
-}
-
-function factorial(n) {
-  if (n < 0) return NaN;
-  if (n === 0) return 1;
-  let f = 1;
-  for (let i = 1; i <= n; i++) f *= i;
-  return f;
-}
-
-function safeEval(exp) {
-  // Replace ^ with ** (exponentiation)
-  let modExp = exp.replace(/\^/g, '**');
-
-  // Replace factorial ! with function calls
-  // This requires parsing but we'll use a regex to replace x! with factorial(x)
-  // For simplicity, handle only integer numbers before !
-  // Regex to find number! patterns:
-  // e.g. 3!, (3+2)!, etc. We'll just do a limited approach: digit+!
-
-  // We'll do iterative replacement for digits followed by !:
-  // But (3+2)! or expressions factorial not supported to avoid complexity
-
-  while (true) {
-    const factMatch = modExp.match(/(\d+)!/);
-    if (!factMatch) break;
-    let num = parseInt(factMatch[1], 10);
-    if (num > 20) return NaN; // limit to avoid huge factorials
-    let factVal = factorial(num);
-    modExp = modExp.replace(factMatch[0], factVal.toString());
-  }
-
-  // Disallow any characters except digits, +-*/().^ and spaces
-  if (!/^[\d+\-*/().\s]+$/.test(modExp)) return NaN;
-
-  try {
-    let val = eval(modExp);
-    if (typeof val !== 'number' || !isFinite(val)) return NaN;
-    return val;
-  } catch {
-    return NaN;
-  }
-}
-
-function evaluateExpression() {
-  if (!expression || expression.length === 0) {
-    clearResult();
-    return;
-  }
-  let val = safeEval(expression);
-  if (isNaN(val)) {
-    resultContainer.textContent = 'Invalid Expression';
-    scoreDisplay.textContent = '';
-    return;
-  }
-  val = Math.round(val * 10000) / 10000; // round to 4 decimals
-
-  resultContainer.textContent = `Result: ${val}`;
-
-  let diff = Math.abs(targetNumber - val);
-  scoreDisplay.textContent = `Score (abs difference): ${diff}`;
-
-  // Check perfect score for Qu0x celebration
-  if (diff === 0) {
-    if (!perfectScoreToday) {
-      currentStreak++;
-      perfectScoreToday = true;
-      streakDisplay.textContent = `Current Qu0x Streak: ${currentStreak}`;
-      showQu0xPopup();
-      saveResult(diff);
-    }
-  } else {
-    perfectScoreToday = false;
-  }
-}
-
-function showQu0xPopup() {
-  qu0xPopup.style.display = 'block';
+// Show Qu0x animation
+function showQu0xAnimation() {
+  qu0xPopup.style.display = "block";
   setTimeout(() => {
-    qu0xPopup.style.display = 'none';
+    qu0xPopup.style.display = "none";
   }, 3000);
 }
 
-function saveResult(score) {
-  let archive = JSON.parse(localStorage.getItem('qu0xArchive') || '[]');
-  let todayStr = getCurrentDateStr();
-  archive.unshift({ date: todayStr, score: score, gameNum: currentGameNum });
-
-  if (archive.length > MAX_HISTORY) archive.length = MAX_HISTORY;
-
-  localStorage.setItem('qu0xArchive', JSON.stringify(archive));
-  renderHistory();
-}
-
-function renderHistory() {
-  let archive = JSON.parse(localStorage.getItem('qu0xArchive') || '[]');
-  historyBody.innerHTML = '';
-  archive.slice(0, MAX_HISTORY).forEach((entry) => {
-    let tr = document.createElement('tr');
-    let dateTd = document.createElement('td');
-    let scoreTd = document.createElement('td');
-    dateTd.textContent = entry.date;
-    scoreTd.textContent = entry.score;
-    tr.appendChild(dateTd);
-    tr.appendChild(scoreTd);
-    historyBody.appendChild(tr);
-  });
-}
-
-function getCurrentDateStr() {
-  let now = new Date();
-  return now.toISOString().slice(0, 10);
-}
-
+// Navigate between games
 function loadGame(gameNum) {
-  clearExpression();
+  if (gameNum < 1) return;
   currentGameNum = gameNum;
+  let gameData = generateGameData(gameNum);
+  diceValues = gameData.dice;
+  targetNumber = gameData.target;
+  expression = "";
+  usedDiceIndices.clear();
+  usageOrder = [];
+  currentScore = null;
+  submissionLocked = false;
 
-  // Calculate seed date offset from start date
-  let dateOffset = gameNum - 1;
+  updateGameInfo();
+  updateDiceButtons();
+  updateTarget();
+  updateExpressionInput();
+  updateScoreDisplay();
+  updateStreakDisplay();
+  updateHistoryTable();
+  clearMessage();
 
-  // Generate dice and target for this game
-  let { dice, target } = generateGameData(gameNum);
-  diceValues = dice;
-  targetNumber = target;
+  // Check if already played
+  let result = getGameResult(gameNum);
+  if (result) {
+    expression = result.expr;
+    currentScore = result.score;
+    submissionLocked = true;
+    updateExpressionInput();
+    updateScoreDisplay();
+    showMessage(result.score === 0 ? "Perfect! You got Qu0x!" : `Your score: ${result.score}`);
+    disableInput();
+  } else {
+    enableInput();
+  }
+}
 
-  targetNumberSpan.textContent = targetNumber;
-  usedDice.clear();
-  renderDice();
-  updateExpression();
-  clearResult();
+btnClear.addEventListener("click", onClear);
+btnBackspace.addEventListener("click", onBackspace);
+btnSubmit.addEventListener("click", onSubmit);
+btnPrev.addEventListener("click", () => {
+  loadGame(currentGameNum - 1);
+});
+btnNext.addEventListener("click", () => {
+  loadGame(currentGameNum + 1);
+});
+btnOpenParen.addEventListener("click", onOpenParenClick);
+btnCloseParen.addEventListener("click", onCloseParenClick);
+opButtons.forEach(btn => btn.addEventListener("click", onOperatorClick));
+
+let usageOrder = []; // tracks dice index usage order for backspace handling
+
+// Modified onDiceClick to track usage order
+function onDiceClick(e) {
+  if (submissionLocked) return;
+  const idx = parseInt(e.currentTarget.dataset.index);
+  if (usedDiceIndices.has(idx)) return;
+
+  if (!canAddNumber()) {
+    showMessage("You must add an operator before selecting another number.");
+    return;
+  }
+
+  expression += diceValues[idx];
+  usedDiceIndices.add(idx);
+  usageOrder.push(idx);
+  updateExpressionInput();
+  updateDiceButtons();
   clearMessage();
 }
 
-function init() {
-  loadGame(1);
-  renderHistory();
-  streakDisplay.textContent = `Current Qu0x Streak: ${currentStreak}`;
-}
+loadGame(currentGameNum);
 
-backspaceButton.addEventListener('click', backspace);
-clearButton.addEventListener('click', clearExpression);
-prevGameButton.addEventListener('click', () => {
-  if (currentGameNum > 1) {
-    loadGame(currentGameNum - 1);
-  }
-});
-nextGameButton.addEventListener('click', () => {
-  loadGame(currentGameNum + 1);
-});
+---
 
-operatorButtons.forEach((btn) => {
-  btn.addEventListener('click', () => {
-    appendOperator(btn.textContent);
-  });
-});
+The above code implements the key requested features:  
+- Five dice with distinct colors  
+- Use each dice value exactly once  
+- Factorial and exponentiation operators with input validation  
+- Expression input read-only, built from button clicks and dice selections  
+- Score calculation and display  
+- Qu0x animation on perfect match  
+- Local storage save/load  
+- Navigation between games  
+- Limited archive (5 games shown)  
+- Backspace and Clear buttons with correct dice usage tracking
 
-init();
+If you want, I can help you integrate this code into your project or add the shareable link generation next. Would you like me to help with that?
