@@ -39,16 +39,22 @@ h1 {
   display: flex;
   align-items: center;
   justify-content: center;
+  cursor: pointer;
   box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
-  color: white;
+  transition: opacity 0.3s ease;
 }
 
-.die-1 { background-color: red; }
+.die.used {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+.die-1 { background-color: red; color: white; }
 .die-2 { background-color: white; color: black; }
-.die-3 { background-color: blue; }
+.die-3 { background-color: blue; color: white; }
 .die-4 { background-color: yellow; color: black; }
-.die-5 { background-color: green; }
-.die-6 { background-color: black; }
+.die-5 { background-color: green; color: white; }
+.die-6 { background-color: black; color: yellow; }
 
 #target-container {
   font-size: 1.5em;
@@ -59,6 +65,7 @@ h1 {
   font-size: 1.2em;
   padding: 5px;
   width: 300px;
+  background: #fff;
 }
 
 #input-container button {
