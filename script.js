@@ -11,7 +11,7 @@ let dice = [], target = 0, expression = '', usedDice = [];
 let gameNumber = 1;
 let todayGameNumber = calculateGameNumber(new Date());
 let totalQu0x = JSON.parse(localStorage.getItem('totalQu0x') || '0');
-let archive = JSON.parse(localStorage.getItem('archive') || '[]');
+let completed = JSON.parse(localStorage.getItem('qu0xCompleted') || '{}');
 
 function calculateGameNumber(date) {
   return Math.floor((date - new Date('2025-05-15')) / (1000 * 60 * 60 * 24)) + 1;
@@ -47,13 +47,14 @@ function loadGame(n) {
   dice = seededRandomDice(seed);
   target = seededTarget(seed);
   usedDice = [];
-  expression = '';
+  expression = completed[n]?.expression || '';
   updateDisplay();
+  updateExpressionDisplay();
 }
 
 function updateDisplay() {
-  const container = document.getElementById('dice-container');
-  container.innerHTML = '';
+  const diceBox = document.getElementById('dice-buttons');
+  diceBox.innerHTML = '';
   dice.forEach((val, i) => {
     const die = document.createElement('div');
     die.className = 'die';
@@ -61,15 +62,17 @@ function updateDisplay() {
     die.style.backgroundColor = colors[val].background;
     die.style.color = colors[val].color;
     die.style.opacity = usedDice.includes(i) ? 0.3 : 1;
-    die.onclick = () => {
-      if (!usedDice.includes(i)) {
-        usedDice.push(i);
-        expression += val;
-        updateDisplay();
-        updateExpressionDisplay();
-      }
-    };
-    container.appendChild(die);
+    if (!completed[gameNumber]) {
+      die.onclick = () => {
+        if (!usedDice.includes(i)) {
+          usedDice.push(i);
+          expression += val;
+          updateDisplay();
+          updateExpressionDisplay();
+        }
+      };
+    }
+    diceBox.appendChild(die);
   });
 
   document.getElementById('target-box').innerText = `Target: ${target}`;
@@ -77,23 +80,16 @@ function updateDisplay() {
   document.getElementById('game-number').innerText = `Game #${gameNumber}`;
   document.getElementById('date-display').innerText = getDateFromGameNumber(gameNumber);
   document.getElementById('total-qu0x').innerText = `Total Qu0x: ${totalQu0x}`;
-
-  const archiveBox = document.getElementById('archive');
-  archiveBox.innerHTML = '<h3>Last 5 Results</h3>';
-  archive.slice(-5).forEach(entry => {
-    const div = document.createElement('div');
-    div.innerText = `#${entry.game} → ${entry.score}`;
-    archiveBox.appendChild(div);
-  });
 }
 
 function updateExpressionDisplay() {
   try {
-    const val = eval(expression.replace(/(\d+)!/g, (_, n) => {
+    let expr = expression.replace(/(\d+)!/g, (_, n) => {
       let f = 1;
       for (let i = 1; i <= +n; i++) f *= i;
       return f;
-    }));
+    }).replace(/(\d+)\^(\d+)/g, (_, a, b) => `Math.pow(${a},${b})`);
+    const val = eval(expr);
     document.getElementById('expression-output').innerText = isNaN(val) ? '' : val;
   } catch {
     document.getElementById('expression-output').innerText = '';
@@ -101,6 +97,7 @@ function updateExpressionDisplay() {
 }
 
 function clearExpression() {
+  if (completed[gameNumber]) return;
   expression = '';
   usedDice = [];
   updateDisplay();
@@ -108,6 +105,7 @@ function clearExpression() {
 }
 
 function backspace() {
+  if (completed[gameNumber]) return;
   if (expression.length > 0) {
     const last = expression[expression.length - 1];
     expression = expression.slice(0, -1);
@@ -125,21 +123,24 @@ function backspace() {
 }
 
 function submit() {
+  if (completed[gameNumber]) return;
   if (usedDice.length !== 5) return alert('Use all 5 dice exactly once!');
   try {
-    const result = eval(expression.replace(/(\d+)!/g, (_, n) => {
+    let expr = expression.replace(/(\d+)!/g, (_, n) => {
       let f = 1;
       for (let i = 1; i <= +n; i++) f *= i;
       return f;
-    }));
+    }).replace(/(\d+)\^(\d+)/g, (_, a, b) => `Math.pow(${a},${b})`);
+    const result = eval(expr);
     const score = Math.abs(target - result);
-    archive = archive.filter(e => e.game !== gameNumber);
-    archive.push({ game: gameNumber, score });
-    localStorage.setItem('archive', JSON.stringify(archive));
     if (score === 0) {
-      totalQu0x++;
-      localStorage.setItem('totalQu0x', JSON.stringify(totalQu0x));
-      showQu0x();
+      if (!completed[gameNumber]) {
+        totalQu0x++;
+        completed[gameNumber] = { expression };
+        localStorage.setItem('totalQu0x', JSON.stringify(totalQu0x));
+        localStorage.setItem('qu0xCompleted', JSON.stringify(completed));
+        showQu0x();
+      }
     }
     updateDisplay();
   } catch {
@@ -172,9 +173,11 @@ window.onload = () => {
   document.getElementById('next').onclick = nextGame;
   document.querySelectorAll('.btn').forEach(btn => {
     btn.onclick = () => {
-      expression += btn.innerText === '−' ? '-' : btn.innerText;
-      updateExpressionDisplay();
-      document.getElementById('expression-box').value = expression;
+      if (!completed[gameNumber]) {
+        expression += btn.innerText === '−' ? '-' : btn.innerText;
+        updateExpressionDisplay();
+        document.getElementById('expression-box').value = expression;
+      }
     };
   });
 };
