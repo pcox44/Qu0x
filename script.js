@@ -1,104 +1,153 @@
-body {
-  font-family: Arial, sans-serif;
-  text-align: center;
-  padding: 20px;
-  background: #f8f8f8;
+const startDate = new Date("2025-05-15");
+const today = new Date();
+today.setHours(0, 0, 0, 0);
+const msPerDay = 86400000;
+const gameNumber = Math.floor((today - startDate) / msPerDay) + 1;
+const seed = gameNumber;
+
+const expressionDisplay = document.getElementById("expression");
+const diceRow = document.getElementById("dice-row");
+const message = document.getElementById("message");
+const scoreDisplay = document.getElementById("score");
+const streakDisplay = document.getElementById("streak");
+const historyBody = document.getElementById("history-body");
+const targetDisplay = document.getElementById("target-number");
+const gameNumDisplay = document.getElementById("game-number");
+
+let expression = [];
+let dice = [];
+let used = [];
+let currentStreak = parseInt(localStorage.getItem("qu0xStreak") || "0");
+let history = JSON.parse(localStorage.getItem("qu0xHistory") || "[]");
+
+function rng(seed) {
+  let x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
 }
 
-h1 {
-  font-size: 3em;
-  margin-bottom: 0.2em;
+function generateDice(seed) {
+  const result = [];
+  for (let i = 0; i < 5; i++) {
+    seed += 1;
+    result.push(1 + Math.floor(rng(seed) * 6));
+  }
+  return result;
 }
 
-.instructions {
-  margin-bottom: 1em;
-  font-size: 1.1em;
+function generateTarget(seed) {
+  return 10 + Math.floor(rng(seed + 100) * 90);
 }
 
-.dice-row {
-  display: flex;
-  justify-content: center;
-  margin: 15px 0;
+function updateDiceDisplay() {
+  diceRow.innerHTML = "";
+  dice.forEach((num, i) => {
+    const die = document.createElement("div");
+    die.className = `die die${num} ${used[i] ? "used" : ""}`;
+    die.textContent = num;
+    die.onclick = () => {
+      if (!used[i]) {
+        expression.push(num.toString());
+        used[i] = true;
+        updateDisplay();
+      }
+    };
+    diceRow.appendChild(die);
+  });
 }
 
-.die {
-  width: 60px;
-  height: 60px;
-  font-size: 2em;
-  font-weight: bold;
-  color: white;
-  border-radius: 10px;
-  margin: 0 6px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  transition: opacity 0.3s ease;
+function updateDisplay() {
+  expressionDisplay.textContent = expression.join(" ");
+  updateDiceDisplay();
 }
 
-.used {
-  opacity: 0.3;
+function resetGame() {
+  expression = [];
+  used = [false, false, false, false, false];
+  updateDisplay();
+  message.textContent = "";
+  scoreDisplay.textContent = "";
 }
 
-.die1 { background-color: red; }
-.die2 { background-color: white; color: black; }
-.die3 { background-color: blue; }
-.die4 { background-color: yellow; color: black; }
-.die5 { background-color: green; }
-.die6 { background-color: black; }
+function evaluate(expr) {
+  try {
+    const numCount = expression.filter(x => /^[1-6]$/.test(x)).length;
+    if (numCount !== 5) throw "You must use all five dice.";
 
-#expression {
-  font-size: 1.5em;
-  margin-bottom: 10px;
-  min-height: 1.5em;
+    let safeExpr = expression.join(" ")
+      .replace(/\^/g, "**")
+      .replace(/(\d+)!/g, (_, n) => {
+        if (parseInt(n) !== +n || n < 0) throw "Invalid factorial";
+        let f = 1;
+        for (let i = 2; i <= n; i++) f *= i;
+        return f;
+      });
+
+    let val = Function(`return (${safeExpr})`)();
+    if (!isFinite(val)) throw "Invalid";
+    return val;
+  } catch (e) {
+    return null;
+  }
 }
 
-#buttons {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px;
+function submit() {
+  const val = evaluate(expression);
+  if (val === null) {
+    message.textContent = "Invalid expression. You must use all five dice.";
+    return;
+  }
+
+  const score = Math.abs(val - target);
+  message.textContent = score === 0 ? "🎉 Qu0x! 🎉" : `You scored ${score}`;
+  scoreDisplay.textContent = `Your score: ${score}`;
+  
+  if (score === 0 && !history.some(h => h.game === gameNumber)) {
+    currentStreak++;
+    localStorage.setItem("qu0xStreak", currentStreak);
+  }
+
+  if (!history.some(h => h.game === gameNumber)) {
+    history.push({ game: gameNumber, date: today.toISOString().split("T")[0], score });
+    if (history.length > 5) history.shift();
+    localStorage.setItem("qu0xHistory", JSON.stringify(history));
+  }
+
+  streakDisplay.textContent = `Current Qu0x Streak: ${currentStreak}`;
+  loadHistory();
 }
 
-button {
-  padding: 10px 15px;
-  font-size: 1.2em;
-  border-radius: 5px;
-  border: none;
-  cursor: pointer;
+function loadHistory() {
+  historyBody.innerHTML = "";
+  history.forEach(entry => {
+    const row = document.createElement("tr");
+    row.innerHTML = `<td>${entry.game}</td><td>${entry.date}</td><td>${entry.score}</td>`;
+    historyBody.appendChild(row);
+  });
 }
 
-#backspace, #clear, #submit {
-  background-color: #ccc;
-}
+document.querySelectorAll(".op").forEach(btn => {
+  btn.onclick = () => {
+    expression.push(btn.dataset.val);
+    updateDisplay();
+  };
+});
 
-#message {
-  font-size: 1.3em;
-  margin-top: 10px;
-  font-weight: bold;
-}
+document.getElementById("clear").onclick = resetGame;
 
-#score, #streak {
-  font-size: 1.2em;
-  margin: 10px 0;
-}
+document.getElementById("backspace").onclick = () => {
+  const popped = expression.pop();
+  const dieIndex = dice.findIndex((num, i) => num.toString() === popped && used[i]);
+  if (dieIndex !== -1) used[dieIndex] = false;
+  updateDisplay();
+};
 
-#archive {
-  margin-top: 30px;
-}
+document.getElementById("submit").onclick = submit;
 
-#history {
-  width: 100%;
-  max-width: 500px;
-  margin: 0 auto;
-  border-collapse: collapse;
-}
+const diceSeed = seed;
+dice = generateDice(diceSeed);
+target = generateTarget(diceSeed);
 
-#history th, #history td {
-  padding: 8px;
-  border: 1px solid #ddd;
-}
-
-#history th {
-  background: #eee;
-}
+gameNumDisplay.textContent = `Game #${gameNumber}`;
+targetDisplay.textContent = `Target: ${target}`;
+resetGame();
+loadHistory();
