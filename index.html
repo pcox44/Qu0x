@@ -4,46 +4,84 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Qu0x!</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    /* Added styles for the top bar layout */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      padding: 0.5rem 1rem;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .top-bar h1 {
+      margin: 0;
+      flex: 1;
+      text-align: left;
+    }
+
+    #gameNumberDate {
+      flex: 1;
+      text-align: center;
+      font-weight: bold;
+      font-size: 1.2em;
+      user-select: none;
+    }
+
+    .nav-controls {
+      flex: 1;
+      text-align: right;
+    }
+  </style>
 </head>
 <body>
-  <h1>Qu0x!</h1>
-  <p>Use all 5 dice <strong>exactly once</strong> with math operations to match the target number. A perfect match is a "Qu0x!".</p>
-
-  <div id="game-header">
-    <span id="date-display"></span>
-    <span id="game-number"></span>
-    <span id="total-qu0x"></span>
+  <div class="top-bar">
+    <h1>Qu0x!</h1>
+    <div id="gameNumberDate"><!-- JS will populate this --></div>
+    <div class="nav-controls">
+      <button id="prevDay">◀</button>
+      <select id="gameDropdown"></select>
+      <button id="nextDay">▶</button>
+    </div>
   </div>
 
-  <div id="target-box"></div>
-
-  <div id="dice-buttons" class="button-row"></div>
-
-  <div id="op-buttons" class="button-row">
-    <button class="btn">+</button>
-    <button class="btn">−</button>
-    <button class="btn">*</button>
-    <button class="btn">/</button>
-    <button class="btn">^</button>
-    <button class="btn">!</button>
-    <button class="btn">(</button>
-    <button class="btn">)</button>
+  <div class="instructions">
+    <ul>
+      <li>Use each of the 5 dice values exactly once to build a math expression.</li>
+      <li>Allowed operations: +, -, ×, ÷, ^ (exponent), ! (factorial)</li>
+      <li>Submit an expression to get as close as possible to the target number.</li>
+      <li> Score = |Target − Result|. A score of 0 earns a Qu0x!</li>
+    </ul>
   </div>
 
-  <input id="expression-box" type="text" readonly />
-
-  <div id="expression-output-box">
-    <div id="expression-output"></div>
+  <div id="gameHeader">
+    <!-- Removed gameNumberDate from here -->
+    <div class="target-box" id="targetBox">Target: ???</div>
   </div>
 
-  <div id="controls">
-    <button id="submit">Submit</button>
-    <button id="clear">Clear</button>
-    <button id="backspace">Backspace</button>
-    <button id="prev">Previous</button>
-    <button id="next">Next</button>
+  <div class="dice-container" id="diceContainer"></div>
+
+  <div class="expression-section">
+    <div id="expressionBox"></div>
+    <div id="equalsSign">=</div>
+    <div id="evaluationBox">?</div>
   </div>
+
+  <div class="buttons" id="buttonGrid"></div>
+
+  <div id="submitArea">
+    <button id="submitBtn" class="submit">Submit</button>
+  </div>
+
+  <div class="scoreboard">
+    <p><strong>Daily Best Score:</strong> <span id="dailyBestScore">N/A</span></p>
+    <p><strong>Qu0x! Completion:</strong> <span id="completionRatio">0/0</span></p>
+    <p><strong>Qu0x! Master Score:</strong> <span id="masterScore">N/A</span></p>
+  </div>
+
+  <div id="qu0xAnimation" class="hidden">🎉🎉 Qu0x! 🎉🎉</div>
 
   <script src="script.js"></script>
 </body>
