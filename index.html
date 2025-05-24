@@ -47,14 +47,14 @@
     </div>
   </div>
 
-  <div class="instructions">
-    <ul>
-      <li>Use each of the 5 dice values exactly once to build a math expression.</li>
-      <li>Allowed operations: +, -, ×, ÷, ^ (exponent), ! (factorial)</li>
-      <li>Submit an expression to get as close as possible to the target number.</li>
-      <li> Score = |Target − Result|. A score of 0 earns a Qu0x!</li>
-    </ul>
-  </div>
+<div class="instructions">
+  <ul>
+    <li><strong>Use each of the 5 dice values</strong> exactly once to build a math expression.</li>
+    <li><strong>Allowed operations:</strong> +, -, <span class="operator">×</span>, <span class="operator">÷</span>, <sup>^</sup> (exponent), <code>!</code> (factorial)</li>
+    <li>Submit an expression to get as close as possible to the <strong>target number</strong>.</li>
+    <li><strong>Score = |Target − Result|.</strong> A score of 0 earns a <span class="qu0x">Qu0x!</span></li>
+  </ul>
+</div>
 
   <div id="gameHeader">
     <!-- Removed gameNumberDate from here -->
@@ -82,6 +82,7 @@
   </div>
 
   <div id="qu0xAnimation" class="hidden">🎉🎉 Qu0x! 🎉🎉</div>
+  <button id="shareBtn" class="hidden">Share Your Qu0x!</button>
 
   <script src="script.js"></script>
 </body>
