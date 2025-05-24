@@ -39,7 +39,7 @@
 <body>
   <div class="top-bar">
     <h1>Qu0x!</h1>
-    <div id="gameNumberDate"><!-- JS will populate this --></div>
+  <div id="gameNumberDate"><!-- JS will populate this --></div>  
     <div class="nav-controls">
       <button id="prevDay">◀</button>
       <select id="gameDropdown"></select>
@@ -49,9 +49,8 @@
 
 <div class="instructions">
   <ul>
-    <li><strong>Use each of the 5 dice values</strong> exactly once to build a math expression.</li>
-    <li><strong>Allowed operations:</strong> +, -, <span class="operator">×</span>, <span class="operator">÷</span>, <sup>^</sup> (exponent), <code>!</code> (factorial)</li>
-    <li>Submit an expression to get as close as possible to the <strong>target number</strong>.</li>
+    <li><strong>Use each of the 5 dice values</strong> exactly once to build an expression to get as close as possible to the <strong>target</strong>.</li>
+    <li><strong>Allowed operations:</strong> +, -, <span class="operator">×</span>, <span class="operator">÷</span>, ^ (exponent), ! (factorial)</li>
     <li><strong>Score = |Target − Result|.</strong> A score of 0 earns a <span class="qu0x">Qu0x!</span></li>
   </ul>
 </div>
@@ -61,6 +60,10 @@
     <div class="target-box" id="targetBox">Target: ???</div>
   </div>
 
+  <div id="qu0xAnimation" class="hidden">🎉🎉 Qu0x! 🎉🎉</div>
+
+  <button id="shareBtn" class="hidden">Share Your Qu0x!</button>
+  
   <div class="dice-container" id="diceContainer"></div>
 
   <div class="expression-section">
@@ -81,8 +84,8 @@
     <p><strong>Qu0x! Master Score:</strong> <span id="masterScore">N/A</span></p>
   </div>
 
-  <div id="qu0xAnimation" class="hidden">🎉🎉 Qu0x! 🎉🎉</div>
-  <button id="shareBtn" class="hidden">Share Your Qu0x!</button>
+ 
+  
 
   <script src="script.js"></script>
 </body>
