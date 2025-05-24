@@ -104,28 +104,60 @@ function addToExpression(char) {
   evaluateExpression();
 }
 
+function doubleFactorial(n) {
+  if (n < 0 || !Number.isInteger(n)) throw "Invalid double factorial";
+  if (n === 0 || n === 1) return 1;
+  let product = 1;
+  for (let i = n; i > 1; i -= 2) {
+    product *= i;
+  }
+  return product;
+}
+
+function tripleFactorial(n) {
+  if (n < 0 || !Number.isInteger(n)) throw "Invalid triple factorial";
+  if (n === 0 || n === 1) return 1;
+  let product = 1;
+  for (let i = n; i > 1; i -= 3) {
+    product *= i;
+  }
+  return product;
+}
+
+function factorial(n) {
+  if (n < 0 || !Number.isInteger(n)) throw "Invalid factorial";
+  return n <= 1 ? 1 : n * factorial(n - 1);
+}
+
 function evaluateExpression() {
   const expr = expressionBox.innerText;
   try {
-    // Replace factorial for parenthesized expressions first, e.g. (2+1)!
-    let replaced = expr.replace(/\(([^()]+)\)!/g, (_, inner) => {
-      // Evaluate the inner expression safely
-      let val = eval(inner);
-      if (!Number.isInteger(val) || val < 0) throw "Invalid factorial";
-      return factorial(val);
+    let replaced = expr;
+
+    // Triple factorial e.g. 5!!! or (2+1)!!!
+    replaced = replaced.replace(/(\([^)]+\)|\d+)!!!/g, (_, val) => {
+      let n = Number.isNaN(Number(val)) ? eval(val) : Number(val);
+      if (!Number.isInteger(n) || n < 0) throw "Invalid triple factorial";
+      return tripleFactorial(n);
     });
 
-    // Then replace factorial for standalone numbers, e.g. 3!
-    replaced = replaced.replace(/(\d+)!/g, (_, num) => {
-      let n = Number(num);
+    // Double factorial e.g. 4!! or (3!!)!!
+    replaced = replaced.replace(/(\([^)]+\)|\d+)!!/g, (_, val) => {
+      let n = Number.isNaN(Number(val)) ? eval(val) : Number(val);
+      if (!Number.isInteger(n) || n < 0) throw "Invalid double factorial";
+      return doubleFactorial(n);
+    });
+
+    // Single factorial e.g. 3! or (4)!
+    replaced = replaced.replace(/(\([^)]+\)|\d+)!/g, (_, val) => {
+      let n = Number.isNaN(Number(val)) ? eval(val) : Number(val);
       if (!Number.isInteger(n) || n < 0) throw "Invalid factorial";
       return factorial(n);
     });
 
-    // Replace exponentiation symbol ^ with **
+    // Replace ^ with **
     replaced = replaced.replace(/\^/g, "**");
 
-    // Evaluate final expression
     let result = eval(replaced);
 
     if (!Number.isInteger(result)) throw "Non-integer";
@@ -133,11 +165,6 @@ function evaluateExpression() {
   } catch {
     evaluationBox.innerText = "?";
   }
-}
-
-function factorial(n) {
-  if (n < 0 || !Number.isInteger(n)) throw "Invalid factorial";
-  return n <= 1 ? 1 : n * factorial(n - 1);
 }
 
 function buildButtons() {
