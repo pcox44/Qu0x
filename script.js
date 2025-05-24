@@ -20,6 +20,19 @@ let target = null;
 let lockedDays = JSON.parse(localStorage.getItem("lockedDays") || "{}");
 let bestScores = JSON.parse(localStorage.getItem("bestScores") || "{}");
 
+const colorBoxes = {
+  "1": "🟥", // red box for 1
+  "2": "⬜", // white box for 2
+  "3": "🟦", // blue box for 3
+  "4": "🟨", // yellow box for 4
+  "5": "🟩", // green box for 5
+  "6": "⬛", // black box for 6
+};
+
+function expressionToShareable(expr) {
+  return expr.replace(/\d/g, d => colorBoxes[d] || d);
+}
+
 function getDayIndex(date) {
   const start = new Date("2025-05-15T00:00:00");
   const diff = Math.floor((date - start) / (1000 * 60 * 60 * 24));
@@ -224,11 +237,14 @@ function submit() {
     localStorage.setItem("bestScores", JSON.stringify(bestScores));
   }
 
-  if (score === 0) {
-    lockedDays[currentDay] = { score, expression: expressionBox.innerText };
-    localStorage.setItem("lockedDays", JSON.stringify(lockedDays));
-    animateQu0x();
-  }
+ if (score === 0) {
+  lockedDays[currentDay] = { score, expression: expressionBox.innerText };
+  localStorage.setItem("lockedDays", JSON.stringify(lockedDays));
+  animateQu0x();
+
+  // ✅ Show the Share button
+  document.getElementById("shareBtn").classList.remove("hidden");
+}
 
   renderGame(currentDay);
 }
@@ -263,17 +279,27 @@ function renderGame(day) {
   dailyBestScoreBox.innerText = bestScores[day] ?? "N/A";
 
   const total = maxDay + 1;
-const qu0xCount = Object.values(lockedDays).filter(d => d.score === 0).length;
-completionRatioBox.innerText = `${qu0xCount}/${total}`;
+  const qu0xCount = Object.values(lockedDays).filter(d => d.score === 0).length;
+  completionRatioBox.innerText = `${qu0xCount}/${total}`;
 
-masterScoreBox.innerText = qu0xCount === total
-  ? Object.values(bestScores).reduce((a, b) => a + b, 0)
-  : "N/A";
+  const allPlayed = [...Array(total).keys()].every(day => day in bestScores);
+
+  masterScoreBox.innerText = allPlayed
+    ? `${Object.values(bestScores).reduce((a, b) => a + b, 0)}`
+    : "N/A";
 
   if (isLocked(day)) {
     expressionBox.innerText = lockedDays[day].expression;
     evaluateExpression();
     document.getElementById("gameNumberDate").innerText += " – Qu0x! Locked";
+  }
+
+  // *** ADD THIS ***
+  const shareBtn = document.getElementById("shareBtn");
+  if (isLocked(day)) {
+    shareBtn.classList.remove("hidden");
+  } else {
+    shareBtn.classList.add("hidden");
   }
 }
 
@@ -318,3 +344,15 @@ window.onload = () => {
   populateDropdown();
   renderGame(currentDay);
 };
+
+document.getElementById("shareBtn").addEventListener("click", () => {
+  const gameNumber = currentDay + 1;  // game number = day index + 1
+  const expression = expressionBox.innerText;
+  const shareableExpr = expressionToShareable(expression);
+
+  const shareText = `Qu0x! ${gameNumber}: ${shareableExpr}`;
+
+  navigator.clipboard.writeText(shareText).then(() => {
+    alert("Copied your Qu0x! expression to clipboard!");
+  });
+});
