@@ -143,7 +143,11 @@ function factorial(n) {
 }
 
 function evaluateExpression() {
-  const expr = expressionBox.innerText;
+  const expr = expressionBox.innerText.trim();
+  if (expr.length === 0) {
+    evaluationBox.innerText = "?";
+    return;
+  }
   try {
     let replaced = expr;
 
@@ -173,7 +177,6 @@ function evaluateExpression() {
 
     let result = eval(replaced);
 
-    if (!Number.isInteger(result)) throw "Non-integer";
     evaluationBox.innerText = result;
   } catch {
     evaluationBox.innerText = "?";
@@ -225,7 +228,10 @@ function submit() {
     alert("Invalid Submission");
     return;
   }
-
+  if (!Number.isInteger(Number(result))) {
+  alert("Submission must be an integer result.");
+  return;
+  }
   if (usedDice.length !== 5) {
     alert("You must use all 5 dice.");
     return;
@@ -311,7 +317,7 @@ function populateDropdown() {
     const emoji = lockedDays[i]?.score === 0 ? "⭐" :
                   bestScores[i] !== undefined ? "✅" : "";
     option.value = i;
-    option.innerText = `Game ${i + 1} ${emoji} (${date})`;
+    option.innerText = `Game ${i + 1} ${emoji}`;
     if (i === currentDay) option.selected = true;
     dropdown.appendChild(option);
   }
