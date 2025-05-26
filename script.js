@@ -11,6 +11,7 @@ const masterScoreBox = document.getElementById("masterScore");
 const gameNumberDate = document.getElementById("gameNumberDate");
 const qu0xAnimation = document.getElementById("qu0xAnimation");
 
+
 let currentDate = new Date();
 let currentDay = getDayIndex(currentDate);
 let maxDay = getDayIndex(new Date());
@@ -39,24 +40,67 @@ function getDayIndex(date) {
   return Math.max(0, diff);
 }
 
+
+// Example PRNG and hash
+function mulberry32(a) {
+  return function () {
+    a |= 0; a = a + 0x6D2B79F5 | 0;
+    let t = Math.imul(a ^ a >>> 15, 1 | a);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  }
+}
+
+function hashString(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = (hash * 31 + str.charCodeAt(i)) >>> 0;
+  }
+  return hash;
+}
+
 function getDateFromDayIndex(index) {
   const start = new Date("2025-05-15T00:00:00");
   const date = new Date(start.getTime() + index * 86400000);
   return date.toISOString().slice(0, 10);
 }
 
-function seedRandom(seed) {
-  let x = Math.sin(seed) * 10000;
-  return () => {
-    x = Math.sin(x) * 10000;
-    return x - Math.floor(x);
+// Step 1: Define the static puzzles for the first 10 days
+const staticPuzzles = [
+  { dice: [3, 2, 5, 1, 1], target: 82 },
+  { dice: [6, 3, 2, 4, 3], target: 46 },
+  { dice: [2, 6, 2, 5, 4], target: 93 },
+  { dice: [1, 6, 6, 3, 3], target: 44 },
+  { dice: [1, 5, 4, 3, 2], target: 76 },
+  { dice: [4, 2, 6, 3, 5], target: 4 },
+  { dice: [1, 6, 4, 4, 3], target: 4 },
+  { dice: [6,3, 1, 6, 1], target: 19 },
+  { dice: [3, 1, 1, 3, 5], target: 73 },
+  { dice: [3, 1, 3, 2, 6], target: 31 },
+  { dice: [4, 5, 5, 3, 2], target: 52 },
+];
+
+// Optional: use mulberry32 PRNG for dynamic puzzles from day 10 onward
+function mulberry32(seed) {
+  return function() {
+    let t = seed += 0x6D2B79F5;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
   };
 }
 
+// Step 2: Modify generatePuzzle to use static for first 10 days, dynamic for others
 function generatePuzzle(day) {
-  const rand = seedRandom(day + 1);
-  diceValues = Array.from({ length: 5 }, () => Math.floor(rand() * 6) + 1);
-  target = Math.floor(rand() * 100) + 1;
+  if (day < 11) {
+    diceValues = staticPuzzles[day].dice.slice();  // clone array
+    target = staticPuzzles[day].target;
+  } else {
+    // For days 11 onward, generate procedurally using mulberry32 seeded with day+1
+    const rand = mulberry32(day + 1);
+    diceValues = Array.from({ length: 5 }, () => Math.floor(rand() * 6) + 1);
+    target = Math.floor(rand() * 100) + 1;
+  }
 }
 
 function renderDice() {
@@ -263,72 +307,64 @@ function animateQu0x() {
 }
 
 function renderGame(day) {
+  currentDay = day;
+
   generatePuzzle(day);
   renderDice();
-  buildButtons();
 
-  document.getElementById("submitBtn").disabled = isLocked(day);
-  document.querySelectorAll("#buttonGrid button").forEach(btn => {
-    if (["Back", "Clear"].includes(btn.innerText)) {
-      btn.disabled = isLocked(day);
+  if (lockedDays[day] && lockedDays[day].expression) {
+    expressionBox.innerText = lockedDays[day].expression;
+    evaluateExpression();
+  } else {
+    expressionBox.innerText = "";
+    evaluationBox.innerText = "?";
+  }
+
+  targetBox.innerText = `Target: ${target}`;
+  gameNumberDate.innerText = `Game #${day + 1} (${getDateFromDayIndex(day)})`;
+
+  if (bestScores[day] !== undefined) {
+    dailyBestScoreBox.innerText = `${bestScores[day]}`;
+  } else {
+    dailyBestScoreBox.innerText = "N/A";
+  }
+
+  const completedDays = Object.values(bestScores).filter(score => score === 0).length;
+  completionRatioBox.innerText = `${completedDays}/${maxDay + 1}`;
+
+  const totalScore = Object.values(bestScores).reduce((a, b) => a + b, 0);
+  const totalGames = maxDay + 1;
+
+  if (Object.keys(bestScores).length === totalGames) {
+    masterScoreBox.innerText = `${totalScore}`;
+  } else {
+    masterScoreBox.innerText = "N/A";
+  }
+
+
+  const locked = isLocked(day);
+
+  expressionBox.style.pointerEvents = locked ? "none" : "auto";
+  submitBtn.disabled = locked;
+
+  // Disable or enable all operator buttons
+  buttonGrid.querySelectorAll("button").forEach(btn => {
+    btn.disabled = locked;
+    if (locked) {
+      btn.classList.add("disabled");
+    } else {
+      btn.classList.remove("disabled");
     }
   });
 
-  const dateStr = getDateFromDayIndex(day);
-  gameNumberDate.innerText = `Game #${day + 1} – ${dateStr}`;
-  targetBox.innerText = `Target: ${target}`;
-
-  expressionBox.innerText = "";
-  evaluationBox.innerText = "?";
-  usedDice = [];
-
-  dailyBestScoreBox.innerText = bestScores[day] ?? "N/A";
-
-  const total = maxDay + 1;
-  const qu0xCount = Object.values(lockedDays).filter(d => d.score === 0).length;
-  completionRatioBox.innerText = `${qu0xCount}/${total}`;
-
-  const allPlayed = [...Array(total).keys()].every(day => day in bestScores);
-
-  masterScoreBox.innerText = allPlayed
-    ? `${Object.values(bestScores).reduce((a, b) => a + b, 0)}`
-    : "N/A";
-
-  if (isLocked(day)) {
-    expressionBox.innerText = lockedDays[day].expression;
-    evaluateExpression();
-    document.getElementById("gameNumberDate").innerText += " – Qu0x! Locked";
-  }
-
-  // *** ADD THIS ***
+  // Hide or show Share button
   const shareBtn = document.getElementById("shareBtn");
-  if (isLocked(day)) {
+  if (locked && lockedDays[day]?.expression) {
     shareBtn.classList.remove("hidden");
   } else {
     shareBtn.classList.add("hidden");
   }
 }
-
-function populateDropdown() {
-  dropdown.innerHTML = "";
-  for (let i = 0; i <= maxDay; i++) {
-    const option = document.createElement("option");
-    const date = getDateFromDayIndex(i);
-    const emoji = lockedDays[i]?.score === 0 ? "⭐" :
-                  bestScores[i] !== undefined ? "✅" : "";
-    option.value = i;
-    option.innerText = `Game ${i + 1} ${emoji}`;
-    if (i === currentDay) option.selected = true;
-    dropdown.appendChild(option);
-  }
-}
-
-submitBtn.onclick = submit;
-dropdown.onchange = () => {
-  currentDay = Number(dropdown.value);
-  renderGame(currentDay);
-  populateDropdown();
-};
 
 document.getElementById("prevDay").onclick = () => {
   if (currentDay > 0) {
@@ -346,10 +382,40 @@ document.getElementById("nextDay").onclick = () => {
   }
 };
 
-window.onload = () => {
-  populateDropdown();
-  renderGame(currentDay);
-};
+function populateDropdown() {
+  dropdown.innerHTML = "";
+  for (let i = 0; i <= maxDay; i++) {
+    const option = document.createElement("option");
+    option.value = i;
+    
+    // Option text, you can customize with emojis or formatting
+    option.text = `Game #${i + 1}`;
+    
+    // Mark locked games with a star emoji in option text
+    if (lockedDays[i] && lockedDays[i].score === 0) {
+      option.text = "⭐ " + option.text;
+    }
+
+    dropdown.appendChild(option);
+  }
+  // Set the dropdown value to the currentDay so UI matches the current game
+  dropdown.value = currentDay;
+}
+
+// Add event listener to handle selection change
+dropdown.addEventListener("change", (e) => {
+  const selectedDay = Number(e.target.value);
+  if (selectedDay >= 0 && selectedDay <= maxDay) {
+    renderGame(selectedDay);
+  }
+});
+
+submitBtn.addEventListener("click", submit);
+
+// Initialize buttons, dropdown, and render current game on page load
+buildButtons();
+populateDropdown();
+renderGame(currentDay);
 
 document.getElementById("shareBtn").addEventListener("click", () => {
   const gameNumber = currentDay + 1;  // game number = day index + 1
