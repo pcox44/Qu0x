@@ -23,26 +23,26 @@ body {
 .instructions {
   background: #fff8e1;
   border: 2px solid #ffd54f;
-  padding: 0.05em 1em;      /* less vertical padding */
-  max-width: 480px;
-  margin: 0.08em auto;      /* slightly less space above/below the box */
-  border-radius: 10px;
-  font-size: 1.1em;
+  padding: 0.2em 0.8em;      /* smaller padding */
+  max-width: 320px;          /* smaller width */
+  margin: 0.1em auto;        /* less vertical margin */
+  border-radius: 8px;
+  font-size: 1em;            /* slightly smaller font */
   color: #333;
-  box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 2px 2px 6px rgba(0,0,0,0.08);
 }
 
-
 .instructions ul {
-  list-style-type: none; /* remove default bullets */
+  list-style-type: none; /* no bullets */
   padding-left: 0;
+  margin-left: 0;         /* remove default ul margin */
 }
 
 .instructions li {
-  position: relative;
-  padding-left: 1.4em;
-  margin-bottom: 0.75em;
+  padding-left: 0;        /* remove left padding */
+  margin-bottom: 0.5em;   /* less vertical spacing */
 }
+
 
 .instructions code {
   background: #eee;
