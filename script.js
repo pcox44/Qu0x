@@ -57,14 +57,13 @@ const celebrationEmojis = [
   '🌞','🌅','🌄','🌤','☀️','⛅','❄️','⛄','🌷','🌱',
   '🪴','🐚','🌊','🍕','🍔','🍟','🍗','🍿','🍩','🍪',
   '🧁','🍰','🎂','🍫','🍬','🍭','🍮','🍧','🍨','🍦',
-  '🍓','🍉','🍒','🍹','🍸','🧃','🥂','🍾','🥤','🧋',
-  '🧉','☕','🍵','🍼','🥛','🍺','🍻','🧊','🫗','🍶',
-  '🍷','🎤','🎧','🎷','🎺','🎻','🎵','🎶','🚀','🛸',
+  '🍓','🍉','🍒','🧃','🥂','🍾','🥤','🧋',
+  '🧉','☕','🍵','🍼','🥛','🧊','🫗','🍶', 
+  '🎤','🎧','🎷','🎺','🎻','🎵','🎶','🚀','🛸',
   '✈️','🚁','🚲','🛴','🛵','🏎️','🛹','🛶','🚤','🚂',
   '🚉','🚄','🏁','🗺️','🗽','🧭','⛵','📣','📯','🗣️',
   '💬','🔊','📢','💡','🧠','📸','🎥','🎁','🎈','📦',
   '🪅','🪩','🎇','🎆','🪙',
-  // 100+ more funny, celebratory, and quirky emojis:
   '🤣','😂','😜','😝','😛','🤪','😎','🤓','🧐','😇',
   '🥸','🤠','🥳','😺','😸','🙀','😹','😻','🤡','👻',
   '💩','👽','🤖','🎃','😈','👿','🤥','🦄','🦥','🦦',
@@ -74,7 +73,7 @@ const celebrationEmojis = [
   '🧀','🥨','🥯','🥞','🧇','🥓','🥩','🍗','🍖','🌭',
   '🍔','🍟','🍕','🌮','🌯','🥙','🧆','🥗','🍿','🧈',
   '🍩','🍪','🎂','🍰','🍫','🍬','🍭','🍡','🍧','🍨',
-  '🥤','🧃','🍺','🍻','🥂','🍷','🍸','🍹','🍾','🍶',
+  '🥤','🧃','🍶',
   '🧉','☕','🍵','🥄','🍴','🥢','🥡','🧁','🍦','🍰',
   '🎉','🥳','🎊','🎈','🎆','🎇','✨','💥','💫','🌟',
   '🎭','🎨','🎬','🎤','🎧','🎼','🎹','🎷','🎺','🎸',
@@ -87,7 +86,12 @@ const celebrationEmojis = [
   '🏋️‍♂️','🏋️‍♀️','🚴‍♂️','🚴‍♀️','🚵‍♂️','🚵‍♀️','🤹‍♂️','🤹‍♀️','🤺','🤼‍♂️',
   '🤼‍♀️','🤽','🤾','🤸','🤹','🧗‍♂️','🧗‍♀️','🛼','🛷','⛸️',
   '🎿','🏂','🪂','🥌','⛷️','🏋️','🏋️‍♂️','🏋️‍♀️','🧘‍♂️','🧘‍♀️',
-  '🏇','⛳','🏆','🥇','🥈','🥉','🏅','🎖️','🏵️','🎗️'
+  '🏇','⛳','🏆','🥇','🥈','🥉','🏅','🎖️','🏵️','🎗️',
+  '🫠', '🫠','🫥','🫨','🫣','🫡','😵‍💫','🥴','🤯','🤬',
+  '🤡','🧌','🪿','🫏','🪤','🧻','🪠','🧼','🦷',
+  '🫦','🦶','🧦','🩴','🪳','🦗','🦠','🥌','🪀','🧽',
+  '🧯','🪞','🛁','🛀','🪒','🦴','🥒','🍆','🍑','💦',
+  '👀','🫵','🙃','🦑','🧞‍♂️','🦕','🧟‍♂️'
 ];
 
 
@@ -544,7 +548,7 @@ function submit() {
  if (score === 0) {
   lockedDays[currentDay] = { score, expression: expressionBox.innerText };
   localStorage.setItem("lockedDays", JSON.stringify(lockedDays));
-  animateQu0x();
+  animateQu0x(currentDay);
 
   // ✅ Show the Share button
   document.getElementById("shareBtn").classList.remove("hidden");
@@ -553,9 +557,14 @@ function submit() {
   renderGame(currentDay);
 }
 
-function animateQu0x() {
-  const emoji1 = celebrationEmojis[Math.floor(Math.random() * celebrationEmojis.length)];
-  const emoji2 = celebrationEmojis[Math.floor(Math.random() * celebrationEmojis.length)];
+function animateQu0x(day) {
+  // Step 1: Create seeded RNG based on day
+  const rand = mulberry32(day + 1);
+
+  // Step 2: Use seeded RNG to pick emojis deterministically
+  const emoji1 = celebrationEmojis[Math.floor(rand() * celebrationEmojis.length)];
+  const emoji2 = celebrationEmojis[Math.floor(rand() * celebrationEmojis.length)];
+
   qu0xAnimation.innerText = `${emoji1} Qu0x! ${emoji2}`;
   qu0xAnimation.classList.remove("hidden");
 
@@ -598,8 +607,11 @@ function animateQu0x() {
     flame.innerText = "🔥";
     flame.className = "flame-emoji";
     flame.style.left = `${(i * 10) + 5}%`;
-    flame.style.animationDuration = `${1 + Math.random()}s`;
-    flame.style.animationDelay = `${Math.random()}s`;
+
+    // You can optionally make flame animation also seeded per day:
+    flame.style.animationDuration = `${1 + rand()}s`;
+    flame.style.animationDelay = `${rand()}s`;
+
     document.body.appendChild(flame);
     flames.push(flame);
   }
@@ -627,7 +639,21 @@ function animateQu0x() {
 
   setTimeout(() => {
     qu0xAnimation.classList.add("hidden");
+
+    // Show the banner again 1 second after hiding
+    setTimeout(() => {
+      showQu0xBanner(day);
+    }, 1); // 1 second later
+
   }, duration);
+}
+
+function showQu0xBanner(day) {
+  const rand = mulberry32(day + 1);
+  const emoji1 = celebrationEmojis[Math.floor(rand() * celebrationEmojis.length)];
+  const emoji2 = celebrationEmojis[Math.floor(rand() * celebrationEmojis.length)];
+  qu0xAnimation.innerText = `${emoji1} Qu0x! ${emoji2}`;
+  qu0xAnimation.classList.remove("hidden");
 }
 
 
@@ -667,7 +693,6 @@ function renderGame(day) {
     masterScoreBox.innerText = "N/A";
   }
 
-
   const locked = isLocked(day);
 
   expressionBox.style.pointerEvents = locked ? "none" : "auto";
@@ -689,6 +714,13 @@ function renderGame(day) {
     shareBtn.classList.remove("hidden");
   } else {
     shareBtn.classList.add("hidden");
+  }
+
+  // Show or hide Qu0x banner
+  if (locked) {
+    showQu0xBanner(day);
+  } else {
+    qu0xAnimation.classList.add("hidden");
   }
 }
 
