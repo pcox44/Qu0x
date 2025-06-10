@@ -86,18 +86,23 @@ body {
 
 .target-box {
   font-size: 2.5em;
-  font-weight: bold;
-  color: black;
+  font-weight: 900;
+  color: white;
+  text-shadow: 2px 2px 0 #000, -1px -1px 0 #000;
   text-align: center;
-  padding: 0.3em 0.8em;  /* smaller padding, similar to before */
-  border-radius: 5px;
-  border: 4px solid black;
-  background-color: pink;
-  box-shadow: 2px 2px 6px rgba(0,0,0,0.15);
-  margin: 0.1em auto 0.1em auto;
+  padding: 0.2em 0.4em;
+  border-radius: 12px;
+  border: 4px solid #ff007f; /* hot pink border */
+  background: linear-gradient(145deg, #ff66b2, #ff007f); /* vibrant pink gradient */
+  box-shadow:
+    0 0 0 4px black,  /* bold outer border */
+    0 4px 12px rgba(0, 0, 0, 0.3), /* soft drop shadow */
+    inset 0 -4px 8px rgba(0, 0, 0, 0.2); /* inner shading */
+  margin: 0.2em auto;
   display: inline-block;
-  min-width: 120px;
+  min-width: 140px;
   user-select: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 
@@ -105,7 +110,7 @@ body {
 .dice-container {
   display: flex;
   justify-content: center;
-  margin: 1em 0;
+  margin: 0.6em 0;
 }
 
 .die {
@@ -120,11 +125,13 @@ body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3),
+              0 0 10px rgba(255, 140, 0, 0.5); /* glowy orange edge */
 }
 
 .die.faded {
-  opacity: 0.2;
+  opacity: 0.4;
   pointer-events: none;
 }
 
@@ -234,7 +241,7 @@ body {
   padding: 0.7em 1.5em;
   background: linear-gradient(135deg, #28a745, #1e7e34); /* green gradient */
   color: white;
-  border: 2px solid #155724; /* darker green border */
+  border: 3px solid #155724; /* darker green border */
   border-radius: 10px;
   cursor: pointer;
   font-weight: 700;
@@ -369,23 +376,29 @@ body {
 
 #shareBtn {
   font-size: 1.3em;
-  padding: 0.6em 1.8em;               /* wider and a bit taller */
-  background-color: #ff6600;         /* bright orange */
+  padding: 0.6em 1.8em;
+  background-color: #ff6600;
   color: white;
-  border: 2px solid #b34d00;         /* a darker orange border */
+  border: 1.3px solid black; /* strong black border */
   border-radius: 10px;
   cursor: pointer;
-  margin-top: 1em;
   font-weight: 700;
-  box-shadow: 0 4px 8px rgba(255, 102, 0, 0.4);  /* subtle glow */
-  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  margin-top: 1em;
+  box-shadow:
+    0 0 0 4px black,                    /* bold black outline */
+    0 4px 8px rgba(255, 102, 0, 0.4);   /* orange glow */
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
 }
 
 #shareBtn:hover {
-  background-color: #cc5200;          /* darker orange on hover */
-  border-color: #993d00;
-  box-shadow: 0 6px 12px rgba(204, 82, 0, 0.6); /* stronger glow on hover */
+  background-color: #cc5200;
+  box-shadow:
+    0 0 0 4px black,                     /* maintain black outline */
+    0 6px 12px rgba(204, 82, 0, 0.6);    /* stronger glow */
 }
+
 
 
 @media (max-width: 600px) {
@@ -424,5 +437,14 @@ body {
   }
 }
 
+.logo {
+  height: 48px;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
 
-
+.qu0x-logo-anim {
+  height: 180px; /* Adjust as needed for animation area */
+  vertical-align: middle;
+  image-rendering: pixelated;
+}
