@@ -6,34 +6,54 @@
   <title>Qu0x!</title>
   <link rel="stylesheet" href="style.css"/>
   <style>
-    /* Added styles for the top bar layout */
-    .top-bar {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 1rem;
-      padding: 0.5rem 1rem;
-      border-bottom: 1px solid #ccc;
-    }
+  /* Added styles for the top bar layout */
+ .top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* better spacing */
+  gap: 1rem;
+  height: 60px;             /* desktop height */
+  padding: 0 1rem;
+  border-bottom: 1px solid #ccc;
+}
 
-    .top-bar h1 {
-      margin: 0;
-      flex: 1;
-      text-align: left;
-    }
+.logo {
+  height: 100%;             /* fill the top-bar height exactly */
+  width: auto;              /* keep aspect ratio */
+  object-fit: contain;
+  image-rendering: pixelated;
+  margin: 0;
+}
 
-    #gameNumberDate {
-      flex: 1;
-      text-align: center;
-      font-weight: bold;
-      font-size: 1.2em;
-      user-select: none;
-    }
+/* Mobile: smaller top bar, same logo behavior */
+@media (max-width: 600px) {
+  .top-bar {
+    height: 48px;
+    padding: 0 0.5rem;
+  }
+}
 
-    .nav-controls {
-      flex: 1;
-      text-align: right;
-    }
+/* Keep the text areas flexed and aligned nicely */
+.top-bar h1 {
+  margin: 0;
+  flex: 1;
+  text-align: left;
+}
+
+#gameNumberDate {
+  flex: 1;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.1em;
+  user-select: none;
+}
+
+.nav-controls {
+  flex: 1;
+  text-align: right;
+}
+
+
   </style>
 </head>
 <body>
@@ -49,8 +69,7 @@
 
 <div class="instructions">
   <ul>
-    <li>Use all <strong>5 dice</strong> once to match the <strong>Target</strong>. <strong>Tap</strong> dice and buttons to build your expression.</li>
-    <li><strong>Score</strong> = |Target − Result|; 0 = <span class="qu0x">Qu0x!</span></li>
+    <li>Use all <strong>5 dice</strong> once to hit the <strong>Target</strong>. <strong>Tap</strong> buttons to build your expression. <strong>Score</strong> = |Target − Result| </li>
   </ul>
 </div>
 
