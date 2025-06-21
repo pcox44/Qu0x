@@ -3,118 +3,170 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="theme-color" content="#333" />
   <title>Qu0x!</title>
-  <link rel="stylesheet" href="style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Uncial+Antiqua&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Cinzel+Decorative:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
   <style>
-  /* Added styles for the top bar layout */
- .top-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between; /* better spacing */
-  gap: 1rem;
-  height: 60px;             /* desktop height */
-  padding: 0 1rem;
-  border-bottom: 1px solid #ccc;
-}
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      height: 60px;
+      padding: 0 1rem;
+      border-bottom: 1px solid #ccc;
+      background: #333;
+      flex-wrap: wrap;
+    }
 
-.logo {
-  height: 100%;             /* fill the top-bar height exactly */
-  width: auto;              /* keep aspect ratio */
-  object-fit: contain;
-  image-rendering: pixelated;
-  margin: 0;
-}
+    .top-bar h1 {
+      margin: 0;
+      flex: 1;
+      text-align: left;
+      font-size: 1.6em;
+      color: white;
+    }
 
-/* Mobile: smaller top bar, same logo behavior */
-@media (max-width: 600px) {
-  .top-bar {
-    height: 48px;
-    padding: 0 0.5rem;
-  }
-}
+    #gameNumberDate {
+      flex: 1;
+      text-align: center;
+      font-weight: bold;
+      font-size: 1.1em;
+      color: white;
+      user-select: none;
+    }
 
-/* Keep the text areas flexed and aligned nicely */
-.top-bar h1 {
-  margin: 0;
-  flex: 1;
-  text-align: left;
-}
+    .nav-controls {
+      flex: 1;
+      text-align: right;
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.5em;
+    }
 
-#gameNumberDate {
-  flex: 1;
-  text-align: center;
-  font-weight: bold;
-  font-size: 1.1em;
-  user-select: none;
-}
+    button,
+    select {
+      padding: 0.6em 1em;
+      font-size: 1em;
+    }
 
-.nav-controls {
-  flex: 1;
-  text-align: right;
-}
+    @media (max-width: 600px) {
+      .top-bar {
+        height: auto;
+        flex-direction: column;
+        align-items: stretch;
+        padding: 0.5rem;
+      }
+
+      .top-bar h1,
+      #gameNumberDate {
+        text-align: center;
+        flex: none;
+        margin: 0.2em 0;
+      }
 
 
+      
+      
+      .nav-controls {
+        justify-content: center;
+        flex: none;
+        margin-bottom: 0.5em;
+      }
+    }
+
+    footer {
+      margin-top: 2em;
+      font-size: 0.9em;
+      color: #888;
+    }
+
+    footer a {
+      color: #888;
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
   <div class="top-bar">
     <h1>Qu0x!</h1>
-  <div id="gameNumberDate"><!-- JS will populate this --></div>  
+    <div id="gameNumberDate"><!-- JS will populate this --></div>
     <div class="nav-controls">
       <button id="prevDay">◀</button>
       <select id="gameDropdown"></select>
       <button id="nextDay">▶</button>
+      <select id="themeSelector" title="Select Theme">
+        <option value="default">🎲Default</option>
+        <option value="dark">🌙Dark</option>
+        <option value="gameboy">🕹️GameBoy</option>
+        <option value="terminal">💾Terminal</option>
+        <option value="comic">💥Comic</option>
+        <option value="fantasy">🐉Fantasy</option>
+      </select>
     </div>
   </div>
 
-<div class="instructions">
+  
+  <main>
+    <details class="instructions">
+  <summary>📘 How to Play</summary>
   <ul>
-    <li>Use all <strong>5 dice</strong> once to hit the <strong>Target</strong>. <strong>Tap</strong> buttons to build your expression. <strong>Score</strong> = |Target − Result| </li>
+    <li>Use all <strong>5 dice</strong> once to hit the <strong>Target</strong>.</li>
+    <li><strong>Tap</strong> buttons to build your expression.</li>
+    <li><strong>Score</strong> = |Target − Result|</li>
   </ul>
-</div>
+</details>
 
-  <div id="gameHeader">
-    <!-- Removed gameNumberDate from here -->
-    <div class="target-box" id="targetBox">Target: ???</div>
+    <div class="target-box" id="targetBox">🎯 Target: <span id="targetValue">???</span></div>
+
+  <div style="text-align:center;">
+    <div id="qu0xAnimation" class="hidden">Qu0x!</div>
   </div>
 
-  <div id="qu0xAnimation" class="hidden">Qu0x!</div>
+    <button id="shareBtn" class="hidden">Share Your Qu0x!</button>
 
-  <button id="shareBtn" class="hidden">Share Your Qu0x!</button>
-  
-  <div class="dice-container" id="diceContainer"></div>
+    <div class="dice-container" id="diceContainer"></div>
 
-  <div class="expression-section">
-    <div id="expressionBox"></div>
-    <div id="equalsSign">=</div>
-    <div id="evaluationBox">?</div>
-  </div>
+    <div class="expression-section">
+      <div id="expressionBox"></div>
+      <div id="equalsSign">=</div>
+      <div id="evaluationBox">?</div>
+    </div>
 
-  <div class="buttons" id="buttonGrid"></div>
-  
+    <div class="buttons" id="buttonGrid"></div>
 
-  <div id="submitArea">
-    <button id="submitBtn" class="submit">Submit</button>
-  </div>
+    <div id="submitArea">
+      <button id="submitBtn" class="submit">Submit</button>
+    </div>
 
+    <div class="scoreboard-container">
+      <div class="scoreboard">
+        <p><strong>Daily Best Score:</strong> <span id="dailyBestScore">N/A</span></p>
+        <p><strong>Qu0x! Completion:</strong> <span id="completionRatio">0/0</span></p>
+        <p><strong>Qu0x! Master Score:</strong> <span id="masterScore">N/A</span></p>
+      </div>
+    </div>
 
-  
-  <div class="scoreboard-container">
-  <div class="scoreboard">
-    <p><strong>Daily Best Score:</strong> <span id="dailyBestScore">N/A</span></p>
-    <p><strong>Qu0x! Completion:</strong> <span id="completionRatio">0/0</span></p>
-    <p><strong>Qu0x! Master Score:</strong> <span id="masterScore">N/A</span></p>
-  </div>
-  </div>
+    <div class="game-links">
+      <button onclick="window.open('https://pcox44.github.io/Qu0x100', '_blank')">Play Qu0x!100</button>
+    </div>
+  </main>
 
-   <div class="game-links">
-  <button onclick="window.open('https://pcox44.github.io/Qu0x2/', '_blank')">Play Qu0x!+</button>
-  <button onclick="window.open('https://pcox44.github.io/Qu0x100', '_blank')">Play Qu0x!100</button>
-  </div>
-
+  <footer>
+    Built by Patrick Cox • 
+    <a href="https://github.com/pcox44" target="_blank">GitHub</a>
+  </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-
   <script src="script.js"></script>
 </body>
 </html>
