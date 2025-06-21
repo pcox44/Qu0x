@@ -565,7 +565,11 @@ function animateQu0x(day) {
   const emoji1 = celebrationEmojis[Math.floor(rand() * celebrationEmojis.length)];
   const emoji2 = celebrationEmojis[Math.floor(rand() * celebrationEmojis.length)];
 
-  qu0xAnimation.innerHTML = `${emoji1} <img src="images/qu0x-logo2.png" alt="Qu0x!" class="qu0x-logo-anim" /> ${emoji2}`;
+  qu0xAnimation.innerHTML = `
+  <span class="emoji">${emoji1}</span>
+  <img src="images/qu0x-logo2.png" alt="Qu0x!" class="qu0x-logo-anim" />
+  <span class="emoji">${emoji2}</span>
+  `;
   qu0xAnimation.classList.remove("hidden");
 
   const discoBalls = [];
@@ -786,4 +790,26 @@ document.getElementById("shareBtn").addEventListener("click", () => {
   navigator.clipboard.writeText(shareText).then(() => {
     alert("Copied your Qu0x! expression to clipboard!");
   });
+});
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const themeSelector = document.getElementById('themeSelector');
+  if (!themeSelector) return;
+
+  function applyTheme(theme) {
+    document.body.className = '';
+    if (theme !== 'default') {
+      document.body.classList.add(`theme-${theme}`);
+    }
+    localStorage.setItem('qu0xTheme', theme);
+  }
+
+  themeSelector.addEventListener('change', (e) => {
+    applyTheme(e.target.value);
+  });
+
+  const savedTheme = localStorage.getItem('qu0xTheme') || 'default';
+  themeSelector.value = savedTheme;
+  applyTheme(savedTheme);
 });
