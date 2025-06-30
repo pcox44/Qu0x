@@ -941,6 +941,6 @@ body.theme-comic {
   align-items: center;
   margin-bottom: 0.7em;
   font-size: 1.5em;
-  padding: 0 1em;         /* Adds space on the left and right */
+  padding: 0 5em;         /* Adds space on the left and right */
   max-width: 100%;
 }
