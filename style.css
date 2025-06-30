@@ -934,3 +934,13 @@ body.theme-comic {
   background-size: 6px 6px;
   background-position: 0 0, 3px 3px; /* creates a staggered grid */
 }
+
+.expression-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 0.7em;
+  font-size: 1.5em;
+  padding: 0 1em;         /* Adds space on the left and right */
+  max-width: 100%;
+}
