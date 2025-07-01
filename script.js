@@ -21,6 +21,7 @@ let diceValues = [];
 let target = null;
 let lockedDays = JSON.parse(localStorage.getItem("lockedDays") || "{}");
 let bestScores = JSON.parse(localStorage.getItem("bestScores") || "{}");
+let juiceLevels = JSON.parse(localStorage.getItem("QjuiceLevels") || "{}");
 
 const colorBoxes = {
   "1": "🟥", // red box for 1
