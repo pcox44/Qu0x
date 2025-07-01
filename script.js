@@ -776,16 +776,13 @@ function renderGame(day) {
     }
   });
 
-    // 🧃 Restore Juice Meter fill
-  const juice = juiceLevels[day] || 0;
-  document.getElementById("juiceMeter").style.width = juice + "%";
-
-  // Hide or show Share button
-  const shareBtn = document.getElementById("shareBtn");
-  if (locked && lockedDays[day]?.expression) {
-    shareBtn.classList.remove("hidden");
+  const juice = juiceLevels[day];
+  if (lockedDays[day] && lockedDays[day].expression) {
+  // Already submitted — restore juice fill from stored value
+  document.getElementById("juiceMeter").style.width = juice !== undefined ? `${juice}%` : "100%";
   } else {
-    shareBtn.classList.add("hidden");
+  // Not submitted — reset juice meter to 0
+    document.getElementById("juiceMeter").style.width = "0%";
   }
 
   // Show or hide Qu0x banner
