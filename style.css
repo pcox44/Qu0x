@@ -945,7 +945,7 @@ body.theme-comic {
 @media (max-width: 600px) {
   .expression-section {
     padding: 0 30px;
-    width: 100%;
+    max-width: calc(100% - 60px); /* Prevent overflow */
     box-sizing: border-box;
   }
 }
