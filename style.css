@@ -955,3 +955,9 @@ body.theme-comic {
     overflow-x: auto;
   }
 }
+
+#expressionBox,
+#evaluationBox {
+  min-width: 0;
+  white-space: nowrap;
+}
