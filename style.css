@@ -959,5 +959,15 @@ body.theme-comic {
   max-width: 180px;
 }
 
+@media (max-width: 600px) {
+  body {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
 
+  .expression-section {
+    max-width: 100%;
+    padding: 10px 0;
+  }
+}
 
