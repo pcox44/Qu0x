@@ -964,3 +964,19 @@ body.theme-comic {
   font-size: 1.3em;
   font-weight: bold;
 }
+
+@media (max-width: 500px) {
+  .expression-section {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #expressionBox,
+  #evaluationBox {
+    max-width: 90%;
+    text-align: center;
+  }
+
+  #equalsSign {
+    margin: 8px 0;
+  }
