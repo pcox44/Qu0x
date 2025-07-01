@@ -557,7 +557,7 @@ function submit() {
   renderGame(currentDay);
 }
 
-function spawnRainbowTrail(day, duration = 4500, baseY = 200) {
+function spawnRainbowTrail(day, duration = 3000, baseY = 200) {
   const trailContainer = document.createElement("div");
   trailContainer.style.position = "fixed";
   trailContainer.style.top = "0";
@@ -572,8 +572,8 @@ function spawnRainbowTrail(day, duration = 4500, baseY = 200) {
   const chosenEmoji = emojis[Math.floor(rand() * emojis.length)];
 
   let x = -30;
-  const interval = 16;
-  const speed = 4;
+  const interval = 20; // ms between frames (lower = smoother)
+  const speed = 1.2;   // slower horizontal movement
   let frame = 0;
 
   const waveInterval = setInterval(() => {
@@ -582,14 +582,14 @@ function spawnRainbowTrail(day, duration = 4500, baseY = 200) {
     emoji.innerText = chosenEmoji;
     emoji.style.position = "absolute";
     emoji.style.left = `${x}px`;
-    emoji.style.top = `${baseY + 40 * Math.sin(x / 30)}px`;
+    emoji.style.top = `${baseY + 40 * Math.sin(x / 35)}px`;
     emoji.style.fontSize = "32px";
     emoji.style.opacity = "1";
-    emoji.style.transition = "opacity 1.2s ease-out";
+    emoji.style.transition = "opacity 1.5s ease-out";
     trailContainer.appendChild(emoji);
 
-    setTimeout(() => (emoji.style.opacity = "0"), 50);
-    setTimeout(() => emoji.remove(), 1500);
+    setTimeout(() => (emoji.style.opacity = "0"), 100);
+    setTimeout(() => emoji.remove(), 2000);
 
     if (x > window.innerWidth + 60 || frame * interval > duration) {
       clearInterval(waveInterval);
@@ -615,9 +615,9 @@ function animateQu0x(day) {
   <span class="emoji">${emoji2}</span>
   `;
   qu0xAnimation.classList.remove("hidden");
-  spawnRainbowTrail(day, 2500, 160); // top trail
-  spawnRainbowTrail(day, 2500, 240); // middle trail
-  spawnRainbowTrail(day, 2500, 320); // bottom trail
+  spawnRainbowTrail(day, 3500, 160);
+  spawnRainbowTrail(day, 3500, 240);
+  spawnRainbowTrail(day, 3500, 320);
   const discoBalls = [];
   const numBalls = 4;
 
