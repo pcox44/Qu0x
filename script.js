@@ -22,6 +22,7 @@ let target = null;
 let lockedDays = JSON.parse(localStorage.getItem("lockedDays") || "{}");
 let bestScores = JSON.parse(localStorage.getItem("bestScores") || "{}");
 let juiceLevels = JSON.parse(localStorage.getItem("QjuiceLevels") || "{}");
+let lastValidJuiceFill = 0;
 
 const colorBoxes = {
   "1": "🟥", // red box for 1
@@ -476,8 +477,7 @@ function evaluateExpression() {
 
   if (expr.length === 0) {
     evaluationBox.innerText = "?";
-    juiceBar.style.width = "0%"; // Reset juice when expression is empty
-    return;
+    return; // Do not reset juice unless Clear is hit
   }
 
   try {
@@ -489,18 +489,21 @@ function evaluateExpression() {
       const proximity = 1 - (score / Math.max(target, 1));
       const fill = Math.round(100 * Math.max(0, proximity));
       juiceBar.style.width = fill + "%";
+      lastValidJuiceFill = fill;
 
       // 🔄 Save juice level for this day
       juiceLevels[currentDay] = fill;
       localStorage.setItem("QjuiceLevels", JSON.stringify(juiceLevels));
     } else {
-      juiceBar.style.width = "0%"; // Reset if result is not a valid number
+      // Don't change juice bar if result is invalid
+      juiceBar.style.width = lastValidJuiceFill + "%";
     }
   } catch (e) {
     evaluationBox.innerText = "?";
-    juiceBar.style.width = "0%"; // Reset on error
+    juiceBar.style.width = lastValidJuiceFill + "%";
   }
 }
+
 
 
 
