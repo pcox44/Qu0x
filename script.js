@@ -565,11 +565,11 @@ function animateQu0x(day) {
   const emoji1 = celebrationEmojis[Math.floor(rand() * celebrationEmojis.length)];
   const emoji2 = celebrationEmojis[Math.floor(rand() * celebrationEmojis.length)];
 
-  qu0xAnimation.innerHTML = 
+  qu0xAnimation.innerHTML = `
   <span class="emoji">${emoji1}</span>
   <img src="images/qu0x-logo2.png" alt="Qu0x!" class="qu0x-logo-anim" />
   <span class="emoji">${emoji2}</span>
-  ;
+  `;
   qu0xAnimation.classList.remove("hidden");
 
   const discoBalls = [];
@@ -580,7 +580,7 @@ function animateQu0x(day) {
     discoBall.innerText = "🪩"; // disco ball emoji
     discoBall.style.position = "fixed";
     discoBall.style.top = "-50px";  // start above screen
-    discoBall.style.left = ${20 + i * 20}%;
+    discoBall.style.left = `${20 + i * 20}%`;
     discoBall.style.fontSize = "48px";
     discoBall.style.zIndex = 10000;
     discoBall.style.transition = "top 2s ease-out";
@@ -610,11 +610,11 @@ function animateQu0x(day) {
     const flame = document.createElement("div");
     flame.innerText = "🔥";
     flame.className = "flame-emoji";
-    flame.style.left = ${(i * 10) + 5}%;
+    flame.style.left = `${(i * 10) + 5}%`;
 
     // You can optionally make flame animation also seeded per day:
-    flame.style.animationDuration = ${1 + rand()}s;
-    flame.style.animationDelay = ${rand()}s;
+    flame.style.animationDuration = `${1 + rand()}s`;
+    flame.style.animationDelay = `${rand()}s`;
 
     document.body.appendChild(flame);
     flames.push(flame);
