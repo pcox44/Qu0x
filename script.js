@@ -615,9 +615,10 @@ function animateQu0x(day) {
   <span class="emoji">${emoji2}</span>
   `;
   qu0xAnimation.classList.remove("hidden");
-  spawnRainbowTrail(day, 3500, 160);
-  spawnRainbowTrail(day, 3500, 240);
-  spawnRainbowTrail(day, 3500, 320);
+  spawnRainbowTrail(day, 3500, 280);
+  spawnRainbowTrail(day, 3500, 330);
+  spawnRainbowTrail(day, 3500, 380);
+  spawnRainbowTrail(day, 3500, 430);
   const discoBalls = [];
   const numBalls = 4;
 
