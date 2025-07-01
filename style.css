@@ -144,6 +144,10 @@ body {
   border: 2px solid #000;
   min-width: 240px;
   min-height: 1.2em;
+  box-sizing: border-box;
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: nowrap;
 }
 
 #evaluationBox {
@@ -946,17 +950,9 @@ body.theme-comic {
 
 @media (max-width: 600px) {
   .expression-section {
-    padding: 0 30px; /* 30px left and right */
-  }
-
-  #expressionBox,
-  #evaluationBox {
-    max-width: 100%;
-    overflow-x: auto;
+    width: 100%;
+    padding: 0 30px;
+    box-sizing: border-box;
   }
 }
 
-#evaluationBox {
-  min-width: 0;
-  white-space: nowrap;
-}
