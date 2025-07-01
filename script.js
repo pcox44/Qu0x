@@ -557,7 +557,7 @@ function submit() {
   renderGame(currentDay);
 }
 
-function spawnRainbowTrail(duration = 4000) {
+function spawnRainbowTrail(day, duration = 2500, baseY = 200) {
   const trailContainer = document.createElement("div");
   trailContainer.style.position = "fixed";
   trailContainer.style.top = "0";
@@ -567,35 +567,39 @@ function spawnRainbowTrail(duration = 4000) {
   trailContainer.style.pointerEvents = "none";
   document.body.appendChild(trailContainer);
 
-  const emojis = ["🌈", "✨", "🌀", "💫", "🌟", "⭐"];
+  const emojis = ["🌈", "✨", "🌀", "💫", "🌟", "⭐", "🎉", "🎊", "🔥"];
+  const rand = mulberry32(day + 42); // consistent per day
+  const chosenEmoji = emojis[Math.floor(rand() * emojis.length)];
+
   let x = -30;
-  const interval = 30; // ms between frames
-  const speed = 2;     // horizontal pixels per frame
+  const interval = 16;
+  const speed = 4;
   let frame = 0;
 
   const waveInterval = setInterval(() => {
     x += speed;
     const emoji = document.createElement("div");
-    emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+    emoji.innerText = chosenEmoji;
     emoji.style.position = "absolute";
     emoji.style.left = `${x}px`;
-    emoji.style.top = `${200 + 40 * Math.sin(x / 40)}px`;
+    emoji.style.top = `${baseY + 40 * Math.sin(x / 30)}px`;
     emoji.style.fontSize = "32px";
     emoji.style.opacity = "1";
-    emoji.style.transition = "opacity 2s ease-out";
+    emoji.style.transition = "opacity 1.2s ease-out";
     trailContainer.appendChild(emoji);
 
-    setTimeout(() => emoji.style.opacity = "0", 50);
-    setTimeout(() => emoji.remove(), 2500);
+    setTimeout(() => (emoji.style.opacity = "0"), 50);
+    setTimeout(() => emoji.remove(), 1500);
 
     if (x > window.innerWidth + 60 || frame * interval > duration) {
       clearInterval(waveInterval);
-      setTimeout(() => trailContainer.remove(), 3000);
+      setTimeout(() => trailContainer.remove(), 2000);
     }
 
     frame++;
   }, interval);
 }
+
 
 function animateQu0x(day) {
   // Step 1: Create seeded RNG based on day
@@ -611,7 +615,9 @@ function animateQu0x(day) {
   <span class="emoji">${emoji2}</span>
   `;
   qu0xAnimation.classList.remove("hidden");
-  spawnRainbowTrail();
+  spawnRainbowTrail(day, 2500, 160); // top trail
+  spawnRainbowTrail(day, 2500, 240); // middle trail
+  spawnRainbowTrail(day, 2500, 320); // bottom trail
   const discoBalls = [];
   const numBalls = 4;
 
