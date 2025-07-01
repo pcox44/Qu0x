@@ -349,7 +349,7 @@ body {
   flex-wrap: wrap;
   justify-content: center;
   gap: 12px;
-  margin: 1.2em 0;
+  margin: 0.6em 0;
 }
 
 .game-links button {
