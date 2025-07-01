@@ -573,7 +573,7 @@ function spawnRainbowTrail(day, duration = 3000, baseY = 200) {
 
   let x = -30;
   const interval = 20; // ms between frames (lower = smoother)
-  const speed = 1.2;   // slower horizontal movement
+  const speed = 2.4;   // slower horizontal movement
   let frame = 0;
 
   const waveInterval = setInterval(() => {
