@@ -473,13 +473,26 @@ function evaluateExpression() {
   const expr = expressionBox.innerText.trim();
   if (expr.length === 0) {
     evaluationBox.innerText = "?";
+    document.getElementById("juiceMeter").style.width = "0%"; // 🔋 Reset Juice Bar
     return;
   }
+
   try {
     const result = evaluateExpressionSafe(expr);
     evaluationBox.innerText = result;
+
+    // 🔋 Update Juice Bar
+    if (!isNaN(result) && typeof target === "number") {
+      const score = Math.abs(Number(result) - target);
+      const fill = Math.max(0, Math.min(100, 100 - score)); // 0 = full bar
+      document.getElementById("juiceMeter").style.width = fill + "%";
+    } else {
+      document.getElementById("juiceMeter").style.width = "0%";
+    }
+
   } catch (e) {
     evaluationBox.innerText = "?";
+    document.getElementById("juiceMeter").style.width = "0%"; // 🔋 Reset on error
   }
 }
 
