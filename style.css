@@ -159,14 +159,15 @@ body {
   border: 2px solid #000;
   box-sizing: border-box;
   min-height: 2.2em;
-  min-width: 60px;
+  min-width: 80px;
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 
 
 #equalsSign {
-  padding: 0 0.2em;
+  padding: 0 0.1em;
   font-weight: bold;
 }
 
