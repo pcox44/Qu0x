@@ -557,7 +557,7 @@ function submit() {
   renderGame(currentDay);
 }
 
-function spawnRainbowTrail(day, duration = 2500, baseY = 200) {
+function spawnRainbowTrail(day, duration = 4500, baseY = 200) {
   const trailContainer = document.createElement("div");
   trailContainer.style.position = "fixed";
   trailContainer.style.top = "0";
