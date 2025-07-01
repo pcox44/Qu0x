@@ -1003,6 +1003,12 @@ body.theme-comic {
   box-shadow: inset 0 0 6px #000;
 }
 
+@media (max-width: 600px) {
+  #juiceMeterContainer {
+    width: 75%;
+  }
+}
+
 #juiceMeter {
   height: 100%;
   width: 0%;
