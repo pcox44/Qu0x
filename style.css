@@ -935,3 +935,8 @@ body.theme-comic {
   background-position: 0 0, 3px 3px; /* creates a staggered grid */
 }
 
+@media (max-width: 600px) {
+  .expression-section {
+    padding: 0 12px;
+  }
+}
