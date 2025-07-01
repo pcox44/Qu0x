@@ -472,9 +472,11 @@ function evaluateExpressionSafe(expr) {
 
 function evaluateExpression() {
   const expr = expressionBox.innerText.trim();
+  const juiceBar = document.getElementById("juiceMeter");
+
   if (expr.length === 0) {
     evaluationBox.innerText = "?";
-    document.getElementById("juiceMeter").style.width = "0%";
+    // Don't change juice bar if expression is cleared
     return;
   }
 
@@ -486,20 +488,18 @@ function evaluateExpression() {
       const score = Math.abs(Number(result) - target);
       const proximity = 1 - (score / Math.max(target, 1));
       const fill = Math.round(100 * Math.max(0, proximity));
-      document.getElementById("juiceMeter").style.width = fill + "%";
+      juiceBar.style.width = fill + "%";
 
       // 🔄 Save juice level for this day
       juiceLevels[currentDay] = fill;
       localStorage.setItem("QjuiceLevels", JSON.stringify(juiceLevels));
-    } else {
-      document.getElementById("juiceMeter").style.width = "0%";
     }
+    // Don't touch juice bar if result is NaN or not a number
   } catch (e) {
     evaluationBox.innerText = "?";
-    document.getElementById("juiceMeter").style.width = "0%";
+    // Do not change juice bar on error — retain current fill level
   }
 }
-
 
 
 
@@ -749,14 +749,7 @@ function renderGame(day) {
     expressionBox.innerText = "";
     evaluationBox.innerText = "?";
   }
-  
-  // ✅ Show or hide Share button if Qu0x achieved
-  if (lockedDays[day]?.score === 0) {
-  document.getElementById("shareBtn").classList.remove("hidden");
-  } else {
-  document.getElementById("shareBtn").classList.add("hidden");
-  }
-  
+
   targetBox.innerText = `Target: ${target}`;
   gameNumberDate.innerText = `Game #${day + 1} (${getDateFromDayIndex(day)})`;
 
