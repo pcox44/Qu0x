@@ -472,11 +472,9 @@ function evaluateExpressionSafe(expr) {
 
 function evaluateExpression() {
   const expr = expressionBox.innerText.trim();
-  const juiceBar = document.getElementById("juiceMeter");
-
   if (expr.length === 0) {
     evaluationBox.innerText = "?";
-    // Don't change juice bar if expression is cleared
+    document.getElementById("juiceMeter").style.width = "0%";
     return;
   }
 
@@ -488,18 +486,20 @@ function evaluateExpression() {
       const score = Math.abs(Number(result) - target);
       const proximity = 1 - (score / Math.max(target, 1));
       const fill = Math.round(100 * Math.max(0, proximity));
-      juiceBar.style.width = fill + "%";
+      document.getElementById("juiceMeter").style.width = fill + "%";
 
       // 🔄 Save juice level for this day
       juiceLevels[currentDay] = fill;
       localStorage.setItem("QjuiceLevels", JSON.stringify(juiceLevels));
+    } else {
+      document.getElementById("juiceMeter").style.width = "0%";
     }
-    // Don't touch juice bar if result is NaN or not a number
   } catch (e) {
     evaluationBox.innerText = "?";
-    // Do not change juice bar on error — retain current fill level
+    document.getElementById("juiceMeter").style.width = "0%";
   }
 }
+
 
 
 
