@@ -749,35 +749,24 @@ function renderGame(day) {
     expressionBox.innerText = "";
     evaluationBox.innerText = "?";
   }
-  
-  const locked = isLocked(day);
 
-  // 🔄 Show Share button if solved
-  const shareBtn = document.getElementById("shareBtn");
-  if (locked && lockedDays[day]?.expression) {
-    shareBtn.classList.remove("hidden");
-  } else {
-    shareBtn.classList.add("hidden");
-  }
-
-  
-  targetBox.innerText = `Target: ${target}`;
-  gameNumberDate.innerText = `Game #${day + 1} (${getDateFromDayIndex(day)})`;
+  targetBox.innerText = Target: ${target};
+  gameNumberDate.innerText = Game #${day + 1} (${getDateFromDayIndex(day)});
 
   if (bestScores[day] !== undefined) {
-    dailyBestScoreBox.innerText = `${bestScores[day]}`;
+    dailyBestScoreBox.innerText = ${bestScores[day]};
   } else {
     dailyBestScoreBox.innerText = "N/A";
   }
 
   const completedDays = Object.values(bestScores).filter(score => score === 0).length;
-  completionRatioBox.innerText = `${completedDays}/${maxDay + 1}`;
+  completionRatioBox.innerText = ${completedDays}/${maxDay + 1};
 
   const totalScore = Object.values(bestScores).reduce((a, b) => a + b, 0);
   const totalGames = maxDay + 1;
 
   if (Object.keys(bestScores).length === totalGames) {
-    masterScoreBox.innerText = `${totalScore}`;
+    masterScoreBox.innerText = ${totalScore};
   } else {
     masterScoreBox.innerText = "N/A";
   }
@@ -795,7 +784,7 @@ function renderGame(day) {
     } else {
       btn.classList.remove("disabled");
     }
-  });
+  }); 
 
   const juice = juiceLevels[day];
   if (lockedDays[day] && lockedDays[day].expression) {
