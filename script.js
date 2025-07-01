@@ -484,7 +484,8 @@ function evaluateExpression() {
 
     if (!isNaN(result) && typeof target === "number") {
       const score = Math.abs(Number(result) - target);
-      const fill = Math.max(0, Math.min(100, 100 - score));
+      const proximity = 1 - (score / Math.max(target, 1));
+      const fill = Math.round(100 * Math.max(0, proximity));
       document.getElementById("juiceMeter").style.width = fill + "%";
 
       // 🔄 Save juice level for this day
