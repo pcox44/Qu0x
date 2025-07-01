@@ -940,12 +940,18 @@ body.theme-comic {
   justify-content: center;
   align-items: center;
   gap: 12px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 @media (max-width: 600px) {
   .expression-section {
-    padding: 0 60px;
-    max-width: calc(100% - 120px); /* Prevent overflow */
-    box-sizing: border-box;
+    padding: 0 30px; /* 30px left and right */
+  }
+
+  #expressionBox,
+  #evaluationBox {
+    max-width: 100%;
+    overflow-x: auto;
   }
 }
