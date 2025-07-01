@@ -750,12 +750,16 @@ function renderGame(day) {
     evaluationBox.innerText = "?";
   }
   
-  // ✅ Show or hide Share button if Qu0x achieved
-  if (lockedDays[day]?.score === 0) {
-  document.getElementById("shareBtn").classList.remove("hidden");
+  const locked = isLocked(day);
+
+  // 🔄 Show Share button if solved
+  const shareBtn = document.getElementById("shareBtn");
+  if (locked && lockedDays[day]?.expression) {
+    shareBtn.classList.remove("hidden");
   } else {
-  document.getElementById("shareBtn").classList.add("hidden");
+    shareBtn.classList.add("hidden");
   }
+
   
   targetBox.innerText = `Target: ${target}`;
   gameNumberDate.innerText = `Game #${day + 1} (${getDateFromDayIndex(day)})`;
