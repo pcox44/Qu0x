@@ -992,12 +992,4 @@ body.theme-comic {
   }
 }
 
-@keyframes slideFadeIn {
-  from { transform: translateY(-10px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
 
-.target-box,
-.scoreboard {
-  animation: slideFadeIn 0.6s ease-out;
-}
