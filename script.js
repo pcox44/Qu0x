@@ -749,7 +749,14 @@ function renderGame(day) {
     expressionBox.innerText = "";
     evaluationBox.innerText = "?";
   }
-
+  
+  // ✅ Show or hide Share button if Qu0x achieved
+  if (lockedDays[day]?.score === 0) {
+  document.getElementById("shareBtn").classList.remove("hidden");
+  } else {
+  document.getElementById("shareBtn").classList.add("hidden");
+  }
+  
   targetBox.innerText = `Target: ${target}`;
   gameNumberDate.innerText = `Game #${day + 1} (${getDateFromDayIndex(day)})`;
 
