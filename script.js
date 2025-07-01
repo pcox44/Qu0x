@@ -474,7 +474,7 @@ function evaluateExpression() {
   const expr = expressionBox.innerText.trim();
   if (expr.length === 0) {
     evaluationBox.innerText = "?";
-    document.getElementById("juiceMeter").style.width = "0%"; // 🔋 Reset Juice Bar
+    document.getElementById("juiceMeter").style.width = "0%";
     return;
   }
 
@@ -482,21 +482,22 @@ function evaluateExpression() {
     const result = evaluateExpressionSafe(expr);
     evaluationBox.innerText = result;
 
-    // 🔋 Update Juice Bar
     if (!isNaN(result) && typeof target === "number") {
       const score = Math.abs(Number(result) - target);
-      const fill = Math.max(0, Math.min(100, 100 - score)); // 0 = full bar
+      const fill = Math.max(0, Math.min(100, 100 - score));
       document.getElementById("juiceMeter").style.width = fill + "%";
+
+      // 🔄 Save juice level for this day
+      juiceLevels[currentDay] = fill;
+      localStorage.setItem("QjuiceLevels", JSON.stringify(juiceLevels));
     } else {
       document.getElementById("juiceMeter").style.width = "0%";
     }
-
   } catch (e) {
     evaluationBox.innerText = "?";
-    document.getElementById("juiceMeter").style.width = "0%"; // 🔋 Reset on error
+    document.getElementById("juiceMeter").style.width = "0%";
   }
 }
-
 
 
 function buildButtons() {
@@ -773,6 +774,10 @@ function renderGame(day) {
       btn.classList.remove("disabled");
     }
   });
+
+    // 🧃 Restore Juice Meter fill
+  const juice = juiceLevels[day] || 0;
+  document.getElementById("juiceMeter").style.width = juice + "%";
 
   // Hide or show Share button
   const shareBtn = document.getElementById("shareBtn");
