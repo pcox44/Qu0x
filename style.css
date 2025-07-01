@@ -368,6 +368,16 @@ body {
   transition: transform 0.15s ease, background-color 0.3s ease;
 }
 
+@media (max-width: 600px) {
+  .game-links {
+    margin-bottom: 0.2em;
+  }
+
+  .game-links button {
+    margin-bottom: 0.2em;
+  }
+}
+
 .game-links button:hover {
   transform: scale(1.05);
 }
