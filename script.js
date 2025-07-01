@@ -476,7 +476,7 @@ function evaluateExpression() {
 
   if (expr.length === 0) {
     evaluationBox.innerText = "?";
-    // Don't change juice bar if expression is cleared
+    juiceBar.style.width = "0%"; // Reset juice when expression is empty
     return;
   }
 
@@ -493,11 +493,12 @@ function evaluateExpression() {
       // 🔄 Save juice level for this day
       juiceLevels[currentDay] = fill;
       localStorage.setItem("QjuiceLevels", JSON.stringify(juiceLevels));
+    } else {
+      juiceBar.style.width = "0%"; // Reset if result is not a valid number
     }
-    // Don't touch juice bar if result is NaN or not a number
   } catch (e) {
     evaluationBox.innerText = "?";
-    // Do not change juice bar on error — retain current fill level
+    juiceBar.style.width = "0%"; // Reset on error
   }
 }
 
