@@ -201,9 +201,14 @@ body {
 #buttonGrid {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  gap: 0.5em;
-  margin: 0.7em auto;
-  max-width: 500px;
+  gap: 10px;
+  max-width: 600px;
+  margin: 0.5em auto;
+  justify-content: center;
+}
+
+#submitBtn.grid-span-2 {
+  grid-column: 5 / 7; /* spans column 5 and 6 */
 }
 
 #buttonGrid button {
