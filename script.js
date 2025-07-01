@@ -557,6 +557,46 @@ function submit() {
   renderGame(currentDay);
 }
 
+function spawnRainbowTrail(duration = 4000) {
+  const trailContainer = document.createElement("div");
+  trailContainer.style.position = "fixed";
+  trailContainer.style.top = "0";
+  trailContainer.style.left = "0";
+  trailContainer.style.width = "100%";
+  trailContainer.style.height = "100%";
+  trailContainer.style.pointerEvents = "none";
+  document.body.appendChild(trailContainer);
+
+  const emojis = ["🌈", "✨", "🌀", "💫", "🌟", "⭐"];
+  let x = -30;
+  const interval = 30; // ms between frames
+  const speed = 2;     // horizontal pixels per frame
+  let frame = 0;
+
+  const waveInterval = setInterval(() => {
+    x += speed;
+    const emoji = document.createElement("div");
+    emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+    emoji.style.position = "absolute";
+    emoji.style.left = `${x}px`;
+    emoji.style.top = `${200 + 40 * Math.sin(x / 40)}px`;
+    emoji.style.fontSize = "32px";
+    emoji.style.opacity = "1";
+    emoji.style.transition = "opacity 2s ease-out";
+    trailContainer.appendChild(emoji);
+
+    setTimeout(() => emoji.style.opacity = "0", 50);
+    setTimeout(() => emoji.remove(), 2500);
+
+    if (x > window.innerWidth + 60 || frame * interval > duration) {
+      clearInterval(waveInterval);
+      setTimeout(() => trailContainer.remove(), 3000);
+    }
+
+    frame++;
+  }, interval);
+}
+
 function animateQu0x(day) {
   // Step 1: Create seeded RNG based on day
   const rand = mulberry32(day + 1);
@@ -571,7 +611,7 @@ function animateQu0x(day) {
   <span class="emoji">${emoji2}</span>
   `;
   qu0xAnimation.classList.remove("hidden");
-
+  spawnRainbowTrail();
   const discoBalls = [];
   const numBalls = 4;
 
