@@ -150,6 +150,13 @@ body {
   line-height: 1.7em;
 }
 
+/* 👇 Add this right after */
+#expressionBox::before {
+  content: " ";
+  visibility: hidden;
+  display: inline-block;
+}
+
 #evaluationBox {
   padding: 0.4em 0.5em;
   background: white;
