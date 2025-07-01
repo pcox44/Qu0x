@@ -97,36 +97,6 @@ const celebrationEmojis = [
 ];
 
 
-function calculateCurrentStreak() {
-  let streak = 0;
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  for (let d = currentDay; d >= 0; d--) {
-    const date = new Date(getDateFromDayIndex(d));
-    date.setHours(0, 0, 0, 0);
-
-    // If the day is in the future, skip it
-    if (date > today) continue;
-
-    // Check if the day is solved AND solved on the correct date
-    const solved = bestScores[d] === 0;
-    const solvedOnTime = lockedDays[d]?.solvedDate === formatDate(date);
-
-    if (solved && solvedOnTime) {
-      streak++;
-    } else {
-      break;
-    }
-  }
-
-  document.getElementById("streakBox").innerText = streak;
-}
-
-function formatDate(date) {
-  return date.toISOString().split('T')[0];  // e.g., "2025-07-01"
-}
-
 function getRandomCelebrationEmojis() {
   const e1 = celebrationEmojis[Math.floor(Math.random() * celebrationEmojis.length)];
   const e2 = celebrationEmojis[Math.floor(Math.random() * celebrationEmojis.length)];
@@ -607,19 +577,12 @@ function submit() {
   }
 
  if (score === 0) {
-  lockedDays[currentDay] = {
-    score,
-    expression: expressionBox.innerText,
-    solvedDate: formatDate(new Date())  // 🗓️ Store the date solved
-  };
+  lockedDays[currentDay] = { score, expression: expressionBox.innerText };
   localStorage.setItem("lockedDays", JSON.stringify(lockedDays));
   animateQu0x(currentDay);
 
   // ✅ Show the Share button
   document.getElementById("shareBtn").classList.remove("hidden");
-
-  // 🔁 Update streak after solving
-  calculateCurrentStreak();
 }
 
   renderGame(currentDay);
@@ -848,8 +811,6 @@ function renderGame(day) {
   } else {
     shareBtn.classList.add("hidden");
   }
-
-  calculateCurrentStreak(); // ✅ Update the streak display
 }
 
 document.getElementById("prevDay").onclick = () => {
