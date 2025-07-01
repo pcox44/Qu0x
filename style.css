@@ -1020,3 +1020,11 @@ body.theme-comic {
   background: linear-gradient(to right, #ff4d4d, #ffd633, #33cc33);
   transition: width 0.3s ease;
 }
+
+#buttonGrid .submit {
+  background: linear-gradient(135deg, #28a745, #1e7e34) !important;
+  color: white !important;
+  border: 3px solid #155724 !important;
+  box-shadow: 0 4px 10px rgba(40, 167, 69, 0.6) !important;
+}
+
