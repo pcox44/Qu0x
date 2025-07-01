@@ -802,6 +802,13 @@ function renderGame(day) {
   } else {
     qu0xAnimation.classList.add("hidden");
   }
+  // Show or hide Share button based on whether the day was solved
+  const shareBtn = document.getElementById("shareBtn");
+  if (lockedDays[day]?.score === 0) {
+    shareBtn.classList.remove("hidden");
+  } else {
+    shareBtn.classList.add("hidden");
+  }
 }
 
 document.getElementById("prevDay").onclick = () => {
