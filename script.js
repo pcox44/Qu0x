@@ -530,6 +530,8 @@ function buildButtons() {
         expressionBox.innerText = "";
         usedDice = [];
         renderDice();
+        document.getElementById("juiceMeter").style.width = "0%";
+        lastValidJuiceFill = 0;
       } else {
         addToExpression(op);
       }
@@ -538,7 +540,6 @@ function buildButtons() {
     buttonGrid.appendChild(btn);
   });
 
-  // Add the Submit button at the end of the grid
   const submitBtn = document.createElement("button");
   submitBtn.id = "submitBtn";
   submitBtn.classList.add("submit", "grid-span-2");
