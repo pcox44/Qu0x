@@ -535,7 +535,7 @@ function buildButtons() {
   // Add the Submit button at the end of the grid
   const submitBtn = document.createElement("button");
   submitBtn.id = "submitBtn";
-  submitBtn.className = "submit grid-span-2";
+  submitBtn.classList.add("submit", "grid-span-2");
   submitBtn.innerText = "Submit";
   submitBtn.onclick = submit;
   buttonGrid.appendChild(submitBtn);
