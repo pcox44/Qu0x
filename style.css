@@ -935,6 +935,11 @@ body.theme-comic {
   background-position: 0 0, 3px 3px; /* creates a staggered grid */
 }
 
+.expression-section {
+  display: flex;
+  justify-content: space-between; /* or space-evenly */
+}
+
 @media (max-width: 600px) {
   .expression-section {
     padding: 0 30px;
