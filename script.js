@@ -505,7 +505,6 @@ function buildButtons() {
   const ops = ["+", "-", "*", "/", "^", "!", "(", ")", "Back", "Clear"];
   buttonGrid.innerHTML = "";
 
-
   ops.forEach(op => {
     const btn = document.createElement("button");
     btn.innerText = op;
@@ -515,12 +514,12 @@ function buildButtons() {
         let expr = expressionBox.innerText;
         if (expr.length === 0) return;
         const removed = expr[expr.length - 1];
-        expressionBox.innerText = expr.slice(0, -1);
         const idx = usedDice.findLast(i => diceValues[i].toString() === removed);
         if (idx !== undefined) {
           usedDice = usedDice.filter(i => i !== idx);
           document.querySelector(`.die[data-index="${idx}"]`).classList.remove("faded");
         }
+        expressionBox.innerText = expr.slice(0, -1);
       } else if (op === "Clear") {
         expressionBox.innerText = "";
         usedDice = [];
@@ -532,7 +531,16 @@ function buildButtons() {
     };
     buttonGrid.appendChild(btn);
   });
+
+  // Add the Submit button at the end of the grid
+  const submitBtn = document.createElement("button");
+  submitBtn.id = "submitBtn";
+  submitBtn.className = "submit grid-span-2";
+  submitBtn.innerText = "Submit";
+  submitBtn.onclick = submit;
+  buttonGrid.appendChild(submitBtn);
 }
+
 
 function isLocked(day) {
   return lockedDays[day]?.score === 0;
