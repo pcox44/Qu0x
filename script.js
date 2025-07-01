@@ -558,28 +558,25 @@ function submit() {
 }
 
 function animateQu0x(day) {
-  // Step 1: Create seeded RNG based on day
   const rand = mulberry32(day + 1);
-
-  // Step 2: Use seeded RNG to pick emojis deterministically
   const emoji1 = celebrationEmojis[Math.floor(rand() * celebrationEmojis.length)];
   const emoji2 = celebrationEmojis[Math.floor(rand() * celebrationEmojis.length)];
 
   qu0xAnimation.innerHTML = `
-  <span class="emoji">${emoji1}</span>
-  <img src="images/qu0x-logo2.png" alt="Qu0x!" class="qu0x-logo-anim" />
-  <span class="emoji">${emoji2}</span>
+    <span class="emoji">${emoji1}</span>
+    <img src="images/qu0x-logo2.png" alt="Qu0x!" class="qu0x-logo-anim" />
+    <span class="emoji">${emoji2}</span>
   `;
   qu0xAnimation.classList.remove("hidden");
 
+  // 🪩 Spinning Disco Balls
   const discoBalls = [];
   const numBalls = 4;
-
   for (let i = 0; i < numBalls; i++) {
     const discoBall = document.createElement("div");
-    discoBall.innerText = "🪩"; // disco ball emoji
+    discoBall.innerText = "🪩";
     discoBall.style.position = "fixed";
-    discoBall.style.top = "-50px";  // start above screen
+    discoBall.style.top = "-50px";
     discoBall.style.left = `${20 + i * 20}%`;
     discoBall.style.fontSize = "48px";
     discoBall.style.zIndex = 10000;
@@ -589,21 +586,19 @@ function animateQu0x(day) {
     discoBalls.push(discoBall);
   }
 
-  // Drop down after a small delay
   setTimeout(() => {
     discoBalls.forEach(ball => {
-      ball.style.top = "100px"; // drop down
+      ball.style.top = "100px";
     });
   }, 50);
 
-  // After 2 seconds (drop duration), move them back up
   setTimeout(() => {
     discoBalls.forEach(ball => {
-      ball.style.top = "-50px"; // go back up
+      ball.style.top = "-50px";
     });
   }, 2050);
 
-  // Create flame emojis along the bottom
+  // 🔥 Flame Emojis at Bottom
   const flames = [];
   const flameCount = 10;
   for (let i = 0; i < flameCount; i++) {
@@ -611,16 +606,41 @@ function animateQu0x(day) {
     flame.innerText = "🔥";
     flame.className = "flame-emoji";
     flame.style.left = `${(i * 10) + 5}%`;
-
-    // You can optionally make flame animation also seeded per day:
     flame.style.animationDuration = `${1 + rand()}s`;
     flame.style.animationDelay = `${rand()}s`;
-
     document.body.appendChild(flame);
     flames.push(flame);
   }
 
-  const duration = 4000; // total ms for entire animation
+  // 🎆 Exploding Emoji Ring
+  const ringCount = 12;
+  for (let i = 0; i < ringCount; i++) {
+    const angle = (i / ringCount) * 2 * Math.PI;
+    const ringEmoji = document.createElement("div");
+    ringEmoji.innerText = ["🧨", "💫", "🌟", "✨"][Math.floor(rand() * 4)];
+    ringEmoji.style.position = "fixed";
+    ringEmoji.style.left = "50%";
+    ringEmoji.style.top = "50%";
+    ringEmoji.style.fontSize = "32px";
+    ringEmoji.style.zIndex = 9999;
+    ringEmoji.style.opacity = 0;
+    ringEmoji.style.transform = `translate(-50%, -50%)`;
+    ringEmoji.style.transition = "transform 1s ease-out, opacity 1s ease-out`;
+    document.body.appendChild(ringEmoji);
+
+    setTimeout(() => {
+      const distance = 200;
+      const x = Math.cos(angle) * distance;
+      const y = Math.sin(angle) * distance;
+      ringEmoji.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
+      ringEmoji.style.opacity = 1;
+    }, 50);
+
+    setTimeout(() => ringEmoji.remove(), 1050);
+  }
+
+  // 🎉 Confetti loop
+  const duration = 4000;
   const intervalTime = 250;
   const end = Date.now() + duration;
 
@@ -643,12 +663,9 @@ function animateQu0x(day) {
 
   setTimeout(() => {
     qu0xAnimation.classList.add("hidden");
-
-    // Show the banner again 1 second after hiding
     setTimeout(() => {
       showQu0xBanner(day);
-    }, 1); // 1 second later
-
+    }, 1);
   }, duration);
 }
 
