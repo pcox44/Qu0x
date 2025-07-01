@@ -936,3 +936,31 @@ body.theme-comic {
 }
 
 
+.expression-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 10px;
+  flex-wrap: wrap;
+}
+
+#expressionBox,
+#evaluationBox {
+  font-size: 1.3em;
+  min-height: 40px;
+  background-color: #fff;
+  padding: 0.5em 0.8em;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  white-space: nowrap;
+  overflow-x: auto;
+  max-width: 200px;
+}
+
+#equalsSign {
+  font-size: 1.3em;
+  font-weight: bold;
+}
