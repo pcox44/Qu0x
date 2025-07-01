@@ -959,25 +959,5 @@ body.theme-comic {
   max-width: 180px;
 }
 
-#equalsSign {
-  font-size: 1.3em;
-  font-weight: bold;
-  color: #000;
-}
 
 
-@media (max-width: 500px) {
-  .expression-section {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  #expressionBox,
-  #evaluationBox {
-    max-width: 90%;
-    text-align: center;
-  }
-
-  #equalsSign {
-    margin: 8px 0;
-  }
