@@ -935,39 +935,3 @@ body.theme-comic {
   background-position: 0 0, 3px 3px; /* creates a staggered grid */
 }
 
-
-.expression-section {
-  display: flex;
-  justify-content: center;  /* center the whole group */
-  align-items: center;
-  gap: 12px;
-  margin: 0 auto;
-  padding: 10px;
-  max-width: 500px;  /* controls the total width */
-}
-
-#expressionBox,
-#evaluationBox {
-  font-size: 1.3em;
-  min-height: 40px;
-  background-color: #fff;
-  padding: 0.5em 0.8em;
-  border: 2px solid #ccc;
-  border-radius: 8px;
-  white-space: nowrap;
-  overflow-x: auto;
-  max-width: 180px;
-}
-
-@media (max-width: 600px) {
-  body {
-    padding-left: 12px;
-    padding-right: 12px;
-  }
-
-  .expression-section {
-    max-width: 100%;
-    padding: 10px 0;
-  }
-}
-
