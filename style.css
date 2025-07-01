@@ -938,13 +938,12 @@ body.theme-comic {
 
 .expression-section {
   display: flex;
-  justify-content: center;
+  justify-content: center;  /* center the whole group */
   align-items: center;
   gap: 12px;
-  max-width: 500px;
   margin: 0 auto;
   padding: 10px;
-  flex-wrap: wrap;
+  max-width: 500px;  /* controls the total width */
 }
 
 #expressionBox,
@@ -957,13 +956,15 @@ body.theme-comic {
   border-radius: 8px;
   white-space: nowrap;
   overflow-x: auto;
-  max-width: 200px;
+  max-width: 180px;
 }
 
 #equalsSign {
   font-size: 1.3em;
   font-weight: bold;
+  color: #000;
 }
+
 
 @media (max-width: 500px) {
   .expression-section {
