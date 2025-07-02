@@ -23,13 +23,6 @@ let lockedDays = JSON.parse(localStorage.getItem("lockedDays") || "{}");
 let bestScores = JSON.parse(localStorage.getItem("bestScores") || "{}");
 let juiceLevels = JSON.parse(localStorage.getItem("QjuiceLevels") || "{}");
 let lastValidJuiceFill = 0;
-let qu0xStreakData = JSON.parse(localStorage.getItem("qu0xStreak") || "{}");
-
-function getTodayDateString() {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  return today.toISOString().slice(0, 10);
-}
 
 const colorBoxes = {
   "1": "🟥", // red box for 1
@@ -590,26 +583,6 @@ function submit() {
 
   // ✅ Show the Share button
   document.getElementById("shareBtn").classList.remove("hidden");
-
-  // 🔥 Qu0x Daily Streak Logic
-  const todayStr = getTodayDateString();
-  if (currentDay >= 47 && currentDay === getDayIndex(new Date())) {
-    const lastStreakDate = qu0xStreakData.lastDate;
-    const lastCount = qu0xStreakData.count || 0;
-
-    const yesterday = new Date();
-    yesterday.setDate(yesterday.getDate() - 1);
-    const yesterdayStr = yesterday.toISOString().slice(0, 10);
-
-    if (lastStreakDate === yesterdayStr) {
-      qu0xStreakData.count = lastCount + 1;
-    } else {
-      qu0xStreakData.count = 1;
-    }
-
-    qu0xStreakData.lastDate = todayStr;
-    localStorage.setItem("qu0xStreak", JSON.stringify(qu0xStreakData));
-  }
 }
 
   renderGame(currentDay);
@@ -839,14 +812,6 @@ function renderGame(day) {
     shareBtn.classList.remove("hidden");
   } else {
     shareBtn.classList.add("hidden");
-  }
-  // 🔥 Update streak display
-  const streakBox = document.getElementById("streakCount");
-  const todayStr = getTodayDateString();
-  if (qu0xStreakData.lastDate === todayStr) {
-    streakBox.innerText = qu0xStreakData.count || 0;
-  } else {
-    streakBox.innerText = 0;
   }
 }
 
