@@ -24,6 +24,12 @@ let bestScores = JSON.parse(localStorage.getItem("bestScores") || "{}");
 let juiceLevels = JSON.parse(localStorage.getItem("QjuiceLevels") || "{}");
 let lastValidJuiceFill = 0;
 
+function getTodayDateString() {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  return today.toISOString().slice(0, 10);
+}
+
 const colorBoxes = {
   "1": "🟥", // red box for 1
   "2": "⬜", // white box for 2
@@ -813,6 +819,21 @@ function renderGame(day) {
   } else {
     shareBtn.classList.add("hidden");
   }
+  
+  const streakBox = document.getElementById("streakCount");
+
+  let streak = 0;
+  const todayIndex = getDayIndex(new Date());
+
+  for (let i = todayIndex; i >= 47; i--) {
+    if (lockedDays[i]?.score === 0) {
+      streak++;
+    } else {
+      break; // streak broken
+    }
+  }
+
+streakBox.innerText = streak;
 }
 
 document.getElementById("prevDay").onclick = () => {
